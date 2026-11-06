@@ -25,7 +25,7 @@
     },
     "header": {
         "toggleSidebar": "Toggle sidebar",
-        "search": "Search"
+        "preferences": "Display preferences"
     },
     "verifyBanner": {
         "message": "Please verify your email address ({{email}}) to secure your account.",

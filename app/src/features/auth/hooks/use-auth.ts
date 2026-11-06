@@ -1,3 +1,4 @@
+import { Features } from "@/config/features";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuthStore } from "@/stores/auth";
@@ -57,7 +58,7 @@ export function useSignup() {
         mutationFn: (data: SignUpDto) => signUp({ ...data, timezone: data.timezone ?? browserTimezone() }),
         onSuccess: (session) => {
             onAuthenticated(session);
-            toast({ title: tr("auth:toasts.accountCreated.title"), description: tr("auth:toasts.accountCreated.description"), duration: 3000 });
+            toast({ title: tr("auth:toasts.accountCreated.title"), description: Features.emailVerification ? tr("auth:toasts.accountCreated.description") : undefined, duration: 3000 });
         },
         onError: (error: Error) => {
             toast({ title: tr("auth:toasts.signUpFailed"), description: error.message, duration: 4000, variant: "error" });

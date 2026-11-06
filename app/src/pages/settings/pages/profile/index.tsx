@@ -14,6 +14,7 @@ import { usePageMetadata } from "@/hooks/use-page-metadata";
 import { useAuthStore } from "@/stores/auth";
 import { browserTimezone } from "@/lib/date";
 import { TimezoneOptions } from "@/config/constants/dropdowns/timezone.options";
+import { Features } from "@/config/features";
 import { useChangePassword, useResendVerification } from "@/features/auth/hooks/use-auth";
 import { useDeleteAccount, useUpdateProfile } from "@/features/account/hooks/use-account";
 import { SettingsSection } from "../../components/settings-section";
@@ -102,7 +103,7 @@ export default function SettingsProfilePage() {
             <SettingsSection title={t("profile.email.title")}>
                 <div className="flex flex-wrap items-center gap-3">
                     <span className="text-sm font-medium">{user?.email}</span>
-                    {user?.email_verified ? (
+                    {!Features.emailVerification ? null : user?.email_verified ? (
                         <span className="inline-flex items-center gap-1 rounded-full bg-success/12 px-2.5 py-0.5 text-xs text-success">
                             <BadgeCheck className="h-3.5 w-3.5" aria-hidden /> {t("profile.email.verified")}
                         </span>

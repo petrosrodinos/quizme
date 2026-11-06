@@ -22,6 +22,8 @@ export interface RequestMeta {
 const RESET_TOKEN_TTL_MS = 60 * 60_000;
 const VERIFY_TOKEN_TTL_MS = 48 * 60 * 60_000;
 const BCRYPT_ROUNDS = 12;
+/** Email verification is temporarily disabled. Set to true to re-enable (and flip Features.emailVerification in the app). */
+const EMAIL_VERIFICATION_ENABLED = false;
 
 export const publicUser = (user: User) => ({
     id: user.id,
@@ -66,13 +68,15 @@ export class AuthService {
             },
         });
         this.audit.log({ userId: user.id, action: AuditActions.USER_REGISTERED, ip: meta.ip });
-        setImmediate(async () => {
-            try {
-                await this.sendVerificationEmail(user);
-            } catch (error) {
-                this.logger.warn(`Verification email failed: ${error?.message}`);
-            }
-        });
+        if (EMAIL_VERIFICATION_ENABLED) {
+            setImmediate(async () => {
+                try {
+                    await this.sendVerificationEmail(user);
+                } catch (error) {
+                    this.logger.warn(`Verification email failed: ${error?.message}`);
+                }
+            });
+        }
         return this.issueSession(user, meta);
     }
 
@@ -225,6 +229,7 @@ export class AuthService {
     }
 
     async sendVerificationEmail(user: Pick<User, 'id' | 'email' | 'email_verified_at'>) {
+        if (!EMAIL_VERIFICATION_ENABLED) return { message: 'Email verification is disabled' };
         if (user.email_verified_at) return { message: 'Email already verified' };
         const token = randomToken();
         await this.prisma.emailVerificationToken.create({

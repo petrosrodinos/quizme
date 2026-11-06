@@ -3,6 +3,7 @@ import { MailWarning, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/stores/auth";
+import { Features } from "@/config/features";
 import { useResendVerification } from "@/features/auth/hooks/use-auth";
 
 export const EmailVerificationBanner = () => {
@@ -10,7 +11,7 @@ export const EmailVerificationBanner = () => {
     const user = useAuthStore((s) => s.user);
     const resend = useResendVerification();
     const [dismissed, setDismissed] = useState(false);
-    if (!user || user.email_verified || dismissed) return null;
+    if (!Features.emailVerification || !user || user.email_verified || dismissed) return null;
     return (
         <div className="flex items-center gap-3 border-b border-amber/30 bg-amber/10 px-4 py-2 text-sm" role="status">
             <MailWarning className="h-4 w-4 shrink-0 text-amber-700 dark:text-amber" aria-hidden />

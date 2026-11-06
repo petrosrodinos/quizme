@@ -46,8 +46,25 @@ export default function ProjectLayout() {
     usePageMetadata({ title: project?.title });
 
     useEffect(() => {
-        navRef.current?.querySelector('[aria-current="page"]')?.scrollIntoView({ block: "nearest", inline: "center" });
+        const nav = navRef.current;
+        const active = nav?.querySelector<HTMLElement>('[aria-current="page"]');
+        if (!nav || !active) return;
+        // Scroll only the tab strip (scrollIntoView would also scroll the page / ancestors).
+        nav.scrollTo({ left: active.offsetLeft - (nav.clientWidth - active.offsetWidth) / 2, behavior: "auto" });
     }, [projectId, project]);
+
+    // Mouse wheels only scroll vertically: map them to horizontal scroll over the tab strip.
+    useEffect(() => {
+        const nav = navRef.current;
+        if (!nav) return;
+        const onWheel = (e: WheelEvent) => {
+            if (Math.abs(e.deltaY) <= Math.abs(e.deltaX) || nav.scrollWidth <= nav.clientWidth) return;
+            e.preventDefault();
+            nav.scrollLeft += e.deltaY;
+        };
+        nav.addEventListener("wheel", onWheel, { passive: false });
+        return () => nav.removeEventListener("wheel", onWheel);
+    }, [project]);
 
     if (isPending) {
         return (
@@ -115,7 +132,7 @@ export default function ProjectLayout() {
                             <Progress value={project.progress} aria-label={t("layout.progressLabel")} />
                         </div>
                     </div>
-                    <nav ref={navRef} aria-label={t("layout.sectionsLabel")} className="scrollbar-none -mx-4 mt-4 flex gap-1 overflow-x-auto px-4 sm:-mx-6 sm:px-6">
+                    <nav ref={navRef} aria-label={t("layout.sectionsLabel")} className="-mx-4 mt-4 flex gap-1 overflow-x-auto overscroll-x-contain px-4 pb-px [scrollbar-width:thin] sm:-mx-6 sm:px-6 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-border">
                         {tabs.map((tab) => (
                             <NavLink
                                 key={tab.to}

@@ -1,0 +1,45 @@
+/*
+ * Structural tweaks for the experimental design systems (see design-systems.ts).
+ * Unlayered on purpose so it wins over Tailwind utilities. Remove with the rest of src/themes.
+ */
+
+/* Shadows: Tailwind inlines shadow values into utilities, so override the utilities themselves.
+   The ring parts are kept so focus rings still show. */
+html[data-ds]:not([data-ds="editorial"]) {
+  --ds-ring: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000);
+}
+html[data-ds]:not([data-ds="editorial"]) :is(.shadow-xs, .shadow-2xs) { box-shadow: var(--ds-shadow-xs), var(--ds-ring); }
+html[data-ds]:not([data-ds="editorial"]) :is(.shadow-sm, .shadow, .hover\:shadow-sm:hover) { box-shadow: var(--ds-shadow-sm), var(--ds-ring); }
+html[data-ds]:not([data-ds="editorial"]) :is(.shadow-md, .hover\:shadow-md:hover) { box-shadow: var(--ds-shadow-md), var(--ds-ring); }
+html[data-ds]:not([data-ds="editorial"]) :is(.shadow-lg, .shadow-xl, .shadow-2xl) { box-shadow: var(--ds-shadow-lg), var(--ds-ring); }
+
+/* Neo-Brutalist: thick outlines, shouty headings, buttons press into their shadow. */
+html[data-ds="brutalist"] .border { border-width: 2px; }
+html[data-ds="brutalist"] :is(h1, h2, h3) { text-transform: uppercase; }
+html[data-ds="brutalist"] :is(button, [role="button"]):active { transform: translate(2px, 2px); }
+
+/* Playful: buttons "press" into their ridge shadow. */
+html[data-ds="playful"] :is(button, [role="button"]):active { transform: translateY(2px); }
+
+/* Aurora Glass: glow background + frosted surfaces. */
+html[data-ds="aurora"] body {
+  background-image:
+    radial-gradient(1100px 600px at 8% -10%, color-mix(in srgb, var(--primary) 28%, transparent), transparent 70%),
+    radial-gradient(900px 500px at 100% 0%, color-mix(in srgb, var(--chart-4) 22%, transparent), transparent 70%);
+  background-attachment: fixed;
+}
+html[data-ds="aurora"] :is(.bg-card, .bg-sidebar, .bg-surface) {
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+html[data-ds="aurora"] .border { border-color: color-mix(in srgb, var(--foreground) 12%, transparent); }
+
+/* Terminal: prompt-style headings and phosphor selection. */
+html[data-ds="terminal"] :is(h1, h2, h3)::before { content: "> "; color: var(--primary); }
+html[data-ds="terminal"] ::selection { background: var(--primary); color: var(--primary-foreground); }
+
+/* Academic: finer link underlines. */
+html[data-ds="academic"] .prose-study a { text-decoration-thickness: 1px; }
+
+/* Swiss: hard black rule under page titles. */
+html[data-ds="swiss"] h1 { border-bottom: 3px solid var(--foreground); padding-bottom: 0.25rem; }

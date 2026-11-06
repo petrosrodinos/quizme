@@ -1,13 +1,15 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "katex/dist/katex.min.css";
+@import "./themes/design-systems.css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Newsreader", "Source Serif 4", Georgia, "Times New Roman", serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  /* Fonts go through --ds-* so design systems can swap them at runtime (see src/themes). */
+  --font-sans: var(--ds-font-sans);
+  --font-display: var(--ds-font-display);
+  --font-mono: var(--ds-font-mono);
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -58,6 +60,12 @@
 
 /* Warm editorial palette — see /DESIGN.MD */
 :root {
+  --ds-font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ds-font-display: "Newsreader", "Source Serif 4", Georgia, "Times New Roman", serif;
+  --ds-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --ds-display-weight: 400;
+  --ds-display-tracking: -0.01em;
+  --ds-heading-tracking: -0.025em;
   --radius: 0.75rem;
   --ink: #141413;
   --background: #faf9f5;
@@ -168,7 +176,8 @@
   h1,
   h2,
   h3 {
-    @apply font-display tracking-tight;
+    @apply font-display;
+    letter-spacing: var(--ds-heading-tracking);
   }
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-ring;
@@ -180,8 +189,8 @@
 
 @utility font-display {
   font-family: var(--font-display);
-  font-weight: 400;
-  letter-spacing: -0.01em;
+  font-weight: var(--ds-display-weight);
+  letter-spacing: var(--ds-display-tracking);
 }
 
 @utility scrollbar-none {
