@@ -10,15 +10,17 @@ import { getSharePermissionLabel, getShareResourceTypeLabel } from "@/config/con
 import { useRevokeShare, useShares } from "@/features/shares/hooks/use-shares";
 import type { Share } from "@/features/shares/interfaces/shares.interfaces";
 import { formatDate } from "@/lib/date";
+import { useTranslation } from "react-i18next";
 
 export const SharesList = ({ projectId }: { projectId: string }) => {
+    const { t } = useTranslation("members");
     const { data, isPending } = useShares(projectId);
     const revoke = useRevokeShare();
     const [target, setTarget] = useState<Share | null>(null);
     const [copiedId, setCopiedId] = useState<string | null>(null);
 
     if (isPending) return <ListSkeleton rows={2} />;
-    if (!data?.length) return <EmptyState compact icon={Link2} title="Nothing shared yet" description="Share links, decks, quizzes and notes from here." />;
+    if (!data?.length) return <EmptyState compact icon={Link2} title={t("sharesList.empty.title")} description={t("sharesList.empty.description")} />;
 
     const copy = async (s: Share) => {
         if (!s.url) return;
@@ -32,28 +34,28 @@ export const SharesList = ({ projectId }: { projectId: string }) => {
             <ul className="divide-y divide-border rounded-xl border border-border bg-card">
                 {data.map((s) => {
                     const Icon = s.target_type === "LINK" ? Link2 : s.target_type === "ORGANIZATION" ? Building2 : User;
-                    const target = s.target_type === "LINK" ? "Anyone with the link" : s.target_type === "ORGANIZATION" ? (s.organization?.name ?? "Organization") : s.target_user ? displayName(s.target_user) : "User";
+                    const target = s.target_type === "LINK" ? t("sharesList.anyoneWithLink") : s.target_type === "ORGANIZATION" ? (s.organization?.name ?? t("sharesList.organization")) : s.target_user ? displayName(s.target_user) : t("sharesList.user");
                     return (
                         <li key={s.id} className="flex flex-wrap items-center gap-3 p-3">
                             <Icon className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
                             <div className="min-w-0 flex-1">
                                 <p className="truncate text-sm font-medium">
-                                    {getShareResourceTypeLabel(s.resource_type)} → {target}
+                                    {t("sharesList.resourceToTarget", { resource: getShareResourceTypeLabel(s.resource_type), target })}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
                                     {formatDate(s.created_at)}
-                                    {s.expires_at ? ` · expires ${formatDate(s.expires_at)}` : ""}
-                                    {s.can_copy ? " · copy allowed" : ""}
-                                    {s.can_reshare ? " · reshare allowed" : ""}
+                                    {s.expires_at ? ` · ${t("sharesList.expires", { date: formatDate(s.expires_at) })}` : ""}
+                                    {s.can_copy ? ` · ${t("sharesList.copyAllowed")}` : ""}
+                                    {s.can_reshare ? ` · ${t("sharesList.reshareAllowed")}` : ""}
                                 </p>
                             </div>
                             <Badge variant="outline">{getSharePermissionLabel(s.permission)}</Badge>
                             {s.url ? (
-                                <Button variant="ghost" size="icon" onClick={() => copy(s)} aria-label="Copy link">
+                                <Button variant="ghost" size="icon" onClick={() => copy(s)} aria-label={t("share.dialog.copyLink")}>
                                     {copiedId === s.id ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                                 </Button>
                             ) : null}
-                            <Button variant="ghost" size="icon" onClick={() => setTarget(s)} aria-label="Revoke share">
+                            <Button variant="ghost" size="icon" onClick={() => setTarget(s)} aria-label={t("sharesList.revokeAria")}>
                                 <Trash2 className="h-4 w-4" />
                             </Button>
                         </li>
@@ -66,9 +68,9 @@ export const SharesList = ({ projectId }: { projectId: string }) => {
                 onConfirm={() => target && revoke.mutate(target.id, { onSuccess: () => setTarget(null) })}
                 isLoading={revoke.isPending}
                 variant="destructive"
-                title="Revoke this share?"
-                description="People using it will lose access immediately."
-                confirmText="Revoke"
+                title={t("sharesList.confirm.title")}
+                description={t("sharesList.confirm.description")}
+                confirmText={t("sharesList.confirm.confirm")}
             />
         </>
     );

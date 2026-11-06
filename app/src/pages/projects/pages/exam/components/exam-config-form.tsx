@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GraduationCap } from "lucide-react";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -23,6 +24,7 @@ interface ExamConfigFormProps {
 const numberField = (v: string) => (v === "" ? 0 : Number(v));
 
 export const ExamConfigForm = ({ topics, defaultTarget, pending, onSubmit }: ExamConfigFormProps) => {
+    const { t } = useTranslation("exam");
     const form = useForm<ExamFormValues>({
         resolver: zodResolver(examFormSchema),
         defaultValues: {
@@ -47,7 +49,7 @@ export const ExamConfigForm = ({ topics, defaultTarget, pending, onSubmit }: Exa
                         name="count"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Questions</FormLabel>
+                                <FormLabel>{t("form.count")}</FormLabel>
                                 <FormControl>
                                     <Input type="number" min={5} max={60} {...field} onChange={(e) => field.onChange(numberField(e.target.value))} />
                                 </FormControl>
@@ -60,7 +62,7 @@ export const ExamConfigForm = ({ topics, defaultTarget, pending, onSubmit }: Exa
                         name="time_limit_min"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Time limit (min)</FormLabel>
+                                <FormLabel>{t("form.timeLimit")}</FormLabel>
                                 <FormControl>
                                     <Input type="number" min={1} max={600} {...field} onChange={(e) => field.onChange(numberField(e.target.value))} />
                                 </FormControl>
@@ -73,7 +75,7 @@ export const ExamConfigForm = ({ topics, defaultTarget, pending, onSubmit }: Exa
                         name="target_score"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Target score (%)</FormLabel>
+                                <FormLabel>{t("form.target")}</FormLabel>
                                 <FormControl>
                                     <Input type="number" min={1} max={100} {...field} onChange={(e) => field.onChange(numberField(e.target.value))} />
                                 </FormControl>
@@ -88,10 +90,10 @@ export const ExamConfigForm = ({ topics, defaultTarget, pending, onSubmit }: Exa
                         name="difficulty"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Difficulty</FormLabel>
+                                <FormLabel>{t("form.difficulty")}</FormLabel>
                                 <Select value={field.value} onValueChange={field.onChange}>
                                     <FormControl>
-                                        <SelectTrigger>
+                                        <SelectTrigger aria-label={t("form.difficulty")}>
                                             <SelectValue />
                                         </SelectTrigger>
                                     </FormControl>
@@ -111,9 +113,9 @@ export const ExamConfigForm = ({ topics, defaultTarget, pending, onSubmit }: Exa
                         name="title"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Title (optional)</FormLabel>
+                                <FormLabel>{t("form.title")}</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="e.g. Mock final #2" {...field} />
+                                    <Input placeholder={t("form.titlePlaceholder")} {...field} />
                                 </FormControl>
                             </FormItem>
                         )}
@@ -124,8 +126,8 @@ export const ExamConfigForm = ({ topics, defaultTarget, pending, onSubmit }: Exa
                     name="types"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Question types</FormLabel>
-                            <ChipMultiSelect label="Question types" options={QuestionTypeFormOptions} value={field.value as QuestionType[]} onChange={field.onChange} />
+                            <FormLabel>{t("form.types")}</FormLabel>
+                            <ChipMultiSelect label={t("form.types")} options={QuestionTypeFormOptions} value={field.value as QuestionType[]} onChange={field.onChange} />
                             <FormMessage />
                         </FormItem>
                     )}
@@ -135,14 +137,14 @@ export const ExamConfigForm = ({ topics, defaultTarget, pending, onSubmit }: Exa
                     name="topic_ids"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Topics</FormLabel>
-                            <FormDescription>Leave empty to cover all material.</FormDescription>
+                            <FormLabel>{t("form.topics")}</FormLabel>
+                            <FormDescription>{t("form.topicsHint")}</FormDescription>
                             <ChipMultiSelect
-                                label="Topics"
-                                options={topics.map((t) => ({ id: t.id, label: t.name, depth: t.depth }))}
+                                label={t("form.topics")}
+                                options={topics.map((topic) => ({ id: topic.id, label: topic.name, depth: topic.depth }))}
                                 value={field.value}
                                 onChange={field.onChange}
-                                emptyHint="No topics detected yet — the exam will cover all material."
+                                emptyHint={t("form.topicsEmpty")}
                             />
                         </FormItem>
                     )}
@@ -154,8 +156,8 @@ export const ExamConfigForm = ({ topics, defaultTarget, pending, onSubmit }: Exa
                         render={({ field }) => (
                             <FormItem className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
                                 <div>
-                                    <FormLabel>Randomize order</FormLabel>
-                                    <FormDescription>Shuffle questions each time.</FormDescription>
+                                    <FormLabel>{t("form.randomize")}</FormLabel>
+                                    <FormDescription>{t("form.randomizeHint")}</FormDescription>
                                 </div>
                                 <FormControl>
                                     <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -169,8 +171,8 @@ export const ExamConfigForm = ({ topics, defaultTarget, pending, onSubmit }: Exa
                         render={({ field }) => (
                             <FormItem className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
                                 <div>
-                                    <FormLabel>Use question bank</FormLabel>
-                                    <FormDescription>Mix existing questions with fresh ones.</FormDescription>
+                                    <FormLabel>{t("form.useBank")}</FormLabel>
+                                    <FormDescription>{t("form.useBankHint")}</FormDescription>
                                 </div>
                                 <FormControl>
                                     <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -180,9 +182,9 @@ export const ExamConfigForm = ({ topics, defaultTarget, pending, onSubmit }: Exa
                     />
                 </div>
                 <div className="flex flex-col-reverse items-start justify-between gap-3 border-t border-border pt-4 sm:flex-row sm:items-center">
-                    <p className="text-xs text-muted-foreground">Exam conditions: no feedback until the end, sounds and celebrations off, answers auto-submit when time runs out.</p>
+                    <p className="text-xs text-muted-foreground">{t("form.conditions")}</p>
                     <Button type="submit" loading={pending} size="lg">
-                        <GraduationCap /> Start exam
+                        <GraduationCap /> {t("form.start")}
                     </Button>
                 </div>
             </form>

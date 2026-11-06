@@ -1,3 +1,4 @@
+import { tr } from "@/lib/i18n-options";
 import axiosInstance from "@/config/api/axios";
 import { ApiRoutes } from "@/config/api/routes";
 import { withApiError } from "@/lib/api-error";
@@ -11,20 +12,20 @@ export const getQuestions = (projectId: string, query: QuestionQuery) =>
                     params: { ...query, missed: query.missed ? "true" : undefined },
                 })
             ).data,
-        "Failed to load questions.",
+        tr("questions:errors.loadList"),
     );
 
 export const getQuestion = (id: string) =>
-    withApiError(async () => (await axiosInstance.get<Question>(ApiRoutes.questions.detail(id))).data, "Failed to load question.");
+    withApiError(async () => (await axiosInstance.get<Question>(ApiRoutes.questions.detail(id))).data, tr("questions:errors.load"));
 
 export const createQuestion = (projectId: string, dto: CreateQuestionDto) =>
-    withApiError(async () => (await axiosInstance.post<Question>(ApiRoutes.questions.by_project(projectId), dto)).data, "Failed to create question.");
+    withApiError(async () => (await axiosInstance.post<Question>(ApiRoutes.questions.by_project(projectId), dto)).data, tr("questions:errors.create"));
 
 export const updateQuestion = (id: string, dto: UpdateQuestionDto) =>
-    withApiError(async () => (await axiosInstance.patch<Question>(ApiRoutes.questions.detail(id), dto)).data, "Failed to update question.");
+    withApiError(async () => (await axiosInstance.patch<Question>(ApiRoutes.questions.detail(id), dto)).data, tr("questions:errors.update"));
 
 export const deleteQuestion = (id: string) =>
-    withApiError(async () => (await axiosInstance.delete(ApiRoutes.questions.detail(id))).data, "Failed to delete question.");
+    withApiError(async () => (await axiosInstance.delete(ApiRoutes.questions.detail(id))).data, tr("questions:errors.delete"));
 
 export const restoreQuestionVersion = (id: string, version: number) =>
-    withApiError(async () => (await axiosInstance.post<Question>(ApiRoutes.questions.restore_version(id, version))).data, "Failed to restore version.");
+    withApiError(async () => (await axiosInstance.post<Question>(ApiRoutes.questions.restore_version(id, version))).data, tr("questions:errors.restore"));

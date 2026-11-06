@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsInt, IsObject, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
+import { IsBoolean, IsIn, IsInt, IsObject, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
 
 export class UpdateProfileDto {
     @ApiProperty({ required: false })
@@ -26,6 +26,7 @@ export class UpdatePreferencesDto {
     @ApiProperty({ required: false }) @IsOptional() @IsBoolean() focus_mode?: boolean;
     @ApiProperty({ required: false }) @IsOptional() @IsBoolean() leaderboard_opt_in?: boolean;
     @ApiProperty({ required: false }) @IsOptional() @IsBoolean() achievement_popups?: boolean;
+    @ApiProperty({ required: false, enum: ['en', 'el'], description: 'UI, email and notification language' }) @IsOptional() @IsIn(['en', 'el']) language?: 'en' | 'el';
 
     @ApiProperty({
         required: false,

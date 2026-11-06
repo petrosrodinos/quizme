@@ -151,6 +151,16 @@
   html {
     -webkit-text-size-adjust: 100%;
   }
+  /* Prevent grid "blowouts": grid items may shrink below their content's min-content width
+     (long Greek labels, nowrap tab lists, code) instead of pushing the page wider than the viewport.
+     :where() keeps specificity at 0 so explicit min-w-* utilities still win. */
+  :where(.grid) > * {
+    min-width: 0;
+  }
+  /* Never allow horizontal page scroll on small screens. */
+  body {
+    overflow-x: clip;
+  }
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings: "cv11", "ss01";

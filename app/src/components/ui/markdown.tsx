@@ -4,6 +4,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { cn } from "@/lib/utils";
+import { tr } from "@/lib/i18n-options";
 
 export interface CitationChip {
     index: number;
@@ -34,7 +35,7 @@ const renderWithCitations = (text: string, citations: CitationChip[]): ReactNode
                 type="button"
                 onClick={cite.onClick}
                 title={cite.label}
-                aria-label={`Source ${idx}: ${cite.label}`}
+                aria-label={tr("ui:markdown.source", { index: idx, label: cite.label })}
                 className="mx-0.5 inline-flex h-4 min-w-4 -translate-y-1 items-center justify-center rounded-full bg-primary/15 px-1 align-baseline text-[10px] font-semibold text-primary hover:bg-primary hover:text-primary-foreground"
             >
                 {idx}

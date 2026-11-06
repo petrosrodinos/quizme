@@ -1,6 +1,8 @@
-/** Rough, privacy-friendly device description from a user-agent string. */
+import { tr } from "@/lib/i18n-options";
+
+/** Rough, privacy-friendly device description from a user-agent string. Brand names are not translated. */
 export const describeUserAgent = (ua: string | null): { browser: string; os: string; mobile: boolean } => {
-    if (!ua) return { browser: "Unknown browser", os: "Unknown device", mobile: false };
+    if (!ua) return { browser: tr("settings:sessions.unknownBrowser"), os: tr("settings:sessions.unknownDevice"), mobile: false };
     const browser = /Edg\//.test(ua)
         ? "Edge"
         : /OPR\//.test(ua)
@@ -11,7 +13,7 @@ export const describeUserAgent = (ua: string | null): { browser: string; os: str
               ? "Chrome"
               : /Safari\//.test(ua)
                 ? "Safari"
-                : "Browser";
+                : tr("settings:sessions.genericBrowser");
     const os = /Windows/.test(ua)
         ? "Windows"
         : /iPhone|iPad/.test(ua)
@@ -22,6 +24,6 @@ export const describeUserAgent = (ua: string | null): { browser: string; os: str
               ? "macOS"
               : /Linux/.test(ua)
                 ? "Linux"
-                : "Unknown OS";
+                : tr("settings:sessions.unknownOs");
     return { browser, os, mobile: /Mobi|Android|iPhone/.test(ua) };
 };

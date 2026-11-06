@@ -10,6 +10,7 @@ import { MemberRoleFormOptions, MemberRoleRank } from "@/config/constants/dropdo
 import { useInviteMember } from "@/features/collaboration/hooks/use-collaboration";
 import type { MemberRole } from "@/features/collaboration/interfaces/collaboration.interfaces";
 import { inviteMemberSchema, type InviteMemberFormValues } from "../validation-schemas/members.schema";
+import { useTranslation } from "react-i18next";
 
 interface InviteMemberDialogProps {
     projectId: string;
@@ -19,6 +20,7 @@ interface InviteMemberDialogProps {
 }
 
 export const InviteMemberDialog = ({ projectId, myRole, open, onOpenChange }: InviteMemberDialogProps) => {
+    const { t } = useTranslation("members");
     const invite = useInviteMember();
     const form = useForm<InviteMemberFormValues>({ resolver: zodResolver(inviteMemberSchema), defaultValues: { email: "", role: "VIEWER" } });
     const myRank = MemberRoleRank[myRole] ?? 1;
@@ -35,8 +37,8 @@ export const InviteMemberDialog = ({ projectId, myRole, open, onOpenChange }: In
         <Dialog open={open} onOpenChange={(o) => !invite.isPending && onOpenChange(o)}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle className="font-display text-2xl font-normal">Invite to project</DialogTitle>
-                    <DialogDescription>They'll get an email with a link to join. Invitations expire after 14 days.</DialogDescription>
+                    <DialogTitle className="font-display text-2xl font-normal">{t("invite.title")}</DialogTitle>
+                    <DialogDescription>{t("invite.description", { count: 14 })}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(submit)} className="space-y-4" noValidate>
@@ -45,9 +47,9 @@ export const InviteMemberDialog = ({ projectId, myRole, open, onOpenChange }: In
                             name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Email</FormLabel>
+                                    <FormLabel>{t("invite.email")}</FormLabel>
                                     <FormControl>
-                                        <Input type="email" autoComplete="email" placeholder="classmate@example.com" autoFocus {...field} />
+                                        <Input type="email" autoComplete="email" placeholder={t("invite.emailPlaceholder")} autoFocus {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -58,10 +60,10 @@ export const InviteMemberDialog = ({ projectId, myRole, open, onOpenChange }: In
                             name="role"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Role</FormLabel>
+                                    <FormLabel>{t("invite.role")}</FormLabel>
                                     <Select value={field.value} onValueChange={field.onChange}>
                                         <FormControl>
-                                            <SelectTrigger aria-label="Role">
+                                            <SelectTrigger aria-label={t("invite.role")}>
                                                 <SelectValue />
                                             </SelectTrigger>
                                         </FormControl>
@@ -80,10 +82,10 @@ export const InviteMemberDialog = ({ projectId, myRole, open, onOpenChange }: In
                         />
                         <DialogFooter>
                             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} disabled={invite.isPending}>
-                                Cancel
+                                {t("common:actions.cancel")}
                             </Button>
                             <Button type="submit" loading={invite.isPending}>
-                                Send invitation
+                                {t("invite.submit")}
                             </Button>
                         </DialogFooter>
                     </form>

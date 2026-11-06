@@ -16,17 +16,19 @@ import { useCopyShared, useJoinSharedProject, useSharedView } from "@/features/s
 import type { CopySharedResult } from "@/features/shares/interfaces/shares.interfaces";
 import { SharedContent } from "./components/shared-content";
 import { CopyToProjectDialog } from "./components/copy-to-project-dialog";
+import { useTranslation } from "react-i18next";
 
 /** Opens shared content either by link token (/shared/:token) or by share id (/shared/id/:shareId). */
 export default function SharedPage() {
     const { token, shareId } = useParams<{ token?: string; shareId?: string }>();
+    const { t } = useTranslation("shared");
     const navigate = useNavigate();
     const by = shareId ? { id: shareId } : { token };
     const { data: view, isPending, isError, error } = useSharedView(by);
     const join = useJoinSharedProject();
     const copy = useCopyShared();
     const [copyOpen, setCopyOpen] = useState(false);
-    usePageMetadata({ title: view?.title ?? "Shared content" });
+    usePageMetadata({ title: view?.title ?? t("page.metaTitle") });
 
     const goToResult = (r: CopySharedResult) => {
         if (r.kind === "quiz" && r.quiz_id) navigate(Routes.projects.quizzes(r.project_id));
@@ -56,7 +58,7 @@ export default function SharedPage() {
     if (isError || !view)
         return (
             <Main width="narrow">
-                <EmptyState icon={LinkIcon} title="Shared content unavailable" description={error?.message ?? "The link may have expired or been revoked."} />
+                <EmptyState icon={LinkIcon} title={t("page.unavailable.title")} description={error?.message ?? t("page.unavailable.description")} />
             </Main>
         );
 
@@ -72,12 +74,12 @@ export default function SharedPage() {
                     <div className="flex flex-wrap gap-2">
                         {isProject && token && !view.is_member ? (
                             <Button loading={join.isPending} onClick={() => join.mutate(token, { onSuccess: (r) => navigate(Routes.projects.detail(r.project_id)) })}>
-                                <LogIn className="mr-2 h-4 w-4" /> Join project
+                                <LogIn className="mr-2 h-4 w-4" /> {t("page.join")}
                             </Button>
                         ) : null}
                         {canCopy ? (
                             <Button variant="outline" loading={isProject && copy.isPending} onClick={() => (isProject ? doCopy() : setCopyOpen(true))}>
-                                <Copy className="mr-2 h-4 w-4" /> {isProject ? "Make my own copy" : "Copy to my project"}
+                                <Copy className="mr-2 h-4 w-4" /> {isProject ? t("page.makeCopy") : t("page.copyToProject")}
                             </Button>
                         ) : null}
                     </div>
@@ -87,11 +89,11 @@ export default function SharedPage() {
                 {view.sharer ? (
                     <span className="inline-flex items-center gap-2">
                         <UserAvatar name={displayName(view.sharer)} src={view.sharer.avatar_url} className="h-6 w-6" />
-                        Shared by {displayName(view.sharer)}
+                        {t("page.sharedBy", { name: displayName(view.sharer) })}
                     </span>
                 ) : null}
                 <Badge variant="outline">{getSharePermissionLabel(view.permission)}</Badge>
-                {view.is_member ? <Badge variant="secondary">You're a member of this project</Badge> : null}
+                {view.is_member ? <Badge variant="secondary">{t("page.youAreMember")}</Badge> : null}
             </div>
             <SharedContent view={view} />
             <CopyToProjectDialog open={copyOpen} onOpenChange={setCopyOpen} isPending={copy.isPending} onConfirm={(pid) => doCopy(pid)} />

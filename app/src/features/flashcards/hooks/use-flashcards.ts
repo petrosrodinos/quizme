@@ -14,6 +14,7 @@ import {
     updateDeck,
     updateFlashcard,
 } from "../services/flashcards.services";
+import { tr } from "@/lib/i18n-options";
 
 export const useDecks = (projectId: string) => useQuery({ queryKey: ["decks", projectId], queryFn: () => getDecks(projectId), enabled: !!projectId });
 
@@ -48,9 +49,9 @@ export const useCreateDeck = () => {
         mutationFn: createDeck,
         onSuccess: () => {
             invalidate();
-            toast({ title: "Deck created", duration: 1800 });
+            toast({ title: tr("flashcards:toasts.deckCreated"), duration: 1800 });
         },
-        onError: (e: Error) => toast({ title: "Could not create deck", description: e.message, variant: "error" }),
+        onError: (e: Error) => toast({ title: tr("flashcards:toasts.deckCreateFailed"), description: e.message, variant: "error" }),
     });
 };
 
@@ -60,9 +61,9 @@ export const useUpdateDeck = () => {
         mutationFn: updateDeck,
         onSuccess: () => {
             invalidate();
-            toast({ title: "Deck updated", duration: 1800 });
+            toast({ title: tr("flashcards:toasts.deckUpdated"), duration: 1800 });
         },
-        onError: (e: Error) => toast({ title: "Could not update deck", description: e.message, variant: "error" }),
+        onError: (e: Error) => toast({ title: tr("flashcards:toasts.deckUpdateFailed"), description: e.message, variant: "error" }),
     });
 };
 
@@ -72,9 +73,9 @@ export const useDeleteDeck = () => {
         mutationFn: deleteDeck,
         onSuccess: () => {
             invalidate();
-            toast({ title: "Deck deleted", duration: 1800 });
+            toast({ title: tr("flashcards:toasts.deckDeleted"), duration: 1800 });
         },
-        onError: (e: Error) => toast({ title: "Could not delete deck", description: e.message, variant: "error" }),
+        onError: (e: Error) => toast({ title: tr("flashcards:toasts.deckDeleteFailed"), description: e.message, variant: "error" }),
     });
 };
 
@@ -84,9 +85,9 @@ export const useCreateFlashcard = () => {
         mutationFn: createFlashcard,
         onSuccess: () => {
             invalidate();
-            toast({ title: "Card added", duration: 1800 });
+            toast({ title: tr("flashcards:toasts.cardAdded"), duration: 1800 });
         },
-        onError: (e: Error) => toast({ title: "Could not add card", description: e.message, variant: "error" }),
+        onError: (e: Error) => toast({ title: tr("flashcards:toasts.cardAddFailed"), description: e.message, variant: "error" }),
     });
 };
 
@@ -96,9 +97,9 @@ export const useUpdateFlashcard = () => {
         mutationFn: updateFlashcard,
         onSuccess: () => {
             invalidate();
-            toast({ title: "Card updated", duration: 1800 });
+            toast({ title: tr("flashcards:toasts.cardUpdated"), duration: 1800 });
         },
-        onError: (e: Error) => toast({ title: "Could not update card", description: e.message, variant: "error" }),
+        onError: (e: Error) => toast({ title: tr("flashcards:toasts.cardUpdateFailed"), description: e.message, variant: "error" }),
     });
 };
 
@@ -108,9 +109,9 @@ export const useDeleteFlashcard = () => {
         mutationFn: deleteFlashcard,
         onSuccess: () => {
             invalidate();
-            toast({ title: "Card deleted", duration: 1800 });
+            toast({ title: tr("flashcards:toasts.cardDeleted"), duration: 1800 });
         },
-        onError: (e: Error) => toast({ title: "Could not delete card", description: e.message, variant: "error" }),
+        onError: (e: Error) => toast({ title: tr("flashcards:toasts.cardDeleteFailed"), description: e.message, variant: "error" }),
     });
 };
 
@@ -118,5 +119,5 @@ export const useDeleteFlashcard = () => {
 export const useReviewFlashcard = () =>
     useMutation({
         mutationFn: reviewFlashcard,
-        onError: (e: Error) => toast({ title: "Could not save rating", description: e.message, variant: "error" }),
+        onError: (e: Error) => toast({ title: tr("flashcards:toasts.ratingFailed"), description: e.message, variant: "error" }),
     });

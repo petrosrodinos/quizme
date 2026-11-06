@@ -8,6 +8,7 @@ import { LanguageOptions } from "@/config/constants/dropdowns/ai-actions/languag
 import { useWordLookup } from "@/features/ai-actions/hooks/use-ai-actions";
 import { TextActions, type TextAction } from "@/features/ai-actions/interfaces/ai-actions.interfaces";
 import type { ReaderSelection } from "../hooks/use-text-selection";
+import { useTranslation } from "react-i18next";
 
 interface WordPopoverProps {
     projectId: string;
@@ -18,6 +19,7 @@ interface WordPopoverProps {
 
 /** Inline dictionary for a word/short phrase: definition, contextual meaning, pronunciation, translation, example, related terms. */
 export const WordPopover = forwardRef<HTMLDivElement, WordPopoverProps>(({ projectId, selection, onAction, onClose }, ref) => {
+    const { t } = useTranslation("reader");
     const [language, setLanguage] = useState<string | undefined>(undefined);
     const { data, isPending, isError, error, refetch } = useWordLookup(projectId, selection.text, selection.context, language);
     const width = 340;
@@ -35,7 +37,7 @@ export const WordPopover = forwardRef<HTMLDivElement, WordPopoverProps>(({ proje
         <div
             ref={ref}
             role="dialog"
-            aria-label={`Definition of ${selection.text}`}
+            aria-label={t("word.label", { word: selection.text })}
             className="fixed z-50 max-h-[min(420px,calc(100vh-16px))] overflow-y-auto rounded-xl border border-border bg-popover p-4 text-sm shadow-xl animate-in fade-in-0 zoom-in-95"
             style={{ top, left: Math.max(8, left), width: Math.min(width, window.innerWidth - 16) }}
         >
@@ -50,10 +52,10 @@ export const WordPopover = forwardRef<HTMLDivElement, WordPopoverProps>(({ proje
                     )}
                 </div>
                 <div className="flex shrink-0 gap-0.5">
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={speak} aria-label="Pronounce">
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={speak} aria-label={t("word.pronounce")}>
                         <Volume2 />
                     </Button>
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose} aria-label="Close">
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose} aria-label={t("word.close")}>
                         <X />
                     </Button>
                 </div>
@@ -69,7 +71,7 @@ export const WordPopover = forwardRef<HTMLDivElement, WordPopoverProps>(({ proje
                 <div className="space-y-2 text-muted-foreground">
                     <p>{error.message}</p>
                     <Button variant="outline" size="sm" onClick={() => refetch()}>
-                        Retry
+                        {t("word.retry")}
                     </Button>
                 </div>
             ) : (
@@ -77,13 +79,13 @@ export const WordPopover = forwardRef<HTMLDivElement, WordPopoverProps>(({ proje
                     <p>{data.definition}</p>
                     {data.contextual_meaning && (
                         <div>
-                            <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">In this context</div>
+                            <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{t("word.inContext")}</div>
                             <p>{data.contextual_meaning}</p>
                         </div>
                     )}
                     {data.translation && (
                         <div>
-                            <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{language}</div>
+                            <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{LanguageOptions.find((l) => l.id === language)?.label ?? language}</div>
                             <p>{data.translation}</p>
                         </div>
                     )}
@@ -94,9 +96,9 @@ export const WordPopover = forwardRef<HTMLDivElement, WordPopoverProps>(({ proje
                     )}
                     {!!data.related_terms?.length && (
                         <div className="flex flex-wrap gap-1">
-                            {data.related_terms.map((t) => (
-                                <Badge key={t} variant="secondary" className="font-normal">
-                                    {t}
+                            {data.related_terms.map((term) => (
+                                <Badge key={term} variant="secondary" className="font-normal">
+                                    {term}
                                 </Badge>
                             ))}
                         </div>
@@ -105,13 +107,13 @@ export const WordPopover = forwardRef<HTMLDivElement, WordPopoverProps>(({ proje
             )}
 
             <div className="mt-4 flex flex-wrap items-center gap-1 border-t border-border pt-3">
-                <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => refetch()} title="Define">
-                    <BookA /> Define
+                <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => refetch()} title={t("word.define")}>
+                    <BookA /> {t("word.define")}
                 </Button>
                 <Select value={language ?? ""} onValueChange={(v) => setLanguage(v)}>
-                    <SelectTrigger className="h-8 w-auto gap-1 border-none px-2 text-xs shadow-none" aria-label="Translate to">
+                    <SelectTrigger className="h-8 w-auto gap-1 border-none px-2 text-xs shadow-none" aria-label={t("word.translateTo")}>
                         <Languages className="h-4 w-4" />
-                        <SelectValue placeholder="Translate" />
+                        <SelectValue placeholder={t("word.translate")} />
                     </SelectTrigger>
                     <SelectContent data-reader-keep="">
                         {LanguageOptions.map((l) => (
@@ -122,13 +124,13 @@ export const WordPopover = forwardRef<HTMLDivElement, WordPopoverProps>(({ proje
                     </SelectContent>
                 </Select>
                 <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => onAction(TextActions.EXPLAIN)}>
-                    <Lightbulb /> Explain
+                    <Lightbulb /> {t("word.explain")}
                 </Button>
                 <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => onAction(TextActions.EXAMPLE)}>
-                    <Quote /> Example
+                    <Quote /> {t("word.example")}
                 </Button>
                 <Button variant="ghost" size="sm" className="h-8 px-2" onClick={() => onAction(TextActions.ASK)}>
-                    <MessageSquareText /> Ask AI
+                    <MessageSquareText /> {t("word.askAi")}
                 </Button>
             </div>
         </div>

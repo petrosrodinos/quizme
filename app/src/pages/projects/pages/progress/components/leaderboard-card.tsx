@@ -8,21 +8,23 @@ import { formatNumber, initials } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { useLeaderboard } from "@/features/gamification/hooks/use-gamification";
 import { ChartCard } from "./progress-charts";
+import { useTranslation } from "react-i18next";
 
 /** Weekly XP leaderboard for shared projects (opt-in; you always see yourself). */
 export const LeaderboardCard: FC<{ projectId: string }> = ({ projectId }) => {
+    const { t } = useTranslation("progress");
     const { data, isPending } = useLeaderboard(projectId);
     return (
-        <ChartCard title="This week's leaderboard" description="Weekly XP among collaborators who opted in. Resets every Monday.">
+        <ChartCard title={t("leaderboard.title")} description={t("leaderboard.description")}>
             {isPending ? (
                 <Skeleton className="h-32 w-full" />
             ) : (
                 <>
                     {!data?.opted_in && (
                         <p className="mb-3 rounded-lg bg-surface-card p-3 text-xs text-muted-foreground">
-                            Others can't see you yet.{" "}
+                            {t("leaderboard.hidden")}{" "}
                             <Link to={Routes.settings.preferences} className="font-medium text-primary hover:underline">
-                                Opt in to leaderboards
+                                {t("leaderboard.optIn")}
                             </Link>
                         </p>
                     )}
@@ -30,7 +32,7 @@ export const LeaderboardCard: FC<{ projectId: string }> = ({ projectId }) => {
                         {(data?.entries ?? []).map((e) => (
                             <li key={e.user_id} className={cn("flex items-center gap-3 rounded-lg px-2 py-1.5", e.is_me && "bg-primary/8")}>
                                 <span className="w-6 text-center text-sm font-medium tabular-nums text-muted-foreground">
-                                    {e.rank === 1 ? <Trophy className="mx-auto h-4 w-4 text-amber" aria-label="First place" /> : e.rank}
+                                    {e.rank === 1 ? <Trophy className="mx-auto h-4 w-4 text-amber" aria-label={t("leaderboard.first")} /> : e.rank}
                                 </span>
                                 <Avatar className="h-7 w-7">
                                     {e.avatar_url && <AvatarImage src={e.avatar_url} alt="" />}
@@ -38,9 +40,9 @@ export const LeaderboardCard: FC<{ projectId: string }> = ({ projectId }) => {
                                 </Avatar>
                                 <span className="min-w-0 flex-1 truncate text-sm">
                                     {e.name}
-                                    {e.is_me && <span className="text-muted-foreground"> (you)</span>}
+                                    {e.is_me && <span className="text-muted-foreground"> {t("leaderboard.you")}</span>}
                                 </span>
-                                <span className="text-sm tabular-nums">{formatNumber(e.xp)} XP</span>
+                                <span className="text-sm tabular-nums">{t("leaderboard.xp", { value: formatNumber(e.xp) })}</span>
                             </li>
                         ))}
                     </ol>

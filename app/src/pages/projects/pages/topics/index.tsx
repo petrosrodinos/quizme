@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Network, Plus, RefreshCw } from "lucide-react";
 import { Main } from "@/components/layout/main";
 import { PageHeader } from "@/components/ui/page-header";
@@ -48,7 +49,8 @@ const LEVEL_COLORS: Record<MasteryLevel, string> = {
 };
 
 export default function ProjectTopicsPage() {
-    usePageMetadata({ title: "Knowledge map" });
+    const { t } = useTranslation("topics");
+    usePageMetadata({ title: t("page.title") });
     const { projectId, can } = useProjectContext();
     const navigate = useNavigate();
     const { reduceMotion } = useFeedback();
@@ -65,10 +67,10 @@ export default function ProjectTopicsPage() {
 
     const nodes = useMemo(() => (weakFirst ? sortWeakFirst(data ?? []) : data ?? []), [data, weakFirst]);
     const all = useMemo(() => walk(data ?? []), [data]);
-    const practised = all.filter((t) => t.attempts > 0);
-    const mastered = all.filter((t) => t.mastered).length;
+    const practised = all.filter((topic) => topic.attempts > 0);
+    const mastered = all.filter((topic) => topic.mastered).length;
     const weakest = [...practised].sort((a, b) => a.mastery - b.mastery)[0];
-    const avg = practised.length ? Math.round(practised.reduce((s, t) => s + t.mastery, 0) / practised.length) : 0;
+    const avg = practised.length ? Math.round(practised.reduce((s, topic) => s + topic.mastery, 0) / practised.length) : 0;
 
     const submitForm = (values: TopicFormValues) => {
         if (!formState) return;
@@ -77,25 +79,25 @@ export default function ProjectTopicsPage() {
         else updateTopic.mutate({ id: formState.topic.id, dto: { name: values.name, description: values.description } }, done);
     };
 
-    const reviewTopic = (t: TopicNode) =>
+    const reviewTopic = (topic: TopicNode) =>
         reviewQuiz.mutate(
-            { mode: QuizModes.REVIEW, title: `Review: ${t.name}`, count: 8, review: { source: "topic", topic_id: t.id, strategy: "new_questions" } },
+            { mode: QuizModes.REVIEW, title: t("quizTitles.review", { name: topic.name }), count: 8, review: { source: "topic", topic_id: topic.id, strategy: "new_questions" } },
             { onSuccess: (q) => navigate(Routes.projects.quiz_take(projectId, q.id)) },
         );
 
     return (
         <Main width="wide">
             <PageHeader
-                title="Knowledge map"
-                description="Topics detected in your material, with your mastery of each. Weak areas are where your next study minutes pay off most."
+                title={t("page.title")}
+                description={t("page.description")}
                 actions={
                     can.edit && (
                         <>
                             <Button variant="outline" onClick={() => rebuild.mutate()} loading={rebuild.isPending}>
-                                <RefreshCw /> Rebuild map
+                                <RefreshCw /> {t("page.rebuild")}
                             </Button>
                             <Button onClick={() => setFormState({ mode: "create" })}>
-                                <Plus /> Add topic
+                                <Plus /> {t("page.add")}
                             </Button>
                         </>
                     )
@@ -107,12 +109,12 @@ export default function ProjectTopicsPage() {
             ) : !all.length ? (
                 <EmptyState
                     icon={Network}
-                    title="No topics yet"
-                    description="Your knowledge map is built automatically after documents finish processing. You can also add topics manually."
+                    title={t("empty.title")}
+                    description={t("empty.description")}
                     action={
                         can.edit && (
                             <Button variant="outline" onClick={() => rebuild.mutate()} loading={rebuild.isPending}>
-                                <RefreshCw /> Build map now
+                                <RefreshCw /> {t("empty.build")}
                             </Button>
                         )
                     }
@@ -120,14 +122,14 @@ export default function ProjectTopicsPage() {
             ) : (
                 <div className="space-y-6">
                     <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-                        <StatCard label="Topics" value={all.length} />
-                        <StatCard label="Mastered" value={mastered} tone="success" />
-                        <StatCard label="Average mastery" value={avg} suffix="%" tone="primary" />
-                        <StatCard label="Weakest" value={weakest ? `${weakest.mastery}%` : "—"} hint={weakest?.name} tone={weakest && weakest.mastery < 50 ? "danger" : "default"} />
+                        <StatCard label={t("stats.topics")} value={all.length} />
+                        <StatCard label={t("stats.mastered")} value={mastered} tone="success" />
+                        <StatCard label={t("stats.average")} value={avg} suffix="%" tone="primary" />
+                        <StatCard label={t("stats.weakest")} value={weakest ? `${weakest.mastery}%` : "—"} hint={weakest?.name} tone={weakest && weakest.mastery < 50 ? "danger" : "default"} />
                     </div>
 
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                        <div className="flex flex-wrap gap-3 text-xs text-muted-foreground" aria-label="Legend">
+                        <div className="flex flex-wrap gap-3 text-xs text-muted-foreground" aria-label={t("legend")}>
                             {MasteryLevelOptions.map((l) => (
                                 <span key={l.id} className="inline-flex items-center gap-1.5">
                                     <span className={`h-2.5 w-2.5 rounded-full ${LEVEL_COLORS[l.id]}`} aria-hidden /> {l.label}
@@ -137,7 +139,7 @@ export default function ProjectTopicsPage() {
                         <div className="flex items-center gap-2">
                             <Switch id="weak-first" checked={weakFirst} onCheckedChange={setWeakFirst} />
                             <Label htmlFor="weak-first" className="text-sm">
-                                Weakest first
+                                {t("weakestFirst")}
                             </Label>
                         </div>
                     </div>
@@ -146,10 +148,10 @@ export default function ProjectTopicsPage() {
                         <TopicTree
                             nodes={nodes}
                             reduceMotion={reduceMotion}
-                            onPractice={(t) => setQuizDefaults({ mode: QuizModes.PRACTICE, topic_ids: [t.id], title: `Practice: ${t.name}` })}
+                            onPractice={(topic) => setQuizDefaults({ mode: QuizModes.PRACTICE, topic_ids: [topic.id], title: t("quizTitles.practice", { name: topic.name }) })}
                             onReview={reviewTopic}
-                            onAddChild={can.edit ? (t) => setFormState({ mode: "create", parent: t }) : undefined}
-                            onRename={can.edit ? (t) => setFormState({ mode: "rename", topic: t }) : undefined}
+                            onAddChild={can.edit ? (topic) => setFormState({ mode: "create", parent: topic }) : undefined}
+                            onRename={can.edit ? (topic) => setFormState({ mode: "rename", topic }) : undefined}
                             onDelete={can.edit ? setToDelete : undefined}
                         />
                     </div>
@@ -160,7 +162,7 @@ export default function ProjectTopicsPage() {
             <TopicFormDialog
                 open={!!formState}
                 onOpenChange={(o) => !o && setFormState(null)}
-                title={formState?.mode === "rename" ? "Rename topic" : formState?.parent ? `Add subtopic to ${formState.parent.name}` : "Add topic"}
+                title={formState?.mode === "rename" ? t("form.renameTitle") : formState?.parent ? t("form.addSubtopicTitle", { name: formState.parent.name }) : t("form.addTitle")}
                 initial={formState?.mode === "rename" ? { name: formState.topic.name, description: formState.topic.description ?? "" } : undefined}
                 pending={createTopic.isPending || updateTopic.isPending}
                 onSubmit={submitForm}
@@ -169,9 +171,9 @@ export default function ProjectTopicsPage() {
                 isOpen={!!toDelete}
                 onClose={() => setToDelete(null)}
                 onConfirm={() => toDelete && deleteTopic.mutate(toDelete.id, { onSuccess: () => setToDelete(null) })}
-                title={`Delete "${toDelete?.name}"?`}
-                description="Subtopics are removed too. Questions and flashcards stay, but lose this topic label."
-                confirmText="Delete"
+                title={t("delete.title", { name: toDelete?.name ?? "" })}
+                description={t("delete.description")}
+                confirmText={t("common:actions.delete")}
                 variant="destructive"
                 isLoading={deleteTopic.isPending}
             />

@@ -3,6 +3,7 @@ import { FileText, UploadCloud, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatBytes } from "@/lib/format";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 interface FileDropzoneProps {
     /** e.g. [".pdf", ".docx", ".txt", ".md"] */
@@ -19,6 +20,7 @@ interface FileDropzoneProps {
 
 /** Multi-file drag & drop picker with extension/size validation (presentational: parent owns state & upload). */
 export const FileDropzone = ({ accept, maxSizeBytes, maxFiles = 20, files, onFilesChange, onRejected, disabled, className, hint }: FileDropzoneProps) => {
+    const { t } = useTranslation("ui");
     const inputRef = useRef<HTMLInputElement>(null);
     const [dragging, setDragging] = useState(false);
 
@@ -28,17 +30,17 @@ export const FileDropzone = ({ accept, maxSizeBytes, maxFiles = 20, files, onFil
             const valid: File[] = [];
             for (const f of Array.from(incoming)) {
                 const ext = `.${f.name.split(".").pop()?.toLowerCase() ?? ""}`;
-                if (!accept.includes(ext)) rejected.push(`${f.name}: unsupported file type`);
-                else if (maxSizeBytes && f.size > maxSizeBytes) rejected.push(`${f.name}: exceeds ${formatBytes(maxSizeBytes)}`);
+                if (!accept.includes(ext)) rejected.push(t("dropzone.unsupported", { name: f.name }));
+                else if (maxSizeBytes && f.size > maxSizeBytes) rejected.push(t("dropzone.tooLarge", { name: f.name, size: formatBytes(maxSizeBytes) }));
                 else if (files.some((x) => x.name === f.name && x.size === f.size)) continue;
                 else valid.push(f);
             }
             const next = [...files, ...valid].slice(0, maxFiles);
-            if (files.length + valid.length > maxFiles) rejected.push(`Only ${maxFiles} files can be uploaded at once`);
+            if (files.length + valid.length > maxFiles) rejected.push(t("dropzone.tooMany", { count: maxFiles }));
             onFilesChange(next);
             if (rejected.length) onRejected?.(rejected);
         },
-        [accept, files, maxFiles, maxSizeBytes, onFilesChange, onRejected],
+        [accept, files, maxFiles, maxSizeBytes, onFilesChange, onRejected, t],
     );
 
     const onDrop = (e: DragEvent) => {
@@ -53,7 +55,7 @@ export const FileDropzone = ({ accept, maxSizeBytes, maxFiles = 20, files, onFil
                 role="button"
                 tabIndex={disabled ? -1 : 0}
                 aria-disabled={disabled}
-                aria-label="Upload files: drop files here or press Enter to browse"
+                aria-label={t("dropzone.aria")}
                 onClick={() => !disabled && inputRef.current?.click()}
                 onKeyDown={(e) => {
                     if ((e.key === "Enter" || e.key === " ") && !disabled) {
@@ -74,9 +76,9 @@ export const FileDropzone = ({ accept, maxSizeBytes, maxFiles = 20, files, onFil
                 )}
             >
                 <UploadCloud className="h-8 w-8 text-primary" aria-hidden />
-                <div className="text-sm font-medium">Drop files here or click to browse</div>
+                <div className="text-sm font-medium">{t("dropzone.title")}</div>
                 <div className="text-xs text-muted-foreground">
-                    {hint ?? `${accept.join(", ")}${maxSizeBytes ? ` · up to ${formatBytes(maxSizeBytes)} each` : ""}`}
+                    {hint ?? `${accept.join(", ")}${maxSizeBytes ? ` · ${t("dropzone.maxEach", { size: formatBytes(maxSizeBytes) })}` : ""}`}
                 </div>
                 <input
                     ref={inputRef}
@@ -103,7 +105,7 @@ export const FileDropzone = ({ accept, maxSizeBytes, maxFiles = 20, files, onFil
                                 size="icon"
                                 className="h-7 w-7"
                                 disabled={disabled}
-                                aria-label={`Remove ${f.name}`}
+                                aria-label={t("dropzone.remove", { name: f.name })}
                                 onClick={() => onFilesChange(files.filter((_, j) => j !== i))}
                             >
                                 <X />

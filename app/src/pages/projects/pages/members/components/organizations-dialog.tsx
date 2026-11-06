@@ -14,6 +14,7 @@ import { getOrgRoleLabel } from "@/config/constants/dropdowns/collaboration/org-
 import { useAddOrganizationMember, useCreateOrganization, useOrganizationMembers, useOrganizations, useRemoveOrganizationMember } from "@/features/organizations/hooks/use-organizations";
 import { cn } from "@/lib/utils";
 import { organizationSchema, orgMemberSchema, type OrganizationFormValues, type OrgMemberFormValues } from "../validation-schemas/members.schema";
+import { useTranslation } from "react-i18next";
 
 interface OrganizationsDialogProps {
     open: boolean;
@@ -22,6 +23,7 @@ interface OrganizationsDialogProps {
 
 /** Lightweight manager for groups/organizations used as share targets. */
 export const OrganizationsDialog = ({ open, onOpenChange }: OrganizationsDialogProps) => {
+    const { t } = useTranslation("members");
     const orgs = useOrganizations();
     const [selected, setSelected] = useState<string | null>(null);
     const members = useOrganizationMembers(selected);
@@ -41,8 +43,8 @@ export const OrganizationsDialog = ({ open, onOpenChange }: OrganizationsDialogP
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl">
                 <DialogHeader>
-                    <DialogTitle className="font-display text-2xl font-normal">Organizations & groups</DialogTitle>
-                    <DialogDescription>Create study groups or classes, then share content with everyone in them at once.</DialogDescription>
+                    <DialogTitle className="font-display text-2xl font-normal">{t("orgs.title")}</DialogTitle>
+                    <DialogDescription>{t("orgs.description")}</DialogDescription>
                 </DialogHeader>
                 <Form {...orgForm}>
                     <form
@@ -56,23 +58,23 @@ export const OrganizationsDialog = ({ open, onOpenChange }: OrganizationsDialogP
                             render={({ field }) => (
                                 <FormItem className="flex-1">
                                     <FormControl>
-                                        <Input placeholder="New group name, e.g. Biology study group" aria-label="New organization name" {...field} />
+                                        <Input placeholder={t("orgs.namePlaceholder")} aria-label={t("orgs.nameAria")} {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
                         <Button type="submit" loading={createOrg.isPending}>
-                            Create
+                            {t("common:actions.create")}
                         </Button>
                     </form>
                 </Form>
                 <div className="grid gap-4 sm:grid-cols-[220px_1fr]">
-                    <nav aria-label="Your organizations" className="space-y-1">
+                    <nav aria-label={t("orgs.yourOrganizations")} className="space-y-1">
                         {orgs.isPending ? (
                             <ListSkeleton rows={2} />
                         ) : !orgs.data?.length ? (
-                            <p className="text-sm text-muted-foreground">You're not in any organization yet.</p>
+                            <p className="text-sm text-muted-foreground">{t("orgs.none")}</p>
                         ) : (
                             orgs.data.map((o) => (
                                 <button
@@ -112,14 +114,14 @@ export const OrganizationsDialog = ({ open, onOpenChange }: OrganizationsDialogP
                                             render={({ field }) => (
                                                 <FormItem className="flex-1">
                                                     <FormControl>
-                                                        <Input type="email" placeholder="member@example.com" aria-label="Member email" {...field} />
+                                                        <Input type="email" placeholder={t("orgs.memberEmailPlaceholder")} aria-label={t("orgs.memberEmailAria")} {...field} />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
                                         <Button type="submit" variant="outline" loading={addMember.isPending}>
-                                            Add
+                                            {t("common:actions.add")}
                                         </Button>
                                     </form>
                                 </Form>
@@ -140,7 +142,7 @@ export const OrganizationsDialog = ({ open, onOpenChange }: OrganizationsDialogP
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
-                                                    aria-label={`Remove ${displayName(m.user)}`}
+                                                    aria-label={t("orgs.removeAria", { name: displayName(m.user) })}
                                                     onClick={() => removeMember.mutate({ id: current.id, userId: m.user.id })}
                                                     disabled={removeMember.isPending}
                                                 >

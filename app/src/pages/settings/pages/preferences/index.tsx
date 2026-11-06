@@ -1,4 +1,5 @@
-import { Volume2 } from "lucide-react";
+import { Languages, Volume2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -7,8 +8,10 @@ import { usePageMetadata } from "@/hooks/use-page-metadata";
 import { useTheme } from "@/hooks/use-theme";
 import { useFeedback } from "@/hooks/use-feedback";
 import { usePreferencesStore } from "@/stores/preferences";
+import { changeLanguage, currentLanguage, type SupportedLanguage } from "@/i18n";
+import { LanguageOptions } from "@/config/constants/dropdowns/shared/language.options";
 import { PreferenceToggleOptions, SoundPreviewOptions, ThemeOptions } from "@/config/constants/dropdowns/preferences/preference.options";
-import { usePreferences, useUpdatePreferences } from "@/features/preferences/hooks/use-preferences";
+import { usePreferences, useSyncLanguageChoice, useUpdatePreferences } from "@/features/preferences/hooks/use-preferences";
 import type { UpdatePreferencesDto, UserPreferences } from "@/features/preferences/interfaces/preferences.interfaces";
 import { SettingsSection, ToggleRow } from "../../components/settings-section";
 import { AiUsageCard } from "./components/ai-usage-card";
@@ -16,14 +19,22 @@ import { AiUsageCard } from "./components/ai-usage-card";
 type BoolKey = keyof typeof PreferenceToggleOptions;
 
 export default function SettingsPreferencesPage() {
-    usePageMetadata({ title: "Preferences" });
+    const { t, i18n } = useTranslation("settings");
+    usePageMetadata({ title: t("preferences.pageTitle") });
     const { isPending } = usePreferences();
     const prefs = usePreferencesStore();
     const update = useUpdatePreferences({ silent: true });
+    const syncLanguage = useSyncLanguageChoice();
     const { theme, setTheme } = useTheme();
     const { play } = useFeedback();
+    const language = currentLanguage(i18n.resolvedLanguage);
 
     const set = (dto: UpdatePreferencesDto) => update.mutate(dto);
+    const onLanguageChange = (value: string) => {
+        const lng = value as SupportedLanguage;
+        void changeLanguage(lng);
+        syncLanguage(lng);
+    };
     const toggle = (key: BoolKey, disabled = false) => (
         <ToggleRow
             key={key}
@@ -46,24 +57,44 @@ export default function SettingsPreferencesPage() {
 
     return (
         <div className="space-y-6">
-            <SettingsSection title="Focus" description="Gamification should never get in the way of serious study.">
+            <SettingsSection title={t("preferences.language.title")} description={t("preferences.language.description")}>
+                <div className="flex items-center justify-between gap-4">
+                    <label htmlFor="language-select" className="inline-flex items-center gap-2 text-sm font-medium">
+                        <Languages className="h-4 w-4" aria-hidden /> {t("common:language.label")}
+                    </label>
+                    <Select value={language} onValueChange={onLanguageChange}>
+                        <SelectTrigger id="language-select" className="w-44">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {LanguageOptions.map((o) => (
+                                <SelectItem key={o.id} value={o.id} lang={o.id}>
+                                    {o.nativeName}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+            </SettingsSection>
+
+            <SettingsSection title={t("preferences.focus.title")} description={t("preferences.focus.description")}>
                 <div className="divide-y divide-border">{toggle("focus_mode")}</div>
             </SettingsSection>
 
-            <SettingsSection title="Sound" description="Short, gentle sounds generated in your browser. Sounds are always off during exam simulations.">
+            <SettingsSection title={t("preferences.sound.title")} description={t("preferences.sound.description")}>
                 <div className="divide-y divide-border">
                     <ToggleRow
                         id="pref-sound_enabled"
-                        label="Sound effects"
-                        description="Master switch for all sounds"
+                        label={t("preferences.sound.master")}
+                        description={t("preferences.sound.masterDescription")}
                         control={<Switch id="pref-sound_enabled" checked={prefs.sound_enabled} onCheckedChange={(c) => set({ sound_enabled: c })} />}
                     />
                     <div className="py-3">
                         <label htmlFor="pref-volume" className="mb-2 flex items-center justify-between text-sm font-medium">
                             <span className="inline-flex items-center gap-2">
-                                <Volume2 className="h-4 w-4" aria-hidden /> Volume
+                                <Volume2 className="h-4 w-4" aria-hidden /> {t("preferences.sound.volume")}
                             </span>
-                            <span className="tabular-nums text-muted-foreground">{prefs.volume}%</span>
+                            <span className="tabular-nums text-muted-foreground">{t("common:units.percent", { value: prefs.volume })}</span>
                         </label>
                         <input
                             id="pref-volume"
@@ -83,7 +114,7 @@ export default function SettingsPreferencesPage() {
                     {toggle("sound_celebrations", !prefs.sound_enabled)}
                     {toggle("sound_timers", !prefs.sound_enabled)}
                     <div className="pt-3">
-                        <div className="mb-2 text-xs text-muted-foreground">Preview</div>
+                        <div className="mb-2 text-xs text-muted-foreground">{t("preferences.sound.preview")}</div>
                         <div className="flex flex-wrap gap-2">
                             {SoundPreviewOptions.map((s) => (
                                 <Button key={s.id} size="sm" variant="outline" disabled={!prefs.sound_enabled || prefs.focus_mode} onClick={() => play(s.id, { combo: 3 })}>
@@ -95,7 +126,7 @@ export default function SettingsPreferencesPage() {
                 </div>
             </SettingsSection>
 
-            <SettingsSection title="Motion & feedback">
+            <SettingsSection title={t("preferences.motion")}>
                 <div className="divide-y divide-border">
                     {toggle("animations_enabled")}
                     {toggle("haptics_enabled")}
@@ -103,23 +134,23 @@ export default function SettingsPreferencesPage() {
                 </div>
             </SettingsSection>
 
-            <SettingsSection title="Social">
+            <SettingsSection title={t("preferences.social")}>
                 <div className="divide-y divide-border">{toggle("leaderboard_opt_in")}</div>
             </SettingsSection>
 
-            <SettingsSection title="Appearance">
+            <SettingsSection title={t("preferences.appearance")}>
                 <div className="flex items-center justify-between gap-4">
                     <label htmlFor="theme-select" className="text-sm font-medium">
-                        Theme
+                        {t("preferences.themeLabel")}
                     </label>
                     <Select value={theme} onValueChange={(v) => setTheme(v as "light" | "dark" | "system")}>
                         <SelectTrigger id="theme-select" className="w-44">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                            {ThemeOptions.map((t) => (
-                                <SelectItem key={t.id} value={t.id}>
-                                    {t.label}
+                            {ThemeOptions.map((o) => (
+                                <SelectItem key={o.id} value={o.id}>
+                                    {o.label}
                                 </SelectItem>
                             ))}
                         </SelectContent>

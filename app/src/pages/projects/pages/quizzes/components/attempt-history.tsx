@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { History } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -19,30 +20,31 @@ interface AttemptHistoryProps {
 const scoreTone = (p: number) => (p >= 80 ? "text-success" : p >= 60 ? "text-warning" : "text-destructive");
 
 export const AttemptHistory = ({ projectId, targetScore }: AttemptHistoryProps) => {
+    const { t } = useTranslation("quizzes");
     const { data, isPending } = useAttemptHistory(projectId, { limit: 100 });
     if (isPending) return <ListSkeleton rows={5} />;
-    if (!data?.length) return <EmptyState icon={History} title="No attempts yet" description="Complete a quiz to start tracking your progress over time." compact />;
+    if (!data?.length) return <EmptyState icon={History} title={t("history.emptyTitle")} description={t("history.emptyDescription")} compact />;
     const chronological = [...data].reverse();
     return (
         <div className="space-y-6">
             <div className="rounded-xl border border-border bg-card p-4">
-                <div className="mb-2 text-sm font-medium">Score over time</div>
+                <div className="mb-2 text-sm font-medium">{t("history.scoreOverTime")}</div>
                 <ScoreHistoryChart points={chronological.map((a, i) => ({ label: `#${i + 1}`, percentage: a.percentage }))} target={targetScore} />
             </div>
             <div className="overflow-x-auto rounded-xl border border-border bg-card">
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Quiz</TableHead>
-                            <TableHead className="text-right">Attempt</TableHead>
-                            <TableHead>Date</TableHead>
-                            <TableHead className="text-right">Score</TableHead>
+                            <TableHead>{t("history.columns.quiz")}</TableHead>
+                            <TableHead className="text-right">{t("history.columns.attempt")}</TableHead>
+                            <TableHead>{t("history.columns.date")}</TableHead>
+                            <TableHead className="text-right">{t("history.columns.score")}</TableHead>
                             <TableHead className="text-right">%</TableHead>
-                            <TableHead className="text-right">Correct</TableHead>
-                            <TableHead className="text-right">Incorrect</TableHead>
-                            <TableHead className="text-right">Time</TableHead>
-                            <TableHead className="text-right">Difficulty</TableHead>
-                            <TableHead>Missed</TableHead>
+                            <TableHead className="text-right">{t("history.columns.correct")}</TableHead>
+                            <TableHead className="text-right">{t("history.columns.incorrect")}</TableHead>
+                            <TableHead className="text-right">{t("history.columns.time")}</TableHead>
+                            <TableHead className="text-right">{t("history.columns.difficulty")}</TableHead>
+                            <TableHead>{t("history.columns.missed")}</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>

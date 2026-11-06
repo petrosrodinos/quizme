@@ -1,0 +1,135 @@
+{
+  "list": {
+    "title": "Study rooms",
+    "description": "Study together in real time — chat, share a focus timer, take notes and play multiplayer quizzes.",
+    "newRoom": "New room",
+    "filterByProject": "Filter by project",
+    "allProjects": "All projects",
+    "empty": {
+      "title": "No open rooms",
+      "description": "Start a room and invite your project members to study together."
+    },
+    "createRoom": "Create a room",
+    "createProjectFirst": "Create a project first",
+    "online_one": "{{count}} online",
+    "online_other": "{{count}} online",
+    "quiet": "Quiet",
+    "active": "Active {{time}}"
+  },
+  "create": {
+    "title": "New study room",
+    "description": "Project members can join to chat, run a shared timer and play quizzes together.",
+    "project": "Project",
+    "chooseProject": "Choose a project",
+    "name": "Room name",
+    "namePlaceholder": "Evening revision",
+    "submit": "Create room",
+    "validation": {
+      "project": "Choose a project",
+      "name": "Give the room a name"
+    }
+  },
+  "detail": {
+    "metaTitle": "Study room",
+    "toasts": {
+      "gameStarting": {
+        "title": "A multiplayer quiz is starting",
+        "description": "Join the lobby from the banner."
+      },
+      "timerFinished": {
+        "title": "Timer finished",
+        "description": "Time for a break — or the next focus block."
+      }
+    },
+    "closed": "This room was closed",
+    "backToRooms": "Back to rooms",
+    "cantOpen": "Can't open this room",
+    "connecting": "Connecting to the live room…",
+    "allRooms": "All rooms",
+    "muteSounds": "Mute room sounds",
+    "enableSounds": "Enable room sounds",
+    "multiplayer": "Multiplayer quiz",
+    "closeRoom": "Close room",
+    "reconnecting": "Reconnecting… changes will sync when you're back online.",
+    "banner": {
+      "lobbyOpen": "A multiplayer quiz lobby is open.",
+      "inProgress": "A multiplayer quiz is in progress.",
+      "joinLobby": "Join lobby",
+      "watchJoin": "Watch / join"
+    },
+    "peopleAria": "People in the room",
+    "hereNow_one": "{{count}} here now",
+    "hereNow_other": "{{count}} here now",
+    "closeConfirm": {
+      "title": "Close this room?",
+      "description": "Everyone will be disconnected. Chat history is kept with the project."
+    }
+  },
+  "chat": {
+    "aria": "Room chat",
+    "empty": "Say hi! Ask the AI tutor with <code>@tutor your question</code>.",
+    "aiTutor": "AI tutor",
+    "you": "You",
+    "placeholder": "Message the room… (@tutor to ask the AI)",
+    "messageAria": "Message",
+    "send": "Send message"
+  },
+  "notes": {
+    "title": "Shared notes",
+    "saveFailed": "Notes not saved",
+    "placeholder": "Everyone in the room can edit these notes…"
+  },
+  "timer": {
+    "title": "Shared timer",
+    "modes": {
+      "focus": "Focus",
+      "break": "Break"
+    },
+    "ringLabel": "{{mode}} timer",
+    "paused": "Paused",
+    "ready": "Ready",
+    "minutes": "Minutes",
+    "resume": "Resume",
+    "start": "Start",
+    "pause": "Pause",
+    "reset": "Reset timer"
+  },
+  "game": {
+    "title": "Multiplayer quiz",
+    "description": "Everyone answers at the same time; faster correct answers earn more points.",
+    "quiz": "Quiz",
+    "loadingQuizzes": "Loading quizzes…",
+    "chooseQuiz": "Choose a quiz",
+    "generateNew_one": "Generate a new {{count}}-question quiz",
+    "generateNew_other": "Generate a new {{count}}-question quiz",
+    "timePerQuestion": "Time per question",
+    "speedSeconds_one": "{{count}} second",
+    "speedSeconds_other": "{{count}} seconds",
+    "generating": "Generating questions from your material…",
+    "generationFailed": "Generation failed. Try another quiz.",
+    "openLobby": "Open lobby",
+    "generatedQuizTitle": "Multiplayer quiz"
+  },
+  "toasts": {
+    "created": "Room created",
+    "createFailed": "Could not create room",
+    "closed": "Room closed",
+    "closeFailed": "Could not close room",
+    "messageFailed": "Message not sent",
+    "timerFailed": "Timer update failed"
+  },
+  "errors": {
+    "loadRooms": "Failed to load study rooms.",
+    "loadRoom": "Failed to load the room.",
+    "create": "Failed to create room.",
+    "close": "Failed to close room."
+  },
+  "serverErrors": {
+    "notFound": "This room doesn't exist or was closed.",
+    "emptyMessage": "Write a message first.",
+    "onlyCreatorClose": "Only the person who created this room can close it.",
+    "offline": "You're offline. Reconnecting to the live room…",
+    "timeout": "The room didn't respond in time. Please try again.",
+    "unauthorized": "Your session has expired. Please sign in again."
+  }
+}

@@ -1,3 +1,4 @@
+import { tr } from "@/lib/i18n-options";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import {
@@ -63,10 +64,10 @@ export const useCreateQuiz = (projectId: string, options: { silent?: boolean } =
         mutationFn: (dto: CreateQuizDto) => createQuiz(projectId, dto),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["quizzes"] });
-            if (!options.silent) toast({ title: "Generating your quiz", description: "Questions are being prepared from your material.", duration: 2500 });
+            if (!options.silent) toast({ title: tr("quizzes:toasts.generating"), description: tr("quizzes:toasts.generatingDescription"), duration: 2500 });
         },
         onError: (error: Error) => {
-            toast({ title: "Could not create quiz", description: error.message, variant: "error" });
+            toast({ title: tr("quizzes:toasts.createFailed"), description: error.message, variant: "error" });
         },
     });
 };
@@ -77,9 +78,9 @@ export const useDeleteQuiz = () => {
         mutationFn: deleteQuiz,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["quizzes"] });
-            toast({ title: "Quiz deleted", duration: 2000 });
+            toast({ title: tr("quizzes:toasts.deleted"), duration: 2000 });
         },
-        onError: (error: Error) => toast({ title: "Could not delete quiz", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("quizzes:toasts.deleteFailed"), description: error.message, variant: "error" }),
     });
 };
 
@@ -89,9 +90,9 @@ export const useShareQuiz = () => {
         mutationFn: shareQuiz,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["quizzes"] });
-            toast({ title: "Quiz shared", description: "Project members can now take this quiz and compare results.", duration: 2500 });
+            toast({ title: tr("quizzes:toasts.shared"), description: tr("quizzes:toasts.sharedDescription"), duration: 2500 });
         },
-        onError: (error: Error) => toast({ title: "Could not share quiz", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("quizzes:toasts.shareFailed"), description: error.message, variant: "error" }),
     });
 };
 
@@ -103,7 +104,7 @@ export const useStartAttempt = () => {
             queryClient.setQueryData(["attempt", data.attempt.id], data);
             queryClient.invalidateQueries({ queryKey: ["quizzes"] });
         },
-        onError: (error: Error) => toast({ title: "Could not start quiz", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("quizzes:toasts.startFailed"), description: error.message, variant: "error" }),
     });
 };
 
@@ -115,7 +116,7 @@ export const useSubmitAnswer = (attemptId: string) => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["topics"] });
         },
-        onError: (error: Error) => toast({ title: "Answer not saved", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("quizzes:toasts.answerFailed"), description: error.message, variant: "error" }),
     });
 };
 
@@ -129,8 +130,8 @@ export const useCompleteAttempt = () => {
             queryClient.invalidateQueries({ queryKey: ["quizzes"] });
             queryClient.invalidateQueries({ queryKey: ["quiz-review"] });
             queryClient.invalidateQueries({ queryKey: ["attempt", data.attempt.id] });
-            toast({ title: "Quiz submitted", duration: 1500 });
+            toast({ title: tr("quizzes:toasts.submitted"), duration: 1500 });
         },
-        onError: (error: Error) => toast({ title: "Could not submit quiz", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("quizzes:toasts.submitFailed"), description: error.message, variant: "error" }),
     });
 };

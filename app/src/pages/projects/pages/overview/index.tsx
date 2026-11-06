@@ -9,20 +9,21 @@ import { Progress } from "@/components/ui/progress";
 import { usePageMetadata } from "@/hooks/use-page-metadata";
 import { Routes } from "@/routes/routes";
 import { daysUntil, formatDate } from "@/lib/date";
-import { pluralize } from "@/lib/format";
 import { useProjectOverview } from "@/features/projects/hooks/use-projects";
 import { useCreateQuickQuiz } from "@/features/quiz-generation/hooks/use-quiz-generation";
 import { QuickQuizModes } from "@/features/quiz-generation/services/quiz-generation.services";
 import { useProjectContext } from "../../hooks/use-project-context";
 import { ReadinessCard } from "./components/readiness-card";
 import { RecentAttemptsChart } from "./components/recent-attempts-chart";
+import { useTranslation } from "react-i18next";
 
 /** Recommendation links from the API are in-app paths; only follow internal ones. */
 const internalLink = (link?: string | null) => (link && link.startsWith("/") && !link.startsWith("//") ? link : null);
 
 export default function ProjectOverviewPage() {
+    const { t } = useTranslation("overview");
     const { project, projectId, can } = useProjectContext();
-    usePageMetadata({ title: `${project.title} · Overview` });
+    usePageMetadata({ title: t("metaTitle", { title: project.title }) });
     const navigate = useNavigate();
     const { data, isPending, isError } = useProjectOverview(projectId);
     const adaptive = useCreateQuickQuiz();
@@ -47,13 +48,13 @@ export default function ProjectOverviewPage() {
                 <div className="mb-6">
                     <EmptyState
                         icon={Upload}
-                        title="Add your study material"
-                        description="Upload PDFs, Word documents, text or Markdown files. QuizMe will process them so you can ask questions, generate quizzes and flashcards."
+                        title={t("empty.title")}
+                        description={t("empty.description")}
                         action={
                             can.contribute ? (
                                 <Button asChild>
                                     <Link to={Routes.projects.documents(projectId)}>
-                                        <Upload /> Upload documents
+                                        <Upload /> {t("empty.action")}
                                     </Link>
                                 </Button>
                             ) : undefined
@@ -63,14 +64,14 @@ export default function ProjectOverviewPage() {
             )}
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <StatCard label="Flashcards due" value={data?.cards_due ?? 0} icon={Layers} tone={(data?.cards_due ?? 0) > 0 ? "primary" : "default"} />
-                <StatCard label="Quiz accuracy" value={data?.quiz_accuracy != null ? Math.round(data.quiz_accuracy) : "—"} suffix={data?.quiz_accuracy != null ? "%" : undefined} icon={BookOpenCheck} />
-                <StatCard label="Study time this week" value={data?.study_time_week_min ?? 0} suffix=" min" icon={Clock} />
+                <StatCard label={t("stats.cardsDue")} value={data?.cards_due ?? 0} icon={Layers} tone={(data?.cards_due ?? 0) > 0 ? "primary" : "default"} />
+                <StatCard label={t("stats.quizAccuracy")} value={data?.quiz_accuracy != null ? Math.round(data.quiz_accuracy) : "—"} suffix={data?.quiz_accuracy != null ? "%" : undefined} icon={BookOpenCheck} />
+                <StatCard label={t("stats.studyTime")} value={data?.study_time_week_min ?? 0} suffix={t("stats.minSuffix")} icon={Clock} />
                 <StatCard
-                    label="Exam"
+                    label={t("stats.exam")}
                     value={examDays != null && examDays >= 0 ? examDays : "—"}
-                    suffix={examDays != null && examDays >= 0 ? (examDays === 1 ? " day" : " days") : undefined}
-                    hint={project.exam_date ? formatDate(project.exam_date) : "No exam date set"}
+                    suffix={examDays != null && examDays >= 0 ? t("stats.daySuffix", { count: examDays }) : undefined}
+                    hint={project.exam_date ? formatDate(project.exam_date) : t("stats.noExamDate")}
                     icon={CalendarDays}
                     tone={examDays != null && examDays >= 0 && examDays <= 7 ? "warning" : "default"}
                 />
@@ -82,7 +83,7 @@ export default function ProjectOverviewPage() {
                         <div className="mb-4 flex items-center gap-2">
                             <Sparkles className="h-4 w-4 text-primary" aria-hidden />
                             <h2 id="today-heading" className="font-display text-xl">
-                                {data?.recommendation?.title ?? "Today's recommended session"}
+                                {data?.recommendation?.title || t("session.title")}
                             </h2>
                         </div>
                         {data?.recommendation?.items?.length ? (
@@ -92,13 +93,13 @@ export default function ProjectOverviewPage() {
                                     return (
                                         <li key={`${item.type}-${i}`} className="flex items-center justify-between gap-3 py-3">
                                             <div className="min-w-0">
-                                                <div className="text-sm font-medium">{item.label}</div>
-                                                <div className="text-xs text-muted-foreground">{item.minutes} min</div>
+                                                <div className="text-sm font-medium">{item.label || t(`session.blocks.${item.type}`)}</div>
+                                                <div className="text-xs text-muted-foreground">{t("session.minutes", { count: item.minutes })}</div>
                                             </div>
                                             {link && (
                                                 <Button asChild variant="ghost" size="sm">
                                                     <Link to={link}>
-                                                        Start <ArrowRight />
+                                                        {t("session.start")} <ArrowRight />
                                                     </Link>
                                                 </Button>
                                             )}
@@ -108,34 +109,34 @@ export default function ProjectOverviewPage() {
                             </ul>
                         ) : (
                             <p className="text-sm text-muted-foreground">
-                                {isError ? "Recommendations are unavailable right now." : "Once your documents are processed, we'll plan a personalised session for you here."}
+                                {isError ? t("session.unavailable") : t("session.pending")}
                             </p>
                         )}
                     </section>
 
                     <section className="rounded-xl border border-border bg-card p-5" aria-labelledby="actions-heading">
                         <h2 id="actions-heading" className="mb-3 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                            Quick actions
+                            {t("actions.title")}
                         </h2>
                         <div className="grid gap-2 sm:grid-cols-2">
                             {can.contribute && (
                                 <Button asChild variant="outline" className="justify-start">
                                     <Link to={Routes.projects.documents(projectId)}>
-                                        <Upload /> Upload material
+                                        <Upload /> {t("actions.upload")}
                                     </Link>
                                 </Button>
                             )}
                             <Button variant="outline" className="justify-start" onClick={startAdaptive} loading={adaptive.isPending}>
-                                <Brain /> Start adaptive quiz
+                                <Brain /> {t("actions.adaptive")}
                             </Button>
                             <Button asChild variant="outline" className="justify-start">
                                 <Link to={Routes.projects.flashcards_review(projectId)}>
-                                    <Layers /> Review flashcards
+                                    <Layers /> {t("actions.review")}
                                 </Link>
                             </Button>
                             <Button asChild variant="outline" className="justify-start">
                                 <Link to={Routes.projects.tutor(projectId)}>
-                                    <MessageCircle /> Ask the tutor
+                                    <MessageCircle /> {t("actions.tutor")}
                                 </Link>
                             </Button>
                         </div>
@@ -145,10 +146,10 @@ export default function ProjectOverviewPage() {
                         <section className="rounded-xl border border-border bg-card p-5" aria-labelledby="attempts-heading">
                             <div className="mb-2 flex items-center justify-between">
                                 <h2 id="attempts-heading" className="font-display text-xl">
-                                    Recent quiz scores
+                                    {t("attempts.title")}
                                 </h2>
                                 <Button asChild variant="link" size="sm" className="px-0">
-                                    <Link to={Routes.projects.progress(projectId)}>All progress</Link>
+                                    <Link to={Routes.projects.progress(projectId)}>{t("attempts.allProgress")}</Link>
                                 </Button>
                             </div>
                             <RecentAttemptsChart attempts={data.recent_attempts} />
@@ -163,18 +164,18 @@ export default function ProjectOverviewPage() {
                         <section className="rounded-xl border border-border bg-card p-5" aria-labelledby="docs-heading">
                             <div className="mb-3 flex items-center justify-between">
                                 <h2 id="docs-heading" className="flex items-center gap-2 text-sm font-medium">
-                                    <FileText className="h-4 w-4 text-muted-foreground" /> Study material
+                                    <FileText className="h-4 w-4 text-muted-foreground" /> {t("docs.title")}
                                 </h2>
                                 <Link to={Routes.projects.documents(projectId)} className="text-xs text-primary hover:underline">
-                                    Manage
+                                    {t("docs.manage")}
                                 </Link>
                             </div>
-                            <Progress value={(docs.ready / Math.max(1, docs.total)) * 100} aria-label="Documents ready" />
+                            <Progress value={(docs.ready / Math.max(1, docs.total)) * 100} aria-label={t("docs.readyLabel")} />
                             <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                                <span>{docs.ready} ready</span>
-                                {docs.processing > 0 && <span className="text-primary">{docs.processing} processing</span>}
-                                {docs.failed > 0 && <span className="text-destructive">{docs.failed} failed</span>}
-                                <span>{pluralize(docs.total, "document")}</span>
+                                <span>{t("docs.ready", { count: docs.ready })}</span>
+                                {docs.processing > 0 && <span className="text-primary">{t("docs.processing", { count: docs.processing })}</span>}
+                                {docs.failed > 0 && <span className="text-destructive">{t("docs.failed", { count: docs.failed })}</span>}
+                                <span>{t("common:count.document", { count: docs.total })}</span>
                             </div>
                         </section>
                     )}
@@ -182,26 +183,26 @@ export default function ProjectOverviewPage() {
                     <section className="rounded-xl border border-border bg-card p-5" aria-labelledby="weak-heading">
                         <div className="mb-3 flex items-center justify-between">
                             <h2 id="weak-heading" className="text-sm font-medium">
-                                Weak topics
+                                {t("weak.title")}
                             </h2>
                             <Link to={Routes.projects.topics(projectId)} className="text-xs text-primary hover:underline">
-                                Knowledge map
+                                {t("weak.map")}
                             </Link>
                         </div>
                         {data?.weak_topics?.length ? (
                             <ul className="space-y-2.5">
-                                {data.weak_topics.map((t) => (
-                                    <li key={t.id}>
+                                {data.weak_topics.map((topic) => (
+                                    <li key={topic.id}>
                                         <div className="mb-1 flex justify-between text-xs">
-                                            <span className="truncate pr-2">{t.name}</span>
-                                            <span className="tabular-nums text-muted-foreground">{Math.round(t.mastery)}%</span>
+                                            <span className="truncate pr-2">{topic.name}</span>
+                                            <span className="tabular-nums text-muted-foreground">{Math.round(topic.mastery)}%</span>
                                         </div>
-                                        <Progress value={t.mastery} aria-label={`${t.name} mastery`} className="h-1.5" />
+                                        <Progress value={topic.mastery} aria-label={t("weak.masteryLabel", { name: topic.name })} className="h-1.5" />
                                     </li>
                                 ))}
                             </ul>
                         ) : (
-                            <p className="text-sm text-muted-foreground">No weak topics detected yet. Keep practising!</p>
+                            <p className="text-sm text-muted-foreground">{t("weak.none")}</p>
                         )}
                     </section>
                 </div>

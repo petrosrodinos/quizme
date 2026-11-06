@@ -1,0 +1,210 @@
+{
+  "types": {
+    "MCQ": "Multiple choice",
+    "MULTI_SELECT": "Multiple select",
+    "TRUE_FALSE": "True / False",
+    "FILL_BLANK": "Fill in the blank",
+    "FREE_TEXT": "Free text",
+    "MATCHING": "Matching",
+    "ORDERING": "Ordering"
+  },
+  "typeDescriptions": {
+    "MCQ": "Pick the single correct answer.",
+    "MULTI_SELECT": "Select every correct answer.",
+    "TRUE_FALSE": "Decide whether the statement is true.",
+    "FILL_BLANK": "Type the missing term.",
+    "FREE_TEXT": "Answer in your own words — graded by AI against your sources.",
+    "MATCHING": "Match each item on the left with its partner.",
+    "ORDERING": "Put the items in the correct order."
+  },
+  "modes": {
+    "PRACTICE": "Practice",
+    "ADAPTIVE": "Adaptive",
+    "REVIEW": "Mistake review",
+    "EXAM": "Exam simulation",
+    "SELECTION": "From selection",
+    "SHARED": "Shared"
+  },
+  "modeDescriptions": {
+    "PRACTICE": "Fresh questions from your material with instant feedback.",
+    "ADAPTIVE": "Adjusts difficulty to your level and targets concepts you keep missing.",
+    "REVIEW": "Practise what you previously got wrong — retry or test the same concepts in new ways.",
+    "EXAM": "Timed, distraction-free conditions. Results only at the end.",
+    "SELECTION": "Questions generated from a highlighted passage.",
+    "SHARED": "A quiz shared with project members."
+  },
+  "quizDifficulty": {
+    "mixed": "Mixed",
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard",
+    "adaptive": "Adaptive"
+  },
+  "questionDifficulty": {
+    "1": "1 · Recall",
+    "2": "2 · Easy",
+    "3": "3 · Medium",
+    "4": "4 · Hard",
+    "5": "5 · Expert"
+  },
+  "origin": {
+    "AI": "AI-generated",
+    "MANUAL": "Manual",
+    "IMPORTED": "Imported"
+  },
+  "generationStatus": {
+    "PENDING": "Queued",
+    "GENERATING": "Generating questions…",
+    "READY": "Ready",
+    "FAILED": "Failed"
+  },
+  "mastery": {
+    "MASTERED": "Mastered (≥ 85%)",
+    "STRONG": "Strong (70–84%)",
+    "DEVELOPING": "Developing (50–69%)",
+    "WEAK": "Weak (< 50%)",
+    "UNPRACTISED": "Not practised"
+  },
+  "reviewStrategy": {
+    "new_questions": {
+      "label": "New questions, same concepts",
+      "description": "Fresh questions that test the ideas you missed from a different angle."
+    },
+    "retry": {
+      "label": "Retry the exact questions",
+      "description": "Answer the questions you got wrong again."
+    }
+  },
+  "filters": {
+    "allTypes": "All types",
+    "anyDifficulty": "Any difficulty",
+    "anySource": "Any source"
+  },
+  "source": {
+    "label": "Source",
+    "page": "page {{page}}"
+  },
+  "evaluation": {
+    "title": "AI evaluation",
+    "completeness": "Completeness {{value}}%",
+    "accuracy": "Accuracy {{value}}%",
+    "clarity": "Clarity {{value}}%",
+    "covered": "Concepts you covered",
+    "missing": "Missing concepts",
+    "incorrect": "Incorrect statements",
+    "expected": "Expected answer",
+    "suggestions": "Suggestions",
+    "verdict": {
+      "correct": "Correct",
+      "partially_correct": "Partially correct",
+      "incorrect": "Incorrect"
+    }
+  },
+  "feedback": {
+    "correct": "Correct!",
+    "correctFixed": "Correct — you fixed a previous mistake!",
+    "partial": "Partially correct ({{percent}}%)",
+    "incorrect": "Not quite."
+  },
+  "generation": {
+    "failedTitle": "We couldn't build this quiz",
+    "failedDescription": "Something went wrong while generating questions.",
+    "backToQuizzes": "Back to quizzes",
+    "startLater": "Back — I'll start it later",
+    "tips": {
+      "grounded": "Questions are grounded in your own uploaded material.",
+      "references": "Every question keeps a reference to the page it came from.",
+      "mistakes": "Wrong answers feed the adaptive engine — mistakes make you stronger.",
+      "explain": "Explaining an answer out loud is one of the best ways to remember it."
+    }
+  },
+  "chart": {
+    "ariaLabel": "Score history: {{points}}",
+    "score": "Score",
+    "target": "Target {{value}}%",
+    "attempt": "Attempt {{number}}"
+  },
+  "create": {
+    "title": "New quiz",
+    "tabs": {
+      "PRACTICE": "Practice",
+      "ADAPTIVE": "Adaptive",
+      "REVIEW": "Review"
+    },
+    "titleLabel": "Title (optional)",
+    "titlePlaceholder": "Auto-generated if empty",
+    "count": "Questions",
+    "strategy": "Review strategy",
+    "types": "Question types",
+    "difficulty": "Difficulty",
+    "topicLimit": "Limit to a topic (optional, pick one)",
+    "topics": "Topics (optional)",
+    "topicsAria": "Topics",
+    "topicsEmpty": "Topics appear once your documents have been processed.",
+    "documents": "Documents (optional)",
+    "documentsAria": "Documents",
+    "share": "Share with project members",
+    "shareHint": "Everyone can take it and compare results on a leaderboard.",
+    "submit": "Generate quiz"
+  },
+  "inputs": {
+    "answerOptions": "Answer options",
+    "selectAll_one": "Select all that apply ({{count}} correct).",
+    "selectAll_other": "Select all that apply ({{count}} correct).",
+    "trueOrFalse": "True or false",
+    "true": "True",
+    "false": "False",
+    "fillPlaceholder": "Type the missing term…",
+    "yourAnswer": "Your answer",
+    "acceptedAnswer": "Accepted answer:",
+    "alsoAccepted": "(also: {{answers}})",
+    "freePlaceholder": "Write your answer in your own words…",
+    "freeCounter": "{{count}}/{{max}} · Ctrl+Enter to submit",
+    "correctMatch": "Correct: {{answer}}",
+    "matchingHint": "Select an item on the left, then its match on the right. Select a matched item again to change it.",
+    "items": "Items",
+    "matched": "matched",
+    "matches": "Matches",
+    "matchedCount": "{{done}}/{{total}} matched",
+    "itemsToOrder": "Items to order",
+    "moveUp": "Move “{{item}}” up",
+    "moveDown": "Move “{{item}}” down"
+  },
+  "player": {
+    "notFound": "Quiz not found",
+    "couldNotStart": "Could not start this quiz",
+    "noQuestions": "This quiz has no questions",
+    "exit": "Exit quiz",
+    "progress": "Quiz progress",
+    "explanation": "Explanation",
+    "grading": "Grading…",
+    "checking": "Checking…",
+    "check": "Check answer",
+    "seeResults": "See results",
+    "nextQuestion": "Next question",
+    "keyboardHint": "Press Enter to check / continue · number keys pick options"
+  },
+  "exam": {
+    "mode": "Exam mode",
+    "question": "Question {{number}}",
+    "of": "of {{total}}",
+    "flagged": "Flagged",
+    "flag": "Flag for review",
+    "submit": "Submit exam",
+    "answeredCount": "{{done}}/{{total}} answered",
+    "confirmTitle": "Submit your exam?",
+    "confirmUnanswered_one": "You have {{count}} unanswered question. Unanswered questions count as incorrect.",
+    "confirmUnanswered_other": "You have {{count}} unanswered questions. Unanswered questions count as incorrect.",
+    "confirmUnansweredFlagged_one": "You have {{count}} unanswered question and {{flagged}} flagged. Unanswered questions count as incorrect.",
+    "confirmUnansweredFlagged_other": "You have {{count}} unanswered questions and {{flagged}} flagged. Unanswered questions count as incorrect.",
+    "confirmFlagged_one": "You still have {{count}} flagged question. Submit anyway?",
+    "confirmFlagged_other": "You still have {{count}} flagged questions. Submit anyway?",
+    "confirmFinal": "You can't change your answers after submitting.",
+    "timeRemaining": "Time remaining {{time}}",
+    "navigator": "Question navigator",
+    "legend": {
+      "answered": "Answered",
+      "unanswered": "Unanswered"
+    }
+  }
+}

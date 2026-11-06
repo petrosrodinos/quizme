@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Bell } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { NotificationItem } from "@/components/ui/notification-item";
@@ -14,6 +15,7 @@ const isInternal = (link?: string | null) => !!link && link.startsWith("/") && !
 
 /** Header bell with a popover of the latest notifications; live via realtime query invalidation. */
 export const NotificationBell = () => {
+    const { t } = useTranslation("layout");
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     const { data: count } = useUnreadNotificationCount();
@@ -25,7 +27,7 @@ export const NotificationBell = () => {
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-                <Button variant="ghost" size="icon" className="relative" aria-label={unread ? `Notifications (${unread} unread)` : "Notifications"}>
+                <Button variant="ghost" size="icon" className="relative" aria-label={unread ? t("bell.ariaUnread", { count: unread }) : t("bell.title")}>
                     <Bell />
                     {unread > 0 && (
                         <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground" aria-hidden>
@@ -36,9 +38,9 @@ export const NotificationBell = () => {
             </PopoverTrigger>
             <PopoverContent align="end" className="w-[min(92vw,380px)] p-0">
                 <div className="flex items-center justify-between border-b border-border px-4 py-3">
-                    <span className="font-medium">Notifications</span>
+                    <span className="font-medium">{t("bell.title")}</span>
                     <Button variant="ghost" size="sm" disabled={!unread} onClick={() => markAll.mutate()} loading={markAll.isPending}>
-                        Mark all read
+                        {t("bell.markAllRead")}
                     </Button>
                 </div>
                 <div className="max-h-[60vh] overflow-y-auto p-1.5">
@@ -49,7 +51,7 @@ export const NotificationBell = () => {
                             ))}
                         </div>
                     ) : !data?.data.length ? (
-                        <p className="p-6 text-center text-sm text-muted-foreground">You're all caught up.</p>
+                        <p className="p-6 text-center text-sm text-muted-foreground">{t("bell.empty")}</p>
                     ) : (
                         data.data.map((n) => (
                             <NotificationItem
@@ -72,7 +74,7 @@ export const NotificationBell = () => {
                 </div>
                 <div className="border-t border-border p-2">
                     <Button variant="ghost" className="w-full" asChild onClick={() => setOpen(false)}>
-                        <Link to={Routes.notifications}>View all</Link>
+                        <Link to={Routes.notifications}>{t("common:actions.viewAll")}</Link>
                     </Button>
                 </div>
             </PopoverContent>

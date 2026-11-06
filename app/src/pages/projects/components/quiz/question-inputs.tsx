@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type DragEvent } from "react";
 import { ArrowDown, ArrowUp, Check, GripVertical, Link2, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ const isEditableTarget = (t: EventTarget | null) => t instanceof HTMLElement && 
 
 /** Multiple choice (single or multi-select). Number keys 1-6 toggle options. */
 export const ChoiceInput = ({ question, value, onChange, disabled, correct, keyboard }: QuestionInputProps) => {
+    const { t } = useTranslation("quiz");
     const options = question.payload.options ?? [];
     const multi = question.type === "MULTI_SELECT";
     const selected = value.selected ?? [];
@@ -52,8 +54,8 @@ export const ChoiceInput = ({ question, value, onChange, disabled, correct, keyb
     });
 
     return (
-        <div className="space-y-2" role={multi ? "group" : "radiogroup"} aria-label="Answer options">
-            {multi && !correct && <p className="text-xs text-muted-foreground">Select all that apply ({question.payload.select_count} correct).</p>}
+        <div className="space-y-2" role={multi ? "group" : "radiogroup"} aria-label={t("inputs.answerOptions")}>
+            {multi && !correct && <p className="text-xs text-muted-foreground">{t("inputs.selectAll", { count: question.payload.select_count ?? 0 })}</p>}
             {options.map((opt, i) => {
                 const isSel = selected.includes(i);
                 const isCorrect = correct && correctSet.has(i);
@@ -98,6 +100,7 @@ export const ChoiceInput = ({ question, value, onChange, disabled, correct, keyb
 
 /** True / False. Keys T/F or 1/2. */
 export const TrueFalseInput = ({ value, onChange, disabled, correct, keyboard }: QuestionInputProps) => {
+    const { t } = useTranslation("quiz");
     useEffect(() => {
         if (!keyboard || disabled) return;
         const onKey = (e: KeyboardEvent) => {
@@ -110,7 +113,7 @@ export const TrueFalseInput = ({ value, onChange, disabled, correct, keyboard }:
         return () => window.removeEventListener("keydown", onKey);
     });
     return (
-        <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="True or false">
+        <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label={t("inputs.trueOrFalse")}>
             {[true, false].map((v) => {
                 const isSel = value.value === v;
                 const isCorrect = correct && correct.value === v;
@@ -132,7 +135,7 @@ export const TrueFalseInput = ({ value, onChange, disabled, correct, keyboard }:
                             correct && !isCorrect && !isWrongPick && "opacity-60",
                         )}
                     >
-                        {v ? "True" : "False"}
+                        {v ? t("inputs.true") : t("inputs.false")}
                         <span className="ml-2 hidden text-[11px] text-muted-foreground sm:inline">({v ? "T" : "F"})</span>
                     </button>
                 );
@@ -141,7 +144,9 @@ export const TrueFalseInput = ({ value, onChange, disabled, correct, keyboard }:
     );
 };
 
-export const FillBlankInput = ({ value, onChange, disabled, correct, onSubmitShortcut, keyboard }: QuestionInputProps) => (
+export const FillBlankInput = ({ value, onChange, disabled, correct, onSubmitShortcut, keyboard }: QuestionInputProps) => {
+    const { t } = useTranslation("quiz");
+    return (
     <div className="space-y-2">
         <Input
             autoFocus={keyboard}
@@ -154,20 +159,23 @@ export const FillBlankInput = ({ value, onChange, disabled, correct, onSubmitSho
                     onSubmitShortcut?.();
                 }
             }}
-            placeholder="Type the missing term…"
-            aria-label="Your answer"
+            placeholder={t("inputs.fillPlaceholder")}
+            aria-label={t("inputs.yourAnswer")}
             className={cn("h-12 text-base", correct && "border-border")}
         />
         {correct && (
             <p className="text-sm text-muted-foreground">
-                Accepted answer: <span className="font-medium text-success">{correct.text}</span>
-                {correct.accepted && correct.accepted.length > 1 && <span> (also: {correct.accepted.slice(1).join(", ")})</span>}
+                {t("inputs.acceptedAnswer")} <span className="font-medium text-success">{correct.text}</span>
+                {correct.accepted && correct.accepted.length > 1 && <span> {t("inputs.alsoAccepted", { answers: correct.accepted.slice(1).join(", ") })}</span>}
             </p>
         )}
     </div>
-);
+    );
+};
 
-export const FreeTextInput = ({ value, onChange, disabled, onSubmitShortcut, keyboard }: QuestionInputProps) => (
+export const FreeTextInput = ({ value, onChange, disabled, onSubmitShortcut, keyboard }: QuestionInputProps) => {
+    const { t } = useTranslation("quiz");
+    return (
     <div className="space-y-1.5">
         <Textarea
             autoFocus={keyboard}
@@ -182,18 +190,20 @@ export const FreeTextInput = ({ value, onChange, disabled, onSubmitShortcut, key
             }}
             rows={6}
             maxLength={6000}
-            placeholder="Write your answer in your own words…"
-            aria-label="Your answer"
+            placeholder={t("inputs.freePlaceholder")}
+            aria-label={t("inputs.yourAnswer")}
             className="text-[15px] leading-relaxed"
         />
-        {!disabled && <p className="text-right text-xs text-muted-foreground">{(value.text ?? "").length}/6000 · Ctrl+Enter to submit</p>}
+        {!disabled && <p className="text-right text-xs text-muted-foreground">{t("inputs.freeCounter", { count: (value.text ?? "").length, max: 6000 })}</p>}
     </div>
-);
+    );
+};
 
 const PAIR_COLORS = ["bg-[#cc785c]", "bg-[#5db8a6]", "bg-[#e8a55a]", "bg-[#6b8fd6]", "bg-[#b07cc6]", "bg-[#5db872]"];
 
 /** Click a left item then a right item to pair them (fully keyboard operable via Tab + Enter). */
 export const MatchingInput = ({ question, value, onChange, disabled, correct }: QuestionInputProps) => {
+    const { t } = useTranslation("quiz");
     const left = question.payload.left ?? [];
     const right = question.payload.right ?? [];
     const pairs = value.pairs ?? [];
@@ -231,7 +241,7 @@ export const MatchingInput = ({ question, value, onChange, disabled, correct }: 
                                     <span className="font-medium">{l}</span>
                                     <span className="text-muted-foreground"> → </span>
                                     <span className={ok ? "" : "line-through opacity-70"}>{given ?? "—"}</span>
-                                    {!ok && <div className="mt-1 text-success">Correct: {correctMap.get(l)}</div>}
+                                    {!ok && <div className="mt-1 text-success">{t("inputs.correctMatch", { answer: correctMap.get(l) })}</div>}
                                 </div>
                             </div>
                         </div>
@@ -243,9 +253,9 @@ export const MatchingInput = ({ question, value, onChange, disabled, correct }: 
 
     return (
         <div className="space-y-3">
-            <p className="text-xs text-muted-foreground">Select an item on the left, then its match on the right. Select a matched item again to change it.</p>
+            <p className="text-xs text-muted-foreground">{t("inputs.matchingHint")}</p>
             <div className="grid gap-3 sm:grid-cols-2">
-                <div className="space-y-2" aria-label="Items">
+                <div className="space-y-2" aria-label={t("inputs.items")}>
                     {left.map((l) => {
                         const idx = pairIndex(l);
                         const color = idx >= 0 ? colorFor(l) : null;
@@ -263,12 +273,12 @@ export const MatchingInput = ({ question, value, onChange, disabled, correct }: 
                             >
                                 <span className={cn("h-3 w-3 shrink-0 rounded-full border border-border", color)} aria-hidden />
                                 <span className="flex-1">{l}</span>
-                                {idx >= 0 && <Link2 className="h-3.5 w-3.5 text-muted-foreground" aria-label="matched" />}
+                                {idx >= 0 && <Link2 className="h-3.5 w-3.5 text-muted-foreground" aria-label={t("inputs.matched")} />}
                             </button>
                         );
                     })}
                 </div>
-                <div className="space-y-2" aria-label="Matches">
+                <div className="space-y-2" aria-label={t("inputs.matches")}>
                     {right.map((r) => {
                         const owner = rightOwner(r);
                         return (
@@ -291,7 +301,7 @@ export const MatchingInput = ({ question, value, onChange, disabled, correct }: 
                 </div>
             </div>
             <p className="text-xs text-muted-foreground">
-                {pairs.length}/{left.length} matched
+                {t("inputs.matchedCount", { done: pairs.length, total: left.length })}
             </p>
         </div>
     );
@@ -299,6 +309,7 @@ export const MatchingInput = ({ question, value, onChange, disabled, correct }: 
 
 /** Reorder via drag-and-drop or the up/down buttons (keyboard accessible). */
 export const OrderingInput = ({ question, value, onChange, disabled, correct }: QuestionInputProps) => {
+    const { t } = useTranslation("quiz");
     const order = value.order?.length ? value.order : question.payload.items ?? [];
     const [dragIndex, setDragIndex] = useState<number | null>(null);
 
@@ -322,7 +333,7 @@ export const OrderingInput = ({ question, value, onChange, disabled, correct }: 
     };
 
     return (
-        <ol className="space-y-2" aria-label="Items to order">
+        <ol className="space-y-2" aria-label={t("inputs.itemsToOrder")}>
             {order.map((item, i) => {
                 const ok = correct ? correct.order?.[i] === item : null;
                 return (
@@ -346,7 +357,7 @@ export const OrderingInput = ({ question, value, onChange, disabled, correct }: 
                         {ok === false && <span className="text-xs text-success">→ #{(correct?.order?.indexOf(item) ?? 0) + 1}</span>}
                         {!disabled && (
                             <div className="flex gap-1">
-                                <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={`Move "${item}" up`}>
+                                <Button type="button" size="icon" variant="ghost" className="h-7 w-7" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={t("inputs.moveUp", { item })}>
                                     <ArrowUp />
                                 </Button>
                                 <Button
@@ -356,7 +367,7 @@ export const OrderingInput = ({ question, value, onChange, disabled, correct }: 
                                     className="h-7 w-7"
                                     onClick={() => move(i, i + 1)}
                                     disabled={i === order.length - 1}
-                                    aria-label={`Move "${item}" down`}
+                                    aria-label={t("inputs.moveDown", { item })}
                                 >
                                     <ArrowDown />
                                 </Button>

@@ -13,6 +13,7 @@ export const DefaultPreferences: UserPreferences = {
     focus_mode: false,
     leaderboard_opt_in: false,
     achievement_popups: true,
+    language: "en",
     notification_prefs: {},
 };
 

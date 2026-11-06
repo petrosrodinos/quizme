@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { LogOut, Monitor, Smartphone } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { ListSkeleton } from "@/components/ui/card-skeletons";
 import ConfirmationDialog from "@/components/ui/confirmation-dialog";
@@ -11,7 +12,8 @@ import { SettingsSection } from "../../components/settings-section";
 import { describeUserAgent } from "../../utils/user-agent.utils";
 
 export default function SettingsSessionsPage() {
-    usePageMetadata({ title: "Sessions & security" });
+    const { t } = useTranslation("settings");
+    usePageMetadata({ title: t("tabs.sessions") });
     const { data, isPending } = useSessions();
     const revoke = useRevokeSession();
     const revokeOthers = useRevokeOtherSessions();
@@ -22,8 +24,8 @@ export default function SettingsSessionsPage() {
     return (
         <div className="space-y-6">
             <SettingsSection
-                title="Active sessions"
-                description="Devices currently signed in to your account. Revoke any you don't recognise."
+                title={t("sessions.title")}
+                description={t("sessions.description")}
             >
                 {isPending ? (
                     <ListSkeleton rows={3} />
@@ -40,16 +42,16 @@ export default function SettingsSessionsPage() {
                                         </div>
                                         <div className="min-w-0 flex-1">
                                             <div className="flex flex-wrap items-center gap-2 text-sm font-medium">
-                                                {d.browser} on {d.os}
-                                                {s.current && <span className="rounded-full bg-success/12 px-2 py-0.5 text-[11px] text-success">This device</span>}
+                                                {t("sessions.device", { browser: d.browser, os: d.os })}
+                                                {s.current && <span className="rounded-full bg-success/12 px-2 py-0.5 text-[11px] text-success">{t("sessions.current")}</span>}
                                             </div>
-                                            <div className="text-xs text-muted-foreground" title={`Signed in ${formatDateTime(s.created_at)}`}>
-                                                {s.ip_address ? `${s.ip_address} · ` : ""}active {formatRelative(s.last_used_at)}
+                                            <div className="text-xs text-muted-foreground" title={t("sessions.signedIn", { date: formatDateTime(s.created_at) })}>
+                                                {s.ip_address ? `${s.ip_address} · ` : ""}{t("sessions.active", { time: formatRelative(s.last_used_at) })}
                                             </div>
                                         </div>
                                         {!s.current && (
                                             <Button size="sm" variant="outline" onClick={() => setTarget(s)}>
-                                                Revoke
+                                                {t("sessions.revoke")}
                                             </Button>
                                         )}
                                     </li>
@@ -57,8 +59,8 @@ export default function SettingsSessionsPage() {
                             })}
                         </ul>
                         {others > 0 && (
-                            <Button className="mt-4" variant="outline" onClick={() => setOthersOpen(true)}>
-                                <LogOut /> Sign out all other sessions
+                            <Button className="mt-4 h-auto min-h-9 max-w-full whitespace-normal py-2 text-left" variant="outline" onClick={() => setOthersOpen(true)}>
+                                <LogOut /> {t("sessions.revokeOthers")}
                             </Button>
                         )}
                     </>
@@ -69,9 +71,9 @@ export default function SettingsSessionsPage() {
                 isOpen={!!target}
                 onClose={() => setTarget(null)}
                 onConfirm={() => target && revoke.mutate(target.id, { onSuccess: () => setTarget(null) })}
-                title="Revoke this session?"
-                description="That device will be signed out immediately."
-                confirmText="Revoke"
+                title={t("sessions.revokeDialog.title")}
+                description={t("sessions.revokeDialog.description")}
+                confirmText={t("sessions.revoke")}
                 variant="destructive"
                 isLoading={revoke.isPending}
             />
@@ -79,9 +81,9 @@ export default function SettingsSessionsPage() {
                 isOpen={othersOpen}
                 onClose={() => setOthersOpen(false)}
                 onConfirm={() => revokeOthers.mutate(undefined, { onSuccess: () => setOthersOpen(false) })}
-                title="Sign out everywhere else?"
-                description={`All ${others} other session(s) will be signed out. You'll stay signed in here.`}
-                confirmText="Sign out others"
+                title={t("sessions.othersDialog.title")}
+                description={t("sessions.othersDialog.description", { count: others })}
+                confirmText={t("sessions.othersDialog.confirm")}
                 variant="destructive"
                 isLoading={revokeOthers.isPending}
             />

@@ -6,6 +6,8 @@ import { FileTokenService } from '@/core/storage/file-token.service';
 import { ProjectAccessService } from '@/shared/access/project-access.service';
 import { AuditActions, AuditService } from '@/shared/audit/audit.service';
 import { CreateProjectDto, ProjectQueryType, UpdateProjectDto } from './dto/projects.dto';
+import { I18nService } from '@/shared/i18n/i18n.service';
+
 
 const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
 const imageMime = (key: string) => {
@@ -21,6 +23,7 @@ export class ProjectsService {
         private readonly storage: StorageService,
         private readonly files: FileTokenService,
         private readonly audit: AuditService,
+        private readonly i18n: I18nService,
     ) { }
 
     serialize(project: Project, role?: MemberRole | null, extra: Record<string, unknown> = {}) {
@@ -34,6 +37,7 @@ export class ProjectsService {
     }
 
     async create(userId: string, dto: CreateProjectDto) {
+        const lang = await this.i18n.languageOf(userId);
         const project = await this.prisma.project.create({
             data: {
                 ...dto,
@@ -41,7 +45,7 @@ export class ProjectsService {
                 tags: this.cleanTags(dto.tags),
                 owner_id: userId,
                 members: { create: { user_id: userId, role: MemberRole.OWNER, can_copy: true, can_reshare: true } },
-                decks: { create: { name: 'Main deck', created_by: userId } },
+                decks: { create: { name: this.i18n.t(lang, 'deck.default'), created_by: userId } },
             },
         });
         return this.serialize(project, MemberRole.OWNER);
@@ -164,10 +168,11 @@ export class ProjectsService {
             where: { id: projectId },
             include: { documents: { include: { chunks: true } }, topics: true, questions: true, decks: true, flashcards: true },
         });
+        const lang = await this.i18n.languageOf(userId);
         const copy = await this.prisma.project.create({
             data: {
                 owner_id: userId,
-                title: `${src.title} (copy)`.slice(0, 160),
+                title: this.i18n.t(lang, 'project.copy', { title: src.title }).slice(0, 160),
                 description: src.description,
                 subject: src.subject,
                 exam_date: src.exam_date,
@@ -225,7 +230,7 @@ export class ProjectsService {
             const created = await this.prisma.flashcardDeck.create({ data: { project_id: copy.id, name: deck.name, description: deck.description, created_by: userId } });
             deckMap.set(deck.id, created.id);
         }
-        if (!src.decks.length) await this.prisma.flashcardDeck.create({ data: { project_id: copy.id, name: 'Main deck', created_by: userId } });
+        if (!src.decks.length) await this.prisma.flashcardDeck.create({ data: { project_id: copy.id, name: this.i18n.t(lang, 'deck.default'), created_by: userId } });
         const remapRef = (ref: Prisma.JsonValue | null) => {
             if (!ref || typeof ref !== 'object' || Array.isArray(ref)) return ref ?? undefined;
             const r = ref as Record<string, unknown>;

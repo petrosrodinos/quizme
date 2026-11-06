@@ -9,6 +9,7 @@ import { AppPaths } from '@/shared/config/app-urls';
 import { localDateKey, safeZone } from '@/shared/utils/date.utils';
 import { paginate } from '@/shared/utils/pagination.utils';
 import { DEFAULT_NOTIFICATION_PREFS } from '../users/users.service';
+import { I18nService, Msg, msg } from '@/shared/i18n/i18n.service';
 
 export const NotificationTypes = {
     STUDY_REMINDER: 'study_reminder',
@@ -41,8 +42,9 @@ const PREF_KEY: Record<NotificationType, keyof typeof DEFAULT_NOTIFICATION_PREFS
 export interface NotifyInput {
     userId: string;
     type: NotificationType;
-    title: string;
-    body?: string;
+    /** Literal text or a catalogue message (rendered in the recipient's language). */
+    title: Msg;
+    body?: Msg;
     link?: string;
     data?: Record<string, unknown>;
     /** Send an email as well when the user enabled email notifications (or always for invitations). */
@@ -57,18 +59,22 @@ export class NotificationsService {
         private readonly prisma: PrismaService,
         private readonly realtime: RealtimeService,
         private readonly mail: MailService,
+        private readonly i18n: I18nService,
     ) { }
 
     async notify(input: NotifyInput) {
         const prefsRow = await this.prisma.userPreferences.findUnique({ where: { user_id: input.userId } });
         const prefs = { ...DEFAULT_NOTIFICATION_PREFS, ...((prefsRow?.notification_prefs as object) ?? {}) } as Record<string, boolean>;
         if (prefs[PREF_KEY[input.type]] === false) return null;
+        const lang = await this.i18n.languageOf(input.userId);
+        const title = this.i18n.render(lang, input.title)!;
+        const body = this.i18n.render(lang, input.body);
         const n = await this.prisma.notification.create({
             data: {
                 user_id: input.userId,
                 type: input.type,
-                title: input.title,
-                body: input.body,
+                title,
+                body,
                 link: input.link,
                 data: (input.data ?? undefined) as Prisma.InputJsonValue,
             },
@@ -81,10 +87,11 @@ export class NotificationsService {
                     if (user)
                         await this.mail.send({
                             to: user.email,
-                            subject: input.title,
-                            heading: input.title,
-                            body: input.body ?? '',
-                            cta: input.email?.url ? { label: input.email.ctaLabel ?? 'Open QuizMe', url: input.email.url } : undefined,
+                            subject: title,
+                            heading: title,
+                            body: body ?? '',
+                            footer: this.i18n.t(lang, 'email.footer'),
+                            cta: input.email?.url ? { label: input.email.ctaLabel ?? this.i18n.t(lang, 'email.notification.cta'), url: input.email.url } : undefined,
                         });
                 } catch (error) {
                     this.logger.warn(`Notification email failed: ${error?.message}`);
@@ -146,13 +153,13 @@ export class NotificationsService {
                     const due = await this.prisma.cardState.count({ where: { user_id: u.id, due_at: { lte: new Date() } } });
                     if (due >= 5)
                         await this.notifyOncePerDay(
-                            { userId: u.id, type: NotificationTypes.FLASHCARDS_DUE, title: `You have ${due} cards due for review today`, body: 'A short review session keeps them fresh.', link: AppPaths.study },
+                            { userId: u.id, type: NotificationTypes.FLASHCARDS_DUE, title: msg('notif.flashcardsDue.title', { count: due }), body: msg('notif.flashcardsDue.body'), link: AppPaths.study },
                             u.timezone,
                         );
                 }
                 if (local.hour >= 19 && (u.gamification?.current_streak ?? 0) > 0 && u.gamification?.last_goal_date !== today) {
                     await this.notifyOncePerDay(
-                        { userId: u.id, type: NotificationTypes.STREAK_RISK, title: `Your ${u.gamification!.current_streak}-day streak is at risk`, body: 'Complete your daily goal to keep it going.', link: AppPaths.study },
+                        { userId: u.id, type: NotificationTypes.STREAK_RISK, title: msg('notif.streakRisk.title', { count: u.gamification!.current_streak }), body: msg('notif.streakRisk.body'), link: AppPaths.study },
                         u.timezone,
                     );
                 }
@@ -160,7 +167,7 @@ export class NotificationsService {
                     const activity = await this.prisma.dailyActivity.findUnique({ where: { user_id_date: { user_id: u.id, date: today } } });
                     if (!activity || activity.minutes_studied === 0)
                         await this.notifyOncePerDay(
-                            { userId: u.id, type: NotificationTypes.STUDY_REMINDER, title: 'Time for a quick study session?', body: "Today's recommended session is ready for you.", link: AppPaths.study },
+                            { userId: u.id, type: NotificationTypes.STUDY_REMINDER, title: msg('notif.studyReminder.title'), body: msg('notif.studyReminder.body'), link: AppPaths.study },
                             u.timezone,
                         );
                 }
@@ -175,8 +182,8 @@ export class NotificationsService {
                             await this.notify({
                                 userId: u.id,
                                 type: NotificationTypes.EXAM_UPCOMING,
-                                title: `${p.title}: exam in ${days} day${days === 1 ? '' : 's'}`,
-                                body: 'Try an exam simulation and review your weak topics.',
+                                title: msg('notif.examUpcoming.title', { project: p.title, count: days }),
+                                body: msg('notif.examUpcoming.body'),
                                 link: AppPaths.project(p.id),
                                 data: { project_id: p.id, days },
                             });

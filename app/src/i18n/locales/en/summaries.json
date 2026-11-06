@@ -1,0 +1,55 @@
+{
+  "page": {
+    "title": "Summaries",
+    "description": "From a one-minute overview to a full study guide — generated from your own material and saved for reuse.",
+    "export": "Export study guides"
+  },
+  "levels": {
+    "ONE_MINUTE": { "label": "1-minute summary", "description": "A very short overview of the essentials." },
+    "FIVE_MINUTE": { "label": "5-minute summary", "description": "Key concepts and how they relate." },
+    "DETAILED": { "label": "Detailed summary", "description": "A full walkthrough of every important idea." },
+    "CHEAT_SHEET": { "label": "Exam cheat sheet", "description": "Only the must-know facts, formulas and definitions." },
+    "STUDY_GUIDE": { "label": "Study guide", "description": "Objectives, explanations, pitfalls and self-test questions." }
+  },
+  "generate": {
+    "ariaLabel": "Generate a summary",
+    "summarize": "Summarize",
+    "scope": "Summary scope",
+    "wholeProject": "Whole project",
+    "wholeProjectNamed": "Whole project — {{title}}",
+    "noDocuments": "Upload and process a document first."
+  },
+  "saved": {
+    "title": "Saved summaries",
+    "empty": "None yet."
+  },
+  "view": {
+    "ariaLabel": "Summary",
+    "emptyTitle": "No summary selected",
+    "emptyDescription": "Pick a level above to generate your first summary.",
+    "delete": "Delete summary",
+    "generatingTitle": "Writing your summary…",
+    "generatingDescription": "Large material is summarized section by section, then combined. This can take a minute.",
+    "failedTitle": "Generation failed"
+  },
+  "confirm": {
+    "deleteTitle": "Delete this summary?",
+    "deleteDescription": "You can always generate it again."
+  },
+  "toasts": {
+    "loadedCached": "Loaded saved summary",
+    "generating": "Generating summary",
+    "generateFailed": "Could not generate summary",
+    "deleted": "Summary deleted",
+    "deleteFailed": "Could not delete summary",
+    "failed": "Summary failed",
+    "copied": "Copied to clipboard",
+    "copyFailed": "Could not copy"
+  },
+  "errors": {
+    "loadAll": "Failed to load summaries.",
+    "load": "Failed to load summary.",
+    "generate": "Failed to generate summary.",
+    "delete": "Failed to delete summary."
+  }
+}

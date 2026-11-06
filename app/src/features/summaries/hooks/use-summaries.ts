@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { createSummary, deleteSummary, getSummaries, getSummary } from "../services/summaries.services";
+import { tr } from "@/lib/i18n-options";
 
 export const isSummaryGenerating = (status?: string) => status === "PENDING" || status === "GENERATING";
 
@@ -27,9 +28,9 @@ export const useCreateSummary = () => {
         mutationFn: createSummary,
         onSuccess: (s) => {
             queryClient.invalidateQueries({ queryKey: ["summaries"] });
-            toast({ title: s.cached && s.status === "READY" ? "Loaded saved summary" : "Generating summary", duration: 2000 });
+            toast({ title: tr(s.cached && s.status === "READY" ? "summaries:toasts.loadedCached" : "summaries:toasts.generating"), duration: 2000 });
         },
-        onError: (e: Error) => toast({ title: "Could not generate summary", description: e.message, variant: "error" }),
+        onError: (e: Error) => toast({ title: tr("summaries:toasts.generateFailed"), description: e.message, variant: "error" }),
     });
 };
 
@@ -39,8 +40,8 @@ export const useDeleteSummary = () => {
         mutationFn: deleteSummary,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["summaries"] });
-            toast({ title: "Summary deleted", duration: 1800 });
+            toast({ title: tr("summaries:toasts.deleted"), duration: 1800 });
         },
-        onError: (e: Error) => toast({ title: "Could not delete summary", description: e.message, variant: "error" }),
+        onError: (e: Error) => toast({ title: tr("summaries:toasts.deleteFailed"), description: e.message, variant: "error" }),
     });
 };

@@ -1,8 +1,10 @@
+import { tOption } from "@/lib/i18n-options";
+
 export const HighlightColorOptions: { id: string; label: string }[] = [
-    { id: "amber", label: "Amber" },
-    { id: "teal", label: "Teal" },
-    { id: "coral", label: "Coral" },
-    { id: "violet", label: "Violet" },
+    tOption("amber", "notes:colors.amber"),
+    tOption("teal", "notes:colors.teal"),
+    tOption("coral", "notes:colors.coral"),
+    tOption("violet", "notes:colors.violet"),
 ];
 
 export const getHighlightColorLabel = (color: string): string => HighlightColorOptions.find((o) => o.id === color)?.label ?? color;

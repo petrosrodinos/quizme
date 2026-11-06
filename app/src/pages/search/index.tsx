@@ -13,6 +13,7 @@ import { Routes } from "@/routes/routes";
 import { useSearch } from "@/features/search/hooks/use-search";
 import { useResolveDocument } from "@/features/documents/hooks/use-documents";
 import { ResultGroup } from "./components/result-group";
+import { useTranslation } from "react-i18next";
 
 const Row = ({ to, title, subtitle }: { to: string; title: ReactNode; subtitle?: ReactNode }) => (
     <li>
@@ -24,18 +25,19 @@ const Row = ({ to, title, subtitle }: { to: string; title: ReactNode; subtitle?:
 );
 
 export default function SearchPage() {
-    usePageMetadata({ title: "Search" });
+    const { t } = useTranslation("search");
+    usePageMetadata({ title: t("metaTitle") });
     const [params, setParams] = useSearchParams();
     const [input, setInput] = useState(params.get("q") ?? "");
     const [q, setQ] = useState(params.get("q") ?? "");
     const [semantic, setSemantic] = useState(true);
 
     useEffect(() => {
-        const t = setTimeout(() => {
+        const timer = setTimeout(() => {
             setQ(input.trim());
             setParams(input.trim() ? { q: input.trim() } : {}, { replace: true });
         }, 350);
-        return () => clearTimeout(t);
+        return () => clearTimeout(timer);
     }, [input, setParams]);
 
     const { data, isFetching, isError, error } = useSearch({ q, semantic });
@@ -49,38 +51,38 @@ export default function SearchPage() {
 
     return (
         <Main>
-            <PageHeader title="Search" description="Find anything across your projects — or search your study material by meaning." />
+            <PageHeader title={t("title")} description={t("description")} />
             <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <div className="relative flex-1">
                     <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        placeholder='Try "things related to cell energy"'
+                        placeholder={t("placeholder")}
                         className="h-11 pl-9 text-base"
-                        aria-label="Search"
+                        aria-label={t("inputLabel")}
                         autoFocus
                     />
                 </div>
                 <div className="flex items-center gap-2">
                     <Switch id="semantic" checked={semantic} onCheckedChange={setSemantic} />
                     <Label htmlFor="semantic" className="text-sm">
-                        Semantic search
+                        {t("semantic")}
                     </Label>
                 </div>
             </div>
 
             {q.length < 2 ? (
-                <EmptyState icon={Search} title="Search your learning" description="Projects, documents, notes, flashcards, questions and topics — plus passages from your material that match the meaning of your query." compact />
+                <EmptyState icon={Search} title={t("intro.title")} description={t("intro.description")} compact />
             ) : isFetching && !data ? (
                 <ListSkeleton rows={6} />
             ) : isError ? (
-                <EmptyState title="Search failed" description={error.message} compact />
+                <EmptyState title={t("failed")} description={error.message} compact />
             ) : !data || total === 0 ? (
-                <EmptyState icon={Search} title="No results" description={`Nothing matched "${q}". Try different words${semantic ? "" : " or enable semantic search"}.`} compact />
+                <EmptyState icon={Search} title={t("noResults.title")} description={semantic ? t("noResults.description", { query: q }) : t("noResults.descriptionSemantic", { query: q })} compact />
             ) : (
                 <div className="space-y-4" aria-busy={isFetching}>
-                    <ResultGroup title="From your material" icon={Sparkles} count={data.passages.length}>
+                    <ResultGroup title={t("groups.material")} icon={Sparkles} count={data.passages.length}>
                         {data.passages.map((p) => {
                             const projectId = data.documents.find((d) => d.id === p.document_id)?.project_id;
                             return (
@@ -96,7 +98,7 @@ export default function SearchPage() {
                                                 {p.document_title}
                                             </button>
                                         )}
-                                        {p.page != null && <span>· p. {p.page}</span>}
+                                        {p.page != null && <span>{t("page", { page: p.page })}</span>}
                                         {p.section && <span className="truncate">· {p.section}</span>}
                                     </div>
                                     <p className="line-clamp-3 text-sm text-foreground/85">{p.snippet}</p>
@@ -105,38 +107,38 @@ export default function SearchPage() {
                         })}
                     </ResultGroup>
                     <div className="grid gap-4 md:grid-cols-2">
-                        <ResultGroup title="Projects" icon={FolderOpen} count={data.projects.length}>
+                        <ResultGroup title={t("groups.projects")} icon={FolderOpen} count={data.projects.length}>
                             {data.projects.map((p) => (
                                 <Row key={p.id} to={Routes.projects.detail(p.id)} title={p.title} subtitle={p.subject} />
                             ))}
                         </ResultGroup>
-                        <ResultGroup title="Documents" icon={FileText} count={data.documents.length}>
+                        <ResultGroup title={t("groups.documents")} icon={FileText} count={data.documents.length}>
                             {data.documents.map((d) => (
                                 <Row key={d.id} to={d.status === "READY" ? Routes.projects.document(d.project_id, d.id) : Routes.projects.documents(d.project_id)} title={d.filename} />
                             ))}
                         </ResultGroup>
-                        <ResultGroup title="Topics" icon={Network} count={data.topics.length}>
-                            {data.topics.map((t) => (
-                                <Row key={t.id} to={Routes.projects.topics(t.project_id)} title={t.name} />
+                        <ResultGroup title={t("groups.topics")} icon={Network} count={data.topics.length}>
+                            {data.topics.map((topic) => (
+                                <Row key={topic.id} to={Routes.projects.topics(topic.project_id)} title={topic.name} />
                             ))}
                         </ResultGroup>
-                        <ResultGroup title="Notes" icon={StickyNote} count={data.notes.length}>
+                        <ResultGroup title={t("groups.notes")} icon={StickyNote} count={data.notes.length}>
                             {data.notes.map((n) => (
-                                <Row key={n.id} to={Routes.projects.notes(n.project_id)} title={n.title || n.content.slice(0, 80) || "Untitled note"} subtitle={n.title ? n.content : undefined} />
+                                <Row key={n.id} to={Routes.projects.notes(n.project_id)} title={n.title || n.content.slice(0, 80) || t("untitledNote")} subtitle={n.title ? n.content : undefined} />
                             ))}
                         </ResultGroup>
-                        <ResultGroup title="Flashcards" icon={Layers} count={data.flashcards.length}>
+                        <ResultGroup title={t("groups.flashcards")} icon={Layers} count={data.flashcards.length}>
                             {data.flashcards.map((f) => (
                                 <Row key={f.id} to={Routes.projects.flashcards(f.project_id)} title={f.front} subtitle={f.back} />
                             ))}
                         </ResultGroup>
-                        <ResultGroup title="Questions" icon={HelpCircle} count={data.questions.length}>
+                        <ResultGroup title={t("groups.questions")} icon={HelpCircle} count={data.questions.length}>
                             {data.questions.map((qq) => (
                                 <Row key={qq.id} to={Routes.projects.questions(qq.project_id)} title={qq.prompt} subtitle={qq.concept} />
                             ))}
                         </ResultGroup>
                     </div>
-                    {isFetching && <p className="flex items-center gap-2 text-xs text-muted-foreground"><BookMarked className="h-3.5 w-3.5" /> Updating…</p>}
+                    {isFetching && <p className="flex items-center gap-2 text-xs text-muted-foreground"><BookMarked className="h-3.5 w-3.5" /> {t("updating")}</p>}
                 </div>
             )}
         </Main>

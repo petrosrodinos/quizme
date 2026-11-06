@@ -22,11 +22,13 @@ import { useRealtimeEvent } from "@/features/realtime/hooks/use-realtime";
 import { RealtimeEvents } from "@/features/realtime/interfaces/realtime-events.constants";
 import type { SummaryLevel } from "@/features/summaries/interfaces/summaries.interfaces";
 import { SummaryLevelFormOptions, getSummaryLevelDescription, getSummaryLevelLabel } from "@/config/constants/dropdowns/summaries/summary-level.options";
+import { useTranslation } from "react-i18next";
 
 const WHOLE = "project";
 
 export default function ProjectSummariesPage() {
-    usePageMetadata({ title: "Summaries" });
+    const { t } = useTranslation("summaries");
+    usePageMetadata({ title: t("page.title") });
     const { projectId, project } = useProjectContext();
     const queryClient = useQueryClient();
     const { data: documents = [] } = useDocuments(projectId);
@@ -46,7 +48,7 @@ export default function ProjectSummariesPage() {
         if (e.kind !== "summary") return;
         queryClient.invalidateQueries({ queryKey: ["summary", e.id] });
         queryClient.invalidateQueries({ queryKey: ["summaries"] });
-        if (e.status === "FAILED") toast({ title: "Summary failed", description: e.error ?? "Please try again.", variant: "error" });
+        if (e.status === "FAILED") toast({ title: t("toasts.failed"), description: e.error ?? t("common:actions.tryAgain"), variant: "error" });
     });
 
     const readyDocs = documents.filter((d) => d.status === "READY");
@@ -60,29 +62,29 @@ export default function ProjectSummariesPage() {
         if (!active?.content) return;
         try {
             await navigator.clipboard.writeText(active.content);
-            toast({ title: "Copied to clipboard", duration: 1500 });
+            toast({ title: t("toasts.copied"), duration: 1500 });
         } catch {
-            toast({ title: "Could not copy", variant: "error" });
+            toast({ title: t("toasts.copyFailed"), variant: "error" });
         }
     };
 
     return (
         <Main width="wide">
             <PageHeader
-                title="Summaries"
-                description="From a one-minute overview to a full study guide — generated from your own material and saved for reuse."
-                actions={<ExportMenu projectId={projectId} type="study_guides" label="Export study guides" formats={["md", "txt", "html", "json"]} />}
+                title={t("page.title")}
+                description={t("page.description")}
+                actions={<ExportMenu projectId={projectId} type="study_guides" label={t("page.export")} formats={["md", "txt", "html", "json"]} />}
             />
 
-            <section aria-label="Generate a summary" className="mb-6 rounded-xl border border-border bg-surface p-4">
+            <section aria-label={t("generate.ariaLabel")} className="mb-6 rounded-xl border border-border bg-surface p-4">
                 <div className="mb-3 flex flex-wrap items-center gap-3">
-                    <span className="text-sm font-medium">Summarize</span>
+                    <span className="text-sm font-medium">{t("generate.summarize")}</span>
                     <Select value={scope} onValueChange={setScope}>
-                        <SelectTrigger className="w-64" aria-label="Summary scope">
+                        <SelectTrigger className="w-64" aria-label={t("generate.scope")}>
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value={WHOLE}>Whole project — {project.title}</SelectItem>
+                            <SelectItem value={WHOLE}>{t("generate.wholeProjectNamed", { title: project.title })}</SelectItem>
                             {readyDocs.map((d) => (
                                 <SelectItem key={d.id} value={d.id}>
                                     {d.filename}
@@ -108,12 +110,12 @@ export default function ProjectSummariesPage() {
                         </button>
                     ))}
                 </div>
-                {!readyDocs.length && <p className="mt-2 text-xs text-muted-foreground">Upload and process a document first.</p>}
+                {!readyDocs.length && <p className="mt-2 text-xs text-muted-foreground">{t("generate.noDocuments")}</p>}
             </section>
 
             <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
-                <aside aria-label="Saved summaries">
-                    <h2 className="mb-2 text-sm font-medium text-muted-foreground">Saved summaries</h2>
+                <aside aria-label={t("saved.title")}>
+                    <h2 className="mb-2 text-sm font-medium text-muted-foreground">{t("saved.title")}</h2>
                     {listPending ? (
                         <div className="space-y-2">
                             {Array.from({ length: 4 }).map((_, i) => (
@@ -121,7 +123,7 @@ export default function ProjectSummariesPage() {
                             ))}
                         </div>
                     ) : !summaries.length ? (
-                        <p className="text-sm text-muted-foreground">None yet.</p>
+                        <p className="text-sm text-muted-foreground">{t("saved.empty")}</p>
                     ) : (
                         <ul className="flex gap-2 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible">
                             {summaries.map((s) => (
@@ -137,11 +139,11 @@ export default function ProjectSummariesPage() {
                                     >
                                         <span className="flex items-center justify-between gap-2 font-medium">
                                             {getSummaryLevelLabel(s.level)}
-                                            {isSummaryGenerating(s.status) && <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" aria-label="Generating" />}
-                                            {s.status === "FAILED" && <AlertTriangle className="h-3.5 w-3.5 text-destructive" aria-label="Failed" />}
+                                            {isSummaryGenerating(s.status) && <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" aria-label={t("common:status.generating")} />}
+                                            {s.status === "FAILED" && <AlertTriangle className="h-3.5 w-3.5 text-destructive" aria-label={t("common:status.failed")} />}
                                         </span>
                                         <span className="block truncate text-xs text-muted-foreground">
-                                            {s.document?.filename ?? "Whole project"} · {formatRelative(s.created_at)}
+                                            {s.document?.filename ?? t("generate.wholeProject")} · {formatRelative(s.created_at)}
                                         </span>
                                     </button>
                                 </li>
@@ -150,9 +152,9 @@ export default function ProjectSummariesPage() {
                     )}
                 </aside>
 
-                <article aria-label="Summary" className="min-h-80 rounded-xl border border-border bg-card p-6">
+                <article aria-label={t("view.ariaLabel")} className="min-h-80 rounded-xl border border-border bg-card p-6">
                     {!activeId ? (
-                        <EmptyState icon={ScrollText} title="No summary selected" description="Pick a level above to generate your first summary." compact />
+                        <EmptyState icon={ScrollText} title={t("view.emptyTitle")} description={t("view.emptyDescription")} compact />
                     ) : activePending || !active ? (
                         <div className="space-y-3">
                             <Skeleton className="h-8 w-1/2" />
@@ -167,13 +169,13 @@ export default function ProjectSummariesPage() {
                                     <h2 className="font-display text-2xl">{getSummaryLevelLabel(active.level)}</h2>
                                     <div className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
                                         <FileText className="h-3.5 w-3.5" aria-hidden />
-                                        {active.document?.filename ?? "Whole project"}
+                                        {active.document?.filename ?? t("generate.wholeProject")}
                                         {active.model && <Badge variant="outline">{active.model}</Badge>}
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
                                     <Button size="sm" variant="outline" onClick={copy} disabled={active.status !== "READY"}>
-                                        <Copy /> Copy
+                                        <Copy /> {t("common:actions.copy")}
                                     </Button>
                                     <Button
                                         size="sm"
@@ -181,9 +183,9 @@ export default function ProjectSummariesPage() {
                                         onClick={() => generate(active.level, true, active.document_id)}
                                         disabled={create.isPending || isSummaryGenerating(active.status)}
                                     >
-                                        <RefreshCw /> Regenerate
+                                        <RefreshCw /> {t("common:actions.regenerate")}
                                     </Button>
-                                    <Button size="icon" variant="ghost" aria-label="Delete summary" onClick={() => setToDelete(active.id)}>
+                                    <Button size="icon" variant="ghost" aria-label={t("view.delete")} onClick={() => setToDelete(active.id)}>
                                         <Trash2 />
                                     </Button>
                                 </div>
@@ -191,15 +193,15 @@ export default function ProjectSummariesPage() {
                             {isSummaryGenerating(active.status) ? (
                                 <div className="flex flex-col items-center justify-center gap-3 py-16 text-center" aria-live="polite">
                                     <Loader2 className="h-8 w-8 animate-spin text-primary" aria-hidden />
-                                    <p className="font-medium">Writing your summary…</p>
-                                    <p className="max-w-sm text-sm text-muted-foreground">Large material is summarized section by section, then combined. This can take a minute.</p>
+                                    <p className="font-medium">{t("view.generatingTitle")}</p>
+                                    <p className="max-w-sm text-sm text-muted-foreground">{t("view.generatingDescription")}</p>
                                 </div>
                             ) : active.status === "FAILED" ? (
                                 <EmptyState
                                     icon={AlertTriangle}
-                                    title="Generation failed"
-                                    description={active.error_message ?? "Please try again."}
-                                    action={<Button onClick={() => generate(active.level, true, active.document_id)}>Try again</Button>}
+                                    title={t("view.failedTitle")}
+                                    description={active.error_message ?? t("common:actions.tryAgain")}
+                                    action={<Button onClick={() => generate(active.level, true, active.document_id)}>{t("common:actions.tryAgain")}</Button>}
                                     compact
                                 />
                             ) : (
@@ -222,9 +224,9 @@ export default function ProjectSummariesPage() {
                         },
                     })
                 }
-                title="Delete this summary?"
-                description="You can always generate it again."
-                confirmText="Delete"
+                title={t("confirm.deleteTitle")}
+                description={t("confirm.deleteDescription")}
+                confirmText={t("common:actions.delete")}
                 variant="destructive"
                 isLoading={remove.isPending}
             />

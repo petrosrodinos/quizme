@@ -2,6 +2,7 @@ import { useState, type KeyboardEvent } from "react";
 import { X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 
 interface TagsInputProps {
     value: string[];
@@ -11,7 +12,8 @@ interface TagsInputProps {
 }
 
 /** Comma/Enter separated tag entry with removable chips. */
-export const TagsInput = ({ value, onChange, placeholder = "Add a tag and press Enter", max = 20 }: TagsInputProps) => {
+export const TagsInput = ({ value, onChange, placeholder, max = 20 }: TagsInputProps) => {
+    const { t } = useTranslation("projects");
     const [draft, setDraft] = useState("");
     const commit = () => {
         const parts = draft
@@ -37,14 +39,14 @@ export const TagsInput = ({ value, onChange, placeholder = "Add a tag and press 
                     {value.map((tag) => (
                         <Badge key={tag} variant="secondary" className="gap-1 font-normal">
                             {tag}
-                            <button type="button" onClick={() => onChange(value.filter((t) => t !== tag))} aria-label={`Remove tag ${tag}`} className="rounded hover:text-destructive">
+                            <button type="button" onClick={() => onChange(value.filter((t) => t !== tag))} aria-label={t("form.tags.remove", { tag })} className="rounded hover:text-destructive">
                                 <X className="h-3 w-3" />
                             </button>
                         </Badge>
                     ))}
                 </div>
             )}
-            <Input value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={onKeyDown} onBlur={commit} placeholder={placeholder} aria-label="Tags" />
+            <Input value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={onKeyDown} onBlur={commit} placeholder={placeholder ?? t("form.tags.placeholder")} aria-label={t("form.fields.tags")} />
         </div>
     );
 };

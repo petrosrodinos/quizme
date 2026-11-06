@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ArrowLeft, Clock, Flame, Lightbulb, RotateCcw, Sparkles, Target, Trophy, Zap } from "lucide-react";
 import { Main } from "@/components/layout/main";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,7 @@ import { QuestionReviewList } from "./components/question-review-list";
 import { TopicBreakdown } from "./components/topic-breakdown";
 
 export default function AttemptPage() {
+    const { t } = useTranslation("attempt");
     const { projectId, project } = useProjectContext();
     const { attemptId } = useParams<{ attemptId: string }>();
     const navigate = useNavigate();
@@ -35,7 +37,7 @@ export default function AttemptPage() {
     const pushCelebration = useCelebrationsStore((s) => s.push);
     const celebrated = useRef(false);
     const [xpRefreshed, setXpRefreshed] = useState(false);
-    usePageMetadata({ title: "Results" });
+    usePageMetadata({ title: t("page.title") });
 
     const data = summary.data;
     const attempt = data?.attempt;
@@ -47,11 +49,11 @@ export default function AttemptPage() {
     // XP is granted asynchronously by the gamification domain — refresh once shortly after landing.
     useEffect(() => {
         if (!attemptId || xpRefreshed) return;
-        const t = setTimeout(() => {
+        const timer = setTimeout(() => {
             void summary.refetch();
             setXpRefreshed(true);
         }, 1500);
-        return () => clearTimeout(t);
+        return () => clearTimeout(timer);
     }, [attemptId, xpRefreshed, summary]);
 
     useEffect(() => {
@@ -62,7 +64,7 @@ export default function AttemptPage() {
         if (attempt.percentage >= 100) {
             feedback.play("finishPass");
             celebrate("big");
-            pushCelebration({ kind: CelebrationKinds.PERFECT, title: "Perfect score!", description: "Every single answer correct. Outstanding." });
+            pushCelebration({ kind: CelebrationKinds.PERFECT, title: t("hero.perfect"), description: t("hero.perfectDescription") });
         } else if (passed) {
             feedback.play("finishPass");
             celebrate("burst");
@@ -77,7 +79,7 @@ export default function AttemptPage() {
     if (summary.isError) {
         return (
             <Main>
-                <EmptyState title="Results not found" description={summary.error.message} action={<Button asChild><Link to={Routes.projects.quizzes(projectId)}>Back to quizzes</Link></Button>} />
+                <EmptyState title={t("page.notFound")} description={summary.error.message} action={<Button asChild><Link to={Routes.projects.quizzes(projectId)}>{t("quiz:generation.backToQuizzes")}</Link></Button>} />
             </Main>
         );
     }
@@ -92,10 +94,10 @@ export default function AttemptPage() {
         return (
             <Main>
                 <EmptyState
-                    title="This attempt is still in progress"
+                    title={t("page.inProgress")}
                     action={
                         <Button asChild>
-                            <Link to={Routes.projects.quiz_take(projectId, data.quiz.id)}>Continue quiz</Link>
+                            <Link to={Routes.projects.quiz_take(projectId, data.quiz.id)}>{t("page.continue")}</Link>
                         </Button>
                     }
                 />
@@ -113,74 +115,74 @@ export default function AttemptPage() {
             <div className="flex flex-wrap items-center gap-2">
                 <Button variant="ghost" size="sm" asChild>
                     <Link to={isExam ? Routes.projects.exam(projectId) : Routes.projects.quizzes(projectId)}>
-                        <ArrowLeft /> {isExam ? "Exam simulations" : "Quizzes"}
+                        <ArrowLeft /> {isExam ? t("page.backExams") : t("page.backQuizzes")}
                     </Link>
                 </Button>
             </div>
 
             <section className="grid items-center gap-8 rounded-2xl border border-border bg-card p-6 sm:p-8 lg:grid-cols-[auto_1fr]">
                 <div className="mx-auto">
-                    <ProgressRing value={attempt.percentage} size={168} strokeWidth={12} indicatorClassName={ringTone} label={`Score ${Math.round(attempt.percentage)}%`}>
+                    <ProgressRing value={attempt.percentage} size={168} strokeWidth={12} indicatorClassName={ringTone} label={t("hero.scoreLabel", { value: Math.round(attempt.percentage) })}>
                         <div className="text-center">
                             <AnimatedCounter value={attempt.percentage} suffix="%" className="font-display text-4xl" />
-                            <div className="text-xs text-muted-foreground">score</div>
+                            <div className="text-xs text-muted-foreground">{t("hero.score")}</div>
                         </div>
                     </ProgressRing>
                 </div>
                 <div className="space-y-4">
                     <div className="flex flex-wrap items-center gap-2">
                         <Badge variant="secondary">{getQuizModeLabel(data.quiz.mode)}</Badge>
-                        <Badge variant="outline">Attempt #{attempt.attempt_number}</Badge>
+                        <Badge variant="outline">{t("hero.attempt", { number: attempt.attempt_number })}</Badge>
                         {target ? (
                             <Badge className={cn("border-0", passed ? "bg-success/15 text-success" : "bg-destructive/10 text-destructive")}>
-                                {passed ? "Target reached" : "Below target"} · {target}%
+                                {passed ? t("hero.targetReached") : t("hero.belowTarget")} · {target}%
                             </Badge>
                         ) : null}
                     </div>
-                    <h1 className="font-display text-3xl leading-tight sm:text-4xl">{attempt.percentage >= 100 ? "Perfect score!" : passed ? "Great work." : "Keep going — every miss is a lesson."}</h1>
+                    <h1 className="font-display text-3xl leading-tight sm:text-4xl">{attempt.percentage >= 100 ? t("hero.perfect") : passed ? t("hero.great") : t("hero.keepGoing")}</h1>
                     <p className="text-sm text-muted-foreground">
-                        {data.quiz.title} · completed {formatDateTime(attempt.completed_at)}
+                        {t("hero.completed", { title: data.quiz.title, date: formatDateTime(attempt.completed_at) })}
                         {delta !== null && (
                             <span className={cn("ml-2 font-medium", delta >= 0 ? "text-success" : "text-destructive")}>
-                                {delta >= 0 ? "▲" : "▼"} {Math.abs(Math.round(delta))} pts vs previous simulation
+                                {delta >= 0 ? "▲" : "▼"} {t("hero.delta", { count: Math.abs(Math.round(delta)) })}
                             </span>
                         )}
                     </p>
                     <div className="flex flex-wrap gap-2">
                         {attempt.incorrect_count > 0 && (
                             <>
-                                <Button onClick={() => startReview({ source: "attempt", attempt_id: attempt.id, strategy: "retry" }, `Retry mistakes · ${data.quiz.title}`)} loading={createReview.isPending} variant="outline">
-                                    <RotateCcw /> Retry incorrect
+                                <Button onClick={() => startReview({ source: "attempt", attempt_id: attempt.id, strategy: "retry" }, t("actions.retryTitle", { title: data.quiz.title }))} loading={createReview.isPending} variant="outline">
+                                    <RotateCcw /> {t("actions.retryIncorrect")}
                                 </Button>
-                                <Button onClick={() => startReview({ source: "attempt", attempt_id: attempt.id, strategy: "new_questions" }, `New questions on missed concepts`)} loading={createReview.isPending}>
-                                    <Sparkles /> New questions on missed concepts
+                                <Button onClick={() => startReview({ source: "attempt", attempt_id: attempt.id, strategy: "new_questions" }, t("actions.newQuestions"))} loading={createReview.isPending}>
+                                    <Sparkles /> {t("actions.newQuestions")}
                                 </Button>
                             </>
                         )}
                         <Button variant="ghost" asChild>
-                            <Link to={Routes.projects.quiz_take(projectId, data.quiz.id)}>Retake quiz</Link>
+                            <Link to={Routes.projects.quiz_take(projectId, data.quiz.id)}>{t("actions.retake")}</Link>
                         </Button>
                     </div>
                 </div>
             </section>
 
             <section className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
-                <StatCard label="Correct" value={attempt.correct_count} suffix={`/${total}`} icon={Target} tone="success" />
-                <StatCard label="Time" value={formatDuration(attempt.time_spent_sec)} icon={Clock} />
-                <StatCard label="XP earned" value={attempt.xp_earned} suffix=" XP" icon={Zap} tone="primary" hint={!xpRefreshed ? "updating…" : undefined} />
-                <StatCard label="Best combo" value={attempt.best_combo} suffix="x" icon={Flame} tone="warning" />
-                <StatCard label="Avg difficulty" value={attempt.avg_difficulty ? attempt.avg_difficulty.toFixed(1) : "—"} icon={Trophy} />
+                <StatCard label={t("stats.correct")} value={attempt.correct_count} suffix={`/${total}`} icon={Target} tone="success" />
+                <StatCard label={t("stats.time")} value={formatDuration(attempt.time_spent_sec)} icon={Clock} />
+                <StatCard label={t("stats.xp")} value={attempt.xp_earned} suffix=" XP" icon={Zap} tone="primary" hint={!xpRefreshed ? t("stats.updating") : undefined} />
+                <StatCard label={t("stats.bestCombo")} value={attempt.best_combo} suffix="x" icon={Flame} tone="warning" />
+                <StatCard label={t("stats.avgDifficulty")} value={attempt.avg_difficulty ? attempt.avg_difficulty.toFixed(1) : "—"} icon={Trophy} />
             </section>
 
             <section className="grid gap-6 lg:grid-cols-2">
                 <div className="rounded-xl border border-border bg-card p-5">
-                    <h2 className="mb-4 text-sm font-medium">By topic</h2>
-                    {analysis?.by_topic?.length ? <TopicBreakdown rows={analysis.by_topic} reduceMotion={feedback.reduceMotion} /> : <p className="text-sm text-muted-foreground">No topic data.</p>}
+                    <h2 className="mb-4 text-sm font-medium">{t("sections.byTopic")}</h2>
+                    {analysis?.by_topic?.length ? <TopicBreakdown rows={analysis.by_topic} reduceMotion={feedback.reduceMotion} /> : <p className="text-sm text-muted-foreground">{t("sections.noTopicData")}</p>}
                 </div>
                 <div className="space-y-6">
                     {!!analysis?.recommendations?.length && (
                         <div className="rounded-xl border border-border bg-card p-5">
-                            <h2 className="mb-3 text-sm font-medium">What to study next</h2>
+                            <h2 className="mb-3 text-sm font-medium">{t("sections.next")}</h2>
                             <ul className="space-y-2 text-sm">
                                 {analysis.recommendations.map((r) => (
                                     <li key={r} className="flex gap-2">
@@ -192,7 +194,7 @@ export default function AttemptPage() {
                     )}
                     {!!analysis?.missed_concepts?.length && (
                         <div className="rounded-xl border border-border bg-card p-5">
-                            <h2 className="mb-3 text-sm font-medium">Missed concepts</h2>
+                            <h2 className="mb-3 text-sm font-medium">{t("sections.missed")}</h2>
                             <div className="flex flex-wrap gap-1.5">
                                 {analysis.missed_concepts.map((m) => (
                                     <Badge key={m.concept} variant="outline" className="font-normal">
@@ -208,13 +210,13 @@ export default function AttemptPage() {
 
             {(data.history.length > 1 || (isExam && (analysis?.previous_exams?.length ?? 0) > 0)) && (
                 <section className="rounded-xl border border-border bg-card p-5">
-                    <h2 className="mb-3 text-sm font-medium">{isExam ? "Exam simulations over time" : "Attempts on this quiz"}</h2>
+                    <h2 className="mb-3 text-sm font-medium">{isExam ? t("sections.examsOverTime") : t("sections.attemptsOnQuiz")}</h2>
                     <ScoreHistoryChart
                         target={target}
                         points={
                             isExam && analysis?.previous_exams?.length
-                                ? [...[...analysis.previous_exams].reverse().map((e, i) => ({ label: `Sim ${i + 1}`, percentage: e.percentage })), { label: "This one", percentage: attempt.percentage }]
-                                : data.history.map((h) => ({ label: `Attempt ${h.attempt_number}`, percentage: h.percentage }))
+                                ? [...[...analysis.previous_exams].reverse().map((e, i) => ({ label: t("chart.sim", { number: i + 1 }), percentage: e.percentage })), { label: t("chart.thisOne"), percentage: attempt.percentage }]
+                                : data.history.map((h) => ({ label: t("quiz:chart.attempt", { number: h.attempt_number }), percentage: h.percentage }))
                         }
                     />
                 </section>

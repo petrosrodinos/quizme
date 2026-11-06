@@ -14,6 +14,7 @@ import type { Deck, Flashcard, FlashcardDto } from "@/features/flashcards/interf
 import type { FlatTopic } from "@/features/topics/interfaces/topics.interfaces";
 import { TagsInput } from "@/pages/projects/components/tags-input";
 import { flashcardFormSchema, type FlashcardFormValues } from "../validation-schemas/flashcard.schema";
+import { useTranslation } from "react-i18next";
 
 const NONE = "none";
 
@@ -39,6 +40,7 @@ const toDefaults = (card: Flashcard | null, deckId?: string): FlashcardFormValue
 });
 
 export const FlashcardEditorDialog = ({ open, onOpenChange, card, decks, topics, defaultDeckId, isPending, onSubmit }: FlashcardEditorDialogProps) => {
+    const { t } = useTranslation("flashcards");
     const form = useForm<FlashcardFormValues>({
         resolver: zodResolver(flashcardFormSchema) as unknown as Resolver<FlashcardFormValues>,
         defaultValues: toDefaults(card, defaultDeckId),
@@ -70,24 +72,24 @@ export const FlashcardEditorDialog = ({ open, onOpenChange, card, decks, topics,
         <Dialog open={open} onOpenChange={(o) => !isPending && onOpenChange(o)}>
             <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl">
                 <DialogHeader>
-                    <DialogTitle className="font-display text-2xl font-normal">{card ? "Edit flashcard" : "New flashcard"}</DialogTitle>
-                    <DialogDescription>Markdown and math ($E = mc^2$) are supported. Keep each card to one idea.</DialogDescription>
+                    <DialogTitle className="font-display text-2xl font-normal">{card ? t("editor.editTitle") : t("editor.newTitle")}</DialogTitle>
+                    <DialogDescription>{t("editor.description")}</DialogDescription>
                 </DialogHeader>
                 <Tabs value={preview} onValueChange={(v) => setPreview(v as "edit" | "preview")}>
                     <TabsList>
-                        <TabsTrigger value="edit">Write</TabsTrigger>
-                        <TabsTrigger value="preview">Preview</TabsTrigger>
+                        <TabsTrigger value="edit">{t("editor.write")}</TabsTrigger>
+                        <TabsTrigger value="preview">{t("editor.preview")}</TabsTrigger>
                     </TabsList>
                 </Tabs>
                 {preview === "preview" ? (
                     <div className="grid gap-3 sm:grid-cols-2">
                         <div className="rounded-xl border border-border bg-card p-4">
-                            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">Front</p>
-                            <Markdown content={front || "*Empty*"} />
+                            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">{t("card.front")}</p>
+                            <Markdown content={front || `*${t("editor.empty")}*`} />
                         </div>
                         <div className="rounded-xl border border-border bg-surface-card p-4">
-                            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">Back</p>
-                            <Markdown content={back || "*Empty*"} />
+                            <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">{t("card.back")}</p>
+                            <Markdown content={back || `*${t("editor.empty")}*`} />
                         </div>
                     </div>
                 ) : null}
@@ -99,9 +101,9 @@ export const FlashcardEditorDialog = ({ open, onOpenChange, card, decks, topics,
                                 name="front"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Front — question, term or concept</FormLabel>
+                                        <FormLabel>{t("editor.fields.front")}</FormLabel>
                                         <FormControl>
-                                            <Textarea rows={3} autoFocus placeholder="What does the mitochondrion produce?" {...field} />
+                                            <Textarea rows={3} autoFocus placeholder={t("editor.fields.frontPlaceholder")} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -112,9 +114,9 @@ export const FlashcardEditorDialog = ({ open, onOpenChange, card, decks, topics,
                                 name="back"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Back — answer or explanation</FormLabel>
+                                        <FormLabel>{t("editor.fields.back")}</FormLabel>
                                         <FormControl>
-                                            <Textarea rows={4} placeholder="ATP, through cellular respiration." {...field} />
+                                            <Textarea rows={4} placeholder={t("editor.fields.backPlaceholder")} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -127,15 +129,15 @@ export const FlashcardEditorDialog = ({ open, onOpenChange, card, decks, topics,
                                 name="deck_id"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Deck</FormLabel>
+                                        <FormLabel>{t("editor.fields.deck")}</FormLabel>
                                         <Select value={field.value ?? NONE} onValueChange={(v) => field.onChange(v === NONE ? undefined : v)}>
                                             <FormControl>
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder="Default deck" />
+                                                    <SelectValue placeholder={t("generate.fields.defaultDeck")} />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value={NONE}>Default deck</SelectItem>
+                                                <SelectItem value={NONE}>{t("generate.fields.defaultDeck")}</SelectItem>
                                                 {decks.map((d) => (
                                                     <SelectItem key={d.id} value={d.id}>
                                                         {d.name}
@@ -151,15 +153,15 @@ export const FlashcardEditorDialog = ({ open, onOpenChange, card, decks, topics,
                                 name="topic_id"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Topic</FormLabel>
+                                        <FormLabel>{t("editor.fields.topic")}</FormLabel>
                                         <Select value={field.value ?? NONE} onValueChange={(v) => field.onChange(v === NONE ? undefined : v)}>
                                             <FormControl>
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder="No topic" />
+                                                    <SelectValue placeholder={t("editor.fields.noTopic")} />
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value={NONE}>No topic</SelectItem>
+                                                <SelectItem value={NONE}>{t("editor.fields.noTopic")}</SelectItem>
                                                 {topics.map((t) => (
                                                     <SelectItem key={t.id} value={t.id}>
                                                         {t.depth ? "↳ " : ""}
@@ -176,7 +178,7 @@ export const FlashcardEditorDialog = ({ open, onOpenChange, card, decks, topics,
                                 name="difficulty"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Difficulty</FormLabel>
+                                        <FormLabel>{t("common:terms.difficulty")}</FormLabel>
                                         <Select value={String(field.value)} onValueChange={(v) => field.onChange(Number(v))}>
                                             <FormControl>
                                                 <SelectTrigger>
@@ -199,9 +201,9 @@ export const FlashcardEditorDialog = ({ open, onOpenChange, card, decks, topics,
                                 name="category"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Category</FormLabel>
+                                        <FormLabel>{t("editor.fields.category")}</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Definitions" {...field} />
+                                            <Input placeholder={t("editor.fields.categoryPlaceholder")} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -213,17 +215,17 @@ export const FlashcardEditorDialog = ({ open, onOpenChange, card, decks, topics,
                             name="tags"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Tags</FormLabel>
+                                    <FormLabel>{t("editor.fields.tags")}</FormLabel>
                                     <TagsInput value={field.value} onChange={field.onChange} />
                                 </FormItem>
                             )}
                         />
                         <DialogFooter>
                             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
-                                Cancel
+                                {t("common:actions.cancel")}
                             </Button>
                             <Button type="submit" loading={isPending}>
-                                {card ? "Save changes" : "Add card"}
+                                {card ? t("common:actions.saveChanges") : t("editor.addCard")}
                             </Button>
                         </DialogFooter>
                     </form>

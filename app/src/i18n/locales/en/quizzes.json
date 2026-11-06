@@ -1,0 +1,115 @@
+{
+  "page": {
+    "title": "Quizzes",
+    "description": "Generate quizzes from your material, track every attempt and turn mistakes into mastery.",
+    "examSimulation": "Exam simulation",
+    "newQuiz": "New quiz"
+  },
+  "tabs": {
+    "quizzes": "Quizzes",
+    "history": "History",
+    "review": "Mistake review"
+  },
+  "empty": {
+    "title": "No quizzes yet",
+    "description": "Create your first quiz — questions are generated from your uploaded documents and keep a reference to their source."
+  },
+  "delete": {
+    "title": "Delete this quiz?",
+    "description": "All attempts for this quiz will be removed. Questions stay in your question bank."
+  },
+  "card": {
+    "shared": "Shared",
+    "actionsFor": "Actions for {{title}}",
+    "groupResults": "Group results",
+    "shareWithMembers": "Share with members",
+    "generationFailed": "Generation failed",
+    "bestOf_one": "best of {{count}} attempt",
+    "bestOf_other": "best of {{count}} attempts",
+    "notAttempted": "not attempted yet",
+    "resume": "Resume",
+    "retake": "Retake",
+    "open": "Open",
+    "start": "Start"
+  },
+  "history": {
+    "emptyTitle": "No attempts yet",
+    "emptyDescription": "Complete a quiz to start tracking your progress over time.",
+    "scoreOverTime": "Score over time",
+    "columns": {
+      "quiz": "Quiz",
+      "attempt": "Attempt",
+      "date": "Date",
+      "score": "Score",
+      "correct": "Correct",
+      "incorrect": "Incorrect",
+      "time": "Time",
+      "difficulty": "Difficulty",
+      "missed": "Missed"
+    }
+  },
+  "group": {
+    "title": "Group results",
+    "summary_one": "{{count}} participant · group average {{average}}%",
+    "summary_other": "{{count}} participants · group average {{average}}%",
+    "loading": "Loading results",
+    "leaderboard": "Leaderboard",
+    "nobody": "Nobody has completed this quiz yet.",
+    "privacy": "Names are shown only for members who opted into leaderboards.",
+    "questionDifficulty": "Question difficulty (hardest first)",
+    "percentCorrect": "{{value}}% correct"
+  },
+  "review": {
+    "emptyTitle": "Nothing to review",
+    "emptyDescription": "You have no outstanding incorrect answers. Keep practising to find new weak spots.",
+    "stillIncorrect_one": "question still answered incorrectly",
+    "stillIncorrect_other": "questions still answered incorrectly",
+    "retryAll": "Retry all incorrect",
+    "newQuestions": "New questions, same concepts",
+    "weakConcepts": "Concepts you keep missing",
+    "missedQuestions": "Missed questions",
+    "general": "General",
+    "byTopic": "By topic",
+    "review": "Review",
+    "fromAttempt": "From a specific attempt",
+    "wrongCount_one": "{{count}} wrong",
+    "wrongCount_other": "{{count}} wrong",
+    "retry": "Retry",
+    "titles": {
+      "retryAll": "Retry all mistakes",
+      "newQuestions": "New questions on missed concepts",
+      "topic": "Review: {{topic}}",
+      "attempt": "Retry: {{title}}"
+    }
+  },
+  "toasts": {
+    "generating": "Generating your quiz",
+    "generatingDescription": "Questions are being prepared from your material.",
+    "createFailed": "Could not create quiz",
+    "deleted": "Quiz deleted",
+    "deleteFailed": "Could not delete quiz",
+    "shared": "Quiz shared",
+    "sharedDescription": "Project members can now take this quiz and compare results.",
+    "shareFailed": "Could not share quiz",
+    "startFailed": "Could not start quiz",
+    "answerFailed": "Answer not saved",
+    "submitted": "Quiz submitted",
+    "submitFailed": "Could not submit quiz"
+  },
+  "errors": {
+    "loadList": "Failed to load quizzes.",
+    "load": "Failed to load quiz.",
+    "create": "Failed to create quiz.",
+    "delete": "Failed to delete quiz.",
+    "share": "Failed to share quiz.",
+    "groupResults": "Failed to load group results.",
+    "review": "Failed to load review overview.",
+    "documents": "Failed to load documents.",
+    "start": "Failed to start quiz.",
+    "attempt": "Failed to load attempt.",
+    "answer": "Failed to submit answer.",
+    "submit": "Failed to submit quiz.",
+    "results": "Failed to load results.",
+    "history": "Failed to load attempt history."
+  }
+}

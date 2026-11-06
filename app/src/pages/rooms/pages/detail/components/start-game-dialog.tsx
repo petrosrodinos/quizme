@@ -9,6 +9,7 @@ import { useCreateQuiz, useQuiz, useQuizzes } from "@/features/quizzes/hooks/use
 import { GenerationStatuses } from "@/features/quizzes/interfaces/quizzes.interfaces";
 import { useCreateGame } from "@/features/games/hooks/use-games";
 import type { GameState } from "@/features/games/interfaces/games.interfaces";
+import { useTranslation } from "react-i18next";
 
 interface StartGameDialogProps {
     projectId: string;
@@ -22,6 +23,7 @@ const NEW_QUIZ = "__new__";
 
 /** Pick a ready quiz (or generate a fresh one) and open a multiplayer lobby. */
 export const StartGameDialog = ({ projectId, roomId, open, onOpenChange, onCreated }: StartGameDialogProps) => {
+    const { t } = useTranslation("rooms");
     const quizzes = useQuizzes(projectId);
     const createQuiz = useCreateQuiz(projectId, { silent: true });
     const createGame = useCreateGame();
@@ -64,7 +66,7 @@ export const StartGameDialog = ({ projectId, roomId, open, onOpenChange, onCreat
     const submit = () => {
         if (quizId === NEW_QUIZ) {
             createQuiz.mutate(
-                { mode: "PRACTICE", count: 10, types: ["MCQ", "TRUE_FALSE", "FILL_BLANK"], difficulty: "mixed", title: "Multiplayer quiz" },
+                { mode: "PRACTICE", count: 10, types: ["MCQ", "TRUE_FALSE", "FILL_BLANK"], difficulty: "mixed", title: t("game.generatedQuizTitle") },
                 { onSuccess: (q) => setGeneratingId(q.id) },
             );
         } else if (quizId) launch(quizId);
@@ -77,18 +79,18 @@ export const StartGameDialog = ({ projectId, roomId, open, onOpenChange, onCreat
         <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle className="font-display text-2xl font-normal">Multiplayer quiz</DialogTitle>
-                    <DialogDescription>Everyone answers at the same time; faster correct answers earn more points.</DialogDescription>
+                    <DialogTitle className="font-display text-2xl font-normal">{t("game.title")}</DialogTitle>
+                    <DialogDescription>{t("game.description")}</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4">
                     <div className="space-y-2">
-                        <Label id="game-quiz-label">Quiz</Label>
+                        <Label id="game-quiz-label">{t("game.quiz")}</Label>
                         <Select value={quizId || undefined} onValueChange={setQuizId} disabled={busy}>
                             <SelectTrigger aria-labelledby="game-quiz-label">
-                                <SelectValue placeholder={quizzes.isPending ? "Loading quizzes…" : "Choose a quiz"} />
+                                <SelectValue placeholder={quizzes.isPending ? t("game.loadingQuizzes") : t("game.chooseQuiz")} />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value={NEW_QUIZ}>✨ Generate a new 10-question quiz</SelectItem>
+                                <SelectItem value={NEW_QUIZ}>✨ {t("game.generateNew", { count: 10 })}</SelectItem>
                                 {ready.map((q) => (
                                     <SelectItem key={q.id} value={q.id}>
                                         {q.title} ({q.question_count})
@@ -98,7 +100,7 @@ export const StartGameDialog = ({ projectId, roomId, open, onOpenChange, onCreat
                         </Select>
                     </div>
                     <div className="space-y-2">
-                        <Label id="game-speed-label">Time per question</Label>
+                        <Label id="game-speed-label">{t("game.timePerQuestion")}</Label>
                         <Select value={seconds} onValueChange={setSeconds} disabled={busy}>
                             <SelectTrigger aria-labelledby="game-speed-label">
                                 <SelectValue />
@@ -114,17 +116,17 @@ export const StartGameDialog = ({ projectId, roomId, open, onOpenChange, onCreat
                     </div>
                     {generatingId ? (
                         <p className="flex items-center gap-2 rounded-lg bg-surface-card p-3 text-sm" role="status">
-                            <Sparkles className="h-4 w-4 animate-pulse text-primary" aria-hidden /> Generating questions from your material…
+                            <Sparkles className="h-4 w-4 animate-pulse text-primary" aria-hidden /> {t("game.generating")}
                         </p>
                     ) : null}
-                    {failed ? <p className="text-sm text-destructive">{generating.data?.error_message ?? "Generation failed. Try another quiz."}</p> : null}
+                    {failed ? <p className="text-sm text-destructive">{generating.data?.error_message ?? t("game.generationFailed")}</p> : null}
                 </div>
                 <DialogFooter>
                     <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={busy}>
-                        Cancel
+                        {t("common:actions.cancel")}
                     </Button>
                     <Button onClick={submit} disabled={!quizId} loading={busy}>
-                        Open lobby
+                        {t("game.openLobby")}
                     </Button>
                 </DialogFooter>
             </DialogContent>

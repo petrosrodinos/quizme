@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Brain, RotateCcw, Sparkles } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -39,14 +40,15 @@ interface CreateQuizDialogProps {
 
 const DEFAULT_TYPES: QuestionType[] = [QuestionTypes.MCQ, QuestionTypes.TRUE_FALSE, QuestionTypes.FILL_BLANK, QuestionTypes.MATCHING];
 const DIALOG_MODES: QuizMode[] = [QuizModes.PRACTICE, QuizModes.ADAPTIVE, QuizModes.REVIEW];
-const MODE_LABELS: Record<string, { label: string; icon: typeof Sparkles }> = {
-    PRACTICE: { label: "Practice", icon: Sparkles },
-    ADAPTIVE: { label: "Adaptive", icon: Brain },
-    REVIEW: { label: "Review", icon: RotateCcw },
+const MODE_ICONS: Record<string, typeof Sparkles> = {
+    PRACTICE: Sparkles,
+    ADAPTIVE: Brain,
+    REVIEW: RotateCcw,
 };
 
 /** Creates practice / adaptive / mistake-review quizzes. Exam simulations live on the Exam page. */
 export const CreateQuizDialog = ({ projectId, open, onOpenChange, defaults, canShare, startImmediately = true }: CreateQuizDialogProps) => {
+    const { t } = useTranslation("quiz");
     const navigate = useNavigate();
     const create = useCreateQuiz(projectId);
     const { flat: topics } = useFlatTopics(projectId);
@@ -99,7 +101,7 @@ export const CreateQuizDialog = ({ projectId, open, onOpenChange, defaults, canS
         <Dialog open={open} onOpenChange={(o) => !create.isPending && onOpenChange(o)}>
             <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
                 <DialogHeader>
-                    <DialogTitle className="font-display text-2xl font-normal">New quiz</DialogTitle>
+                    <DialogTitle className="font-display text-2xl font-normal">{t("create.title")}</DialogTitle>
                     <DialogDescription>{getQuizModeDescription(mode)}</DialogDescription>
                 </DialogHeader>
 
@@ -107,10 +109,10 @@ export const CreateQuizDialog = ({ projectId, open, onOpenChange, defaults, canS
                     <Tabs value={mode} onValueChange={(v) => setMode(v as QuizMode)}>
                         <TabsList className="grid w-full grid-cols-3">
                             {DIALOG_MODES.map((m) => {
-                                const Icon = MODE_LABELS[m].icon;
+                                const Icon = MODE_ICONS[m];
                                 return (
                                     <TabsTrigger key={m} value={m} className="gap-1.5">
-                                        <Icon className="h-4 w-4" aria-hidden /> {MODE_LABELS[m].label}
+                                        <Icon className="h-4 w-4" aria-hidden /> {t(`create.tabs.${m}`)}
                                     </TabsTrigger>
                                 );
                             })}
@@ -119,18 +121,18 @@ export const CreateQuizDialog = ({ projectId, open, onOpenChange, defaults, canS
 
                     <div className="grid gap-4 sm:grid-cols-[1fr_120px]">
                         <div className="space-y-1.5">
-                            <Label htmlFor="quiz-title">Title (optional)</Label>
-                            <Input id="quiz-title" value={title} maxLength={160} onChange={(e) => setTitle(e.target.value)} placeholder="Auto-generated if empty" />
+                            <Label htmlFor="quiz-title">{t("create.titleLabel")}</Label>
+                            <Input id="quiz-title" value={title} maxLength={160} onChange={(e) => setTitle(e.target.value)} placeholder={t("create.titlePlaceholder")} />
                         </div>
                         <div className="space-y-1.5">
-                            <Label htmlFor="quiz-count">Questions</Label>
+                            <Label htmlFor="quiz-count">{t("create.count")}</Label>
                             <Input id="quiz-count" type="number" min={1} max={50} value={count} onChange={(e) => setCount(Math.max(1, Math.min(50, Number(e.target.value) || 1)))} />
                         </div>
                     </div>
 
                     {mode === QuizModes.REVIEW && (
                         <div className="space-y-2">
-                            <Label>Review strategy</Label>
+                            <Label>{t("create.strategy")}</Label>
                             <RadioGroup value={strategy} onValueChange={(v) => setStrategy(v as ReviewStrategy)} className="space-y-2">
                                 {ReviewStrategyFormOptions.map((o) => (
                                     <label key={o.id} className="flex cursor-pointer items-start gap-3 rounded-lg border border-border p-3 has-[[data-state=checked]]:border-primary">
@@ -146,15 +148,15 @@ export const CreateQuizDialog = ({ projectId, open, onOpenChange, defaults, canS
                     )}
 
                     <div className="space-y-2">
-                        <Label>Question types</Label>
-                        <ChipMultiSelect label="Question types" options={QuestionTypeFormOptions} value={types} onChange={(v) => setTypes(v.length ? v : types)} />
+                        <Label>{t("create.types")}</Label>
+                        <ChipMultiSelect label={t("create.types")} options={QuestionTypeFormOptions} value={types} onChange={(v) => setTypes(v.length ? v : types)} />
                     </div>
 
                     {mode === QuizModes.PRACTICE && (
                         <div className="space-y-1.5">
-                            <Label>Difficulty</Label>
+                            <Label>{t("create.difficulty")}</Label>
                             <Select value={difficulty} onValueChange={(v) => setDifficulty(v as QuizDifficulty)}>
-                                <SelectTrigger aria-label="Difficulty">
+                                <SelectTrigger aria-label={t("create.difficulty")}>
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -170,41 +172,41 @@ export const CreateQuizDialog = ({ projectId, open, onOpenChange, defaults, canS
 
                     {(mode !== QuizModes.REVIEW || !defaults?.review) && (
                         <div className="space-y-2">
-                            <Label>{mode === QuizModes.REVIEW ? "Limit to a topic (optional, pick one)" : "Topics (optional)"}</Label>
+                            <Label>{mode === QuizModes.REVIEW ? t("create.topicLimit") : t("create.topics")}</Label>
                             <ChipMultiSelect
-                                label="Topics"
-                                options={topics.map((t) => ({ id: t.id, label: t.name, depth: t.depth }))}
+                                label={t("create.topicsAria")}
+                                options={topics.map((topic) => ({ id: topic.id, label: topic.name, depth: topic.depth }))}
                                 value={topicIds}
                                 onChange={(v) => setTopicIds(mode === QuizModes.REVIEW ? v.slice(-1) : v)}
-                                emptyHint="Topics appear once your documents have been processed."
+                                emptyHint={t("create.topicsEmpty")}
                             />
                         </div>
                     )}
 
                     {mode === QuizModes.PRACTICE && readyDocs.length > 1 && (
                         <div className="space-y-2">
-                            <Label>Documents (optional)</Label>
-                            <ChipMultiSelect label="Documents" options={readyDocs.map((d) => ({ id: d.id, label: d.filename }))} value={documentIds} onChange={setDocumentIds} />
+                            <Label>{t("create.documents")}</Label>
+                            <ChipMultiSelect label={t("create.documentsAria")} options={readyDocs.map((d) => ({ id: d.id, label: d.filename }))} value={documentIds} onChange={setDocumentIds} />
                         </div>
                     )}
 
                     {canShare && mode !== QuizModes.REVIEW && (
                         <label className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
                             <span>
-                                <span className="block text-sm font-medium">Share with project members</span>
-                                <span className="block text-xs text-muted-foreground">Everyone can take it and compare results on a leaderboard.</span>
+                                <span className="block text-sm font-medium">{t("create.share")}</span>
+                                <span className="block text-xs text-muted-foreground">{t("create.shareHint")}</span>
                             </span>
-                            <Switch checked={shared} onCheckedChange={setShared} aria-label="Share with project members" />
+                            <Switch checked={shared} onCheckedChange={setShared} aria-label={t("create.share")} />
                         </label>
                     )}
                 </div>
 
                 <DialogFooter>
                     <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={create.isPending}>
-                        Cancel
+                        {t("common:actions.cancel")}
                     </Button>
                     <Button onClick={submit} loading={create.isPending} disabled={!types.length}>
-                        <Sparkles /> Generate quiz
+                        <Sparkles /> {t("create.submit")}
                     </Button>
                 </DialogFooter>
             </DialogContent>

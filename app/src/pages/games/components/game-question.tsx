@@ -6,6 +6,7 @@ import { QuestionInput, isAnswerReady } from "@/pages/projects/components/quiz/q
 import { cn } from "@/lib/utils";
 import type { AnswerValue, AttemptQuestion } from "@/features/quizzes/interfaces/quizzes.interfaces";
 import type { GameReveal, GameState } from "@/features/games/interfaces/games.interfaces";
+import { useTranslation } from "react-i18next";
 
 interface GameQuestionProps {
     game: GameState;
@@ -21,6 +22,7 @@ interface GameQuestionProps {
 }
 
 export const GameQuestion = ({ game, clockOffset, answered, myAnswer, onAnswerChange, onSubmit, submitting, reveal, onTick }: GameQuestionProps) => {
+    const { t } = useTranslation("games");
     const question = useMemo<AttemptQuestion | null>(() => (game.question ? { ...game.question, response: null } : null), [game.question]);
     const deadline = game.deadline_at ? new Date(game.deadline_at).getTime() : 0;
     const total = game.seconds_per_question * 1000;
@@ -46,25 +48,25 @@ export const GameQuestion = ({ game, clockOffset, answered, myAnswer, onAnswerCh
         <div className="space-y-5">
             <div className="flex items-center justify-between text-sm text-muted-foreground">
                 <span>
-                    Question {game.current_index + 1} of {game.total}
+                    {t("question.progress", { current: game.current_index + 1, total: game.total })}
                 </span>
                 <span className={cn("flex items-center gap-1.5 font-medium tabular-nums", seconds <= 5 && !reveal && "text-destructive")} aria-live={seconds <= 5 ? "assertive" : "off"}>
-                    <Clock className="h-4 w-4" aria-hidden /> {reveal ? "Time's up" : `${seconds}s`}
+                    <Clock className="h-4 w-4" aria-hidden /> {reveal ? t("question.timesUp") : t("common:units.s", { count: seconds })}
                 </span>
             </div>
-            <Progress value={reveal ? 0 : (left / total) * 100} aria-label="Time remaining" />
+            <Progress value={reveal ? 0 : (left / total) * 100} aria-label={t("question.timeRemaining")} />
             <h2 className="font-display text-2xl leading-snug">{question.prompt}</h2>
             <QuestionInput question={question} value={myAnswer} onChange={onAnswerChange} disabled={locked} correct={reveal?.correct_answer ?? null} keyboard={!locked} onSubmitShortcut={onSubmit} />
             {!reveal ? (
                 <div className="flex flex-wrap items-center justify-between gap-3">
                     <p className="text-sm text-muted-foreground" role="status">
-                        {answeredCount} of {game.players.length} answered
+                        {t("question.answeredCount", { answered: answeredCount, total: game.players.length })}
                     </p>
                     {answered ? (
-                        <p className="text-sm font-medium">Answer locked in — waiting for others…</p>
+                        <p className="text-sm font-medium">{t("question.locked")}</p>
                     ) : (
                         <Button onClick={onSubmit} disabled={!isAnswerReady(question, myAnswer) || left === 0} loading={submitting}>
-                            Lock in answer
+                            {t("question.lockIn")}
                         </Button>
                     )}
                 </div>

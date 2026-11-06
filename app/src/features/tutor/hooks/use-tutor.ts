@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import type { ChatMessage, ThreadMessages } from "../interfaces/tutor.interfaces";
 import { createThread, deleteThread, getMessages, getThreads, sendMessage, updateThread } from "../services/tutor.services";
+import { tr } from "@/lib/i18n-options";
 
 export const useThreads = (projectId: string) => useQuery({ queryKey: ["tutor-threads", projectId], queryFn: () => getThreads(projectId), enabled: !!projectId });
 
@@ -14,9 +15,9 @@ export const useCreateThread = () => {
         mutationFn: createThread,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["tutor-threads"] });
-            toast({ title: "New conversation", duration: 1500 });
+            toast({ title: tr("tutor:toasts.created"), duration: 1500 });
         },
-        onError: (e: Error) => toast({ title: "Could not start conversation", description: e.message, variant: "error" }),
+        onError: (e: Error) => toast({ title: tr("tutor:toasts.createFailed"), description: e.message, variant: "error" }),
     });
 };
 
@@ -27,9 +28,9 @@ export const useUpdateThread = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["tutor-threads"] });
             queryClient.invalidateQueries({ queryKey: ["tutor-messages"] });
-            toast({ title: "Conversation updated", duration: 1500 });
+            toast({ title: tr("tutor:toasts.updated"), duration: 1500 });
         },
-        onError: (e: Error) => toast({ title: "Could not update conversation", description: e.message, variant: "error" }),
+        onError: (e: Error) => toast({ title: tr("tutor:toasts.updateFailed"), description: e.message, variant: "error" }),
     });
 };
 
@@ -39,9 +40,9 @@ export const useDeleteThread = () => {
         mutationFn: deleteThread,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["tutor-threads"] });
-            toast({ title: "Conversation deleted", duration: 1500 });
+            toast({ title: tr("tutor:toasts.deleted"), duration: 1500 });
         },
-        onError: (e: Error) => toast({ title: "Could not delete conversation", description: e.message, variant: "error" }),
+        onError: (e: Error) => toast({ title: tr("tutor:toasts.deleteFailed"), description: e.message, variant: "error" }),
     });
 };
 
@@ -82,7 +83,7 @@ export const useSendMessage = () => {
         },
         onError: (e: Error, { threadId }, ctx) => {
             if (ctx?.previous) queryClient.setQueryData(["tutor-messages", threadId], ctx.previous);
-            toast({ title: "Message not sent", description: e.message, variant: "error" });
+            toast({ title: tr("tutor:toasts.sendFailed"), description: e.message, variant: "error" });
         },
     });
 };

@@ -23,12 +23,14 @@ import { RecallModes, type RecallAttempt, type RecallMode, type RecallPrompt, ty
 import { RecallModeFormOptions, getRecallModeLabel } from "@/config/constants/dropdowns/recall/recall-mode.options";
 import { EvaluationResult } from "./components/evaluation-result";
 import { useSpeechRecognition } from "./hooks/use-speech-recognition";
+import { useTranslation } from "react-i18next";
 
 const ANY = "any";
 const FREE = "free";
 
 export default function ProjectRecallPage() {
-    usePageMetadata({ title: "Active recall" });
+    const { t } = useTranslation("recall");
+    usePageMetadata({ title: t("page.title") });
     const { projectId } = useProjectContext();
     const { flat: topics } = useFlatTopics(projectId);
     const { data: history = [], isPending: historyPending } = useRecallHistory(projectId);
@@ -103,13 +105,13 @@ export default function ProjectRecallPage() {
     return (
         <Main width="wide">
             <PageHeader
-                title="Active recall"
-                description="Explain ideas from memory — the most effective way to make them stick. Your answer is graded against your sources."
+                title={t("page.title")}
+                description={t("page.description")}
             />
 
             <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
                 <div className="space-y-4">
-                    <section aria-label="Mode" className="grid gap-2 sm:grid-cols-2" role="radiogroup">
+                    <section aria-label={t("page.modeGroup")} className="grid gap-2 sm:grid-cols-2" role="radiogroup">
                         {RecallModeFormOptions.map((o) => (
                             <button
                                 key={o.id}
@@ -137,19 +139,19 @@ export default function ProjectRecallPage() {
 
                     <Tabs value={source} onValueChange={(v) => setSource(v as "generated" | typeof FREE)}>
                         <TabsList>
-                            <TabsTrigger value="generated">Prompts from my material</TabsTrigger>
-                            <TabsTrigger value={FREE}>Explain any concept</TabsTrigger>
+                            <TabsTrigger value="generated">{t("source.generated")}</TabsTrigger>
+                            <TabsTrigger value={FREE}>{t("source.free")}</TabsTrigger>
                         </TabsList>
                         <TabsContent value="generated" className="mt-3">
                             <div className="flex flex-wrap items-end gap-2">
                                 <div className="space-y-1">
-                                    <Label htmlFor="recall-topic">Topic</Label>
+                                    <Label htmlFor="recall-topic">{t("source.topic")}</Label>
                                     <Select value={topicId} onValueChange={setTopicId}>
                                         <SelectTrigger id="recall-topic" className="w-56">
                                             <SelectValue />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value={ANY}>Any topic</SelectItem>
+                                            <SelectItem value={ANY}>{t("source.anyTopic")}</SelectItem>
                                             {topics.map((t) => (
                                                 <SelectItem key={t.id} value={t.id}>
                                                     {t.depth ? "↳ " : ""}
@@ -160,13 +162,13 @@ export default function ProjectRecallPage() {
                                     </Select>
                                 </div>
                                 <Button onClick={getPrompts} loading={generate.isPending}>
-                                    <Sparkles /> {prompts.length ? "New prompts" : "Get prompts"}
+                                    <Sparkles /> {prompts.length ? t("source.newPrompts") : t("source.getPrompts")}
                                 </Button>
                             </div>
                         </TabsContent>
                         <TabsContent value={FREE} className="mt-3 space-y-1">
-                            <Label htmlFor="free-prompt">What do you want to explain?</Label>
-                            <Input id="free-prompt" value={freePrompt} onChange={(e) => setFreePrompt(e.target.value)} maxLength={500} placeholder="e.g. Explain the process of photosynthesis" />
+                            <Label htmlFor="free-prompt">{t("source.freeLabel")}</Label>
+                            <Input id="free-prompt" value={freePrompt} onChange={(e) => setFreePrompt(e.target.value)} maxLength={500} placeholder={t("source.freePlaceholder")} />
                         </TabsContent>
                     </Tabs>
 
@@ -175,22 +177,23 @@ export default function ProjectRecallPage() {
                     ) : !promptText ? (
                         <EmptyState
                             icon={Brain}
-                            title={source === "generated" ? "Get a prompt to start" : "Type a concept to explain"}
-                            description="Write (or say) your explanation without looking at your notes."
+                            title={source === "generated" ? t("empty.generatedTitle") : t("empty.freeTitle")}
+                            description={t("empty.description")}
                             compact
                         />
                     ) : (
-                        <section aria-label="Your explanation" className="rounded-xl border border-border bg-card p-5">
+                        <section aria-label={t("answer.ariaLabel")} className="rounded-xl border border-border bg-card p-5">
                             {source === "generated" && prompts.length > 1 && (
                                 <p className="mb-2 text-xs text-muted-foreground">
-                                    Prompt {index + 1} of {prompts.length}
+                                    {t("answer.promptCounter", { current: index + 1, total: prompts.length })}
                                 </p>
                             )}
                             <h2 className="font-display text-2xl">{promptText}</h2>
                             {current?.source?.document_title && (
                                 <p className="mt-1 text-xs text-muted-foreground">
-                                    From {current.source.document_title}
-                                    {current.source.page ? `, p.${current.source.page}` : ""}
+                                    {current.source.page
+                                        ? t("answer.fromSourcePage", { title: current.source.document_title, page: current.source.page })
+                                        : t("answer.fromSource", { title: current.source.document_title })}
                                 </p>
                             )}
 
@@ -199,15 +202,15 @@ export default function ProjectRecallPage() {
                                     <EvaluationResult evaluation={result.evaluation} sources={result.sources} projectId={projectId} />
                                     <div className="mt-5 flex flex-wrap gap-2">
                                         <Button variant="outline" onClick={() => setResult(null)}>
-                                            Try again
+                                            {t("common:actions.tryAgain")}
                                         </Button>
-                                        {(source === FREE || index < prompts.length - 1) && <Button onClick={next}>{source === FREE ? "Explain another concept" : "Next prompt"}</Button>}
+                                        {(source === FREE || index < prompts.length - 1) && <Button onClick={next}>{source === FREE ? t("answer.another") : t("answer.nextPrompt")}</Button>}
                                     </div>
                                 </div>
                             ) : (
                                 <div className="mt-4 space-y-2">
                                     <Label htmlFor="recall-answer" className="sr-only">
-                                        Your answer
+                                        {t("answer.label")}
                                     </Label>
                                     <Textarea
                                         id="recall-answer"
@@ -215,7 +218,7 @@ export default function ProjectRecallPage() {
                                         value={answer}
                                         onChange={(e) => setAnswer(e.target.value)}
                                         maxLength={8000}
-                                        placeholder={mode === RecallModes.TEACH_BACK ? "Explain it as if you were teaching a friend who has never heard of it…" : "Explain from memory…"}
+                                        placeholder={mode === RecallModes.TEACH_BACK ? t("answer.teachBackPlaceholder") : t("answer.placeholder")}
                                         onKeyDown={(e) => {
                                             if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) submit();
                                         }}
@@ -226,14 +229,14 @@ export default function ProjectRecallPage() {
                                         {speech.supported ? (
                                             <Button type="button" variant={speech.listening ? "destructive" : "outline"} onClick={speech.listening ? speech.stop : speech.start} aria-pressed={speech.listening}>
                                                 {speech.listening ? <MicOff /> : <Mic />}
-                                                {speech.listening ? "Stop dictation" : "Speak your answer"}
+                                                {speech.listening ? t("speech.stop") : t("speech.start")}
                                             </Button>
                                         ) : (
-                                            <span className="text-xs text-muted-foreground">Voice input is not supported in this browser — type your answer.</span>
+                                            <span className="text-xs text-muted-foreground">{t("speech.unsupported")}</span>
                                         )}
-                                        <span className="ml-auto text-xs text-muted-foreground">Ctrl+Enter to submit</span>
+                                        <span className="ml-auto text-xs text-muted-foreground">{t("answer.submitHint")}</span>
                                         <Button onClick={submit} loading={evaluate.isPending} disabled={!answer.trim()}>
-                                            <Send /> Evaluate
+                                            <Send /> {t("answer.evaluate")}
                                         </Button>
                                     </div>
                                 </div>
@@ -242,9 +245,9 @@ export default function ProjectRecallPage() {
                     )}
                 </div>
 
-                <aside aria-label="History">
+                <aside aria-label={t("history.title")}>
                     <h2 className="mb-2 flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
-                        <History className="h-4 w-4" aria-hidden /> Recent explanations
+                        <History className="h-4 w-4" aria-hidden /> {t("history.title")}
                     </h2>
                     {historyPending ? (
                         <div className="space-y-2">
@@ -253,7 +256,7 @@ export default function ProjectRecallPage() {
                             ))}
                         </div>
                     ) : !history.length ? (
-                        <p className="text-sm text-muted-foreground">Your graded explanations will appear here.</p>
+                        <p className="text-sm text-muted-foreground">{t("history.empty")}</p>
                     ) : (
                         <ul className="space-y-2">
                             {history.map((h) => (

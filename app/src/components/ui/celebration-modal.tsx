@@ -4,6 +4,8 @@ import { Award, Target, Trophy } from "lucide-react";
 import { CelebrationKinds, useCelebrationsStore, type Celebration } from "@/stores/celebrations";
 import { LevelBadge } from "@/components/ui/level-badge";
 import { celebrate } from "@/lib/celebrate";
+import { useTranslation } from "react-i18next";
+import { getAchievementRarityLabel } from "@/config/constants/dropdowns/gamification/achievement-rarity.options";
 
 const AUTO_CLOSE_MS = 2800;
 
@@ -23,6 +25,7 @@ const Visual = ({ c }: { c: Celebration }) => {
  * Short (≤3s), skippable by click or Escape, and never blocks the next interaction for long.
  */
 export const CelebrationModal = () => {
+    const { t } = useTranslation("ui");
     const current = useCelebrationsStore((s) => s.queue[0]);
     const shift = useCelebrationsStore((s) => s.shift);
 
@@ -64,18 +67,20 @@ export const CelebrationModal = () => {
                         </div>
                         <div className="text-xs font-medium uppercase tracking-[0.16em] text-primary">
                             {current.kind === CelebrationKinds.LEVEL_UP
-                                ? "Level up"
+                                ? t("celebration.levelUp")
                                 : current.kind === CelebrationKinds.ACHIEVEMENT
-                                  ? `${current.rarity?.toLowerCase() ?? ""} achievement`
+                                  ? current.rarity
+                                      ? t("celebration.rarityAchievement", { rarity: getAchievementRarityLabel(current.rarity) })
+                                      : t("celebration.achievement")
                                   : current.kind === CelebrationKinds.DAILY_GOAL
-                                    ? "Goal reached"
-                                    : "Outstanding"}
+                                    ? t("celebration.goalReached")
+                                    : t("celebration.outstanding")}
                         </div>
                         <h2 id="celebration-title" className="mt-1 font-display text-3xl">
                             {current.title}
                         </h2>
                         {current.description && <p className="mt-2 text-sm text-muted-foreground">{current.description}</p>}
-                        <p className="mt-5 text-[11px] text-muted-foreground">Click or press Esc to continue</p>
+                        <p className="mt-5 text-[11px] text-muted-foreground">{t("celebration.dismissHint")}</p>
                     </motion.div>
                 </motion.div>
             )}

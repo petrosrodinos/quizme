@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { tr } from "@/lib/i18n-options";
+import { currentLanguage } from "@/i18n";
 
 interface SpeechResultLike {
     isFinal: boolean;
@@ -30,7 +32,10 @@ const getCtor = (): SpeechCtor | null => {
  * Browser speech-to-text (Web Speech API). Appends final transcripts via `onFinal` and exposes the live
  * interim transcript. `supported` is false where the API is unavailable so the UI can fall back to typing.
  */
-export const useSpeechRecognition = (onFinal: (text: string) => void, lang = typeof navigator !== "undefined" ? navigator.language : "en-US") => {
+/** Recognition language follows the UI language (Greek UI → el-GR, otherwise en-US). */
+const speechLang = () => (currentLanguage() === "el" ? "el-GR" : "en-US");
+
+export const useSpeechRecognition = (onFinal: (text: string) => void, lang?: string) => {
     const [listening, setListening] = useState(false);
     const [interim, setInterim] = useState("");
     const [error, setError] = useState<string | null>(null);
@@ -48,7 +53,7 @@ export const useSpeechRecognition = (onFinal: (text: string) => void, lang = typ
         if (!Ctor) return;
         setError(null);
         const rec = new Ctor();
-        rec.lang = lang;
+        rec.lang = lang ?? speechLang();
         rec.continuous = true;
         rec.interimResults = true;
         rec.onresult = (e) => {
@@ -60,7 +65,7 @@ export const useSpeechRecognition = (onFinal: (text: string) => void, lang = typ
             }
             setInterim(live);
         };
-        rec.onerror = (e) => setError(e.error === "not-allowed" ? "Microphone permission was denied." : "Speech recognition stopped.");
+        rec.onerror = (e) => setError(tr(e.error === "not-allowed" ? "recall:speech.permissionDenied" : "recall:speech.stopped"));
         rec.onend = () => {
             setListening(false);
             setInterim("");

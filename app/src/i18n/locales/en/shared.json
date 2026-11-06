@@ -1,0 +1,53 @@
+{
+  "page": {
+    "metaTitle": "Shared content",
+    "unavailable": {
+      "title": "Shared content unavailable",
+      "description": "The link may have expired or been revoked."
+    },
+    "join": "Join project",
+    "makeCopy": "Make my own copy",
+    "copyToProject": "Copy to my project",
+    "sharedBy": "Shared by {{name}}",
+    "youAreMember": "You're a member of this project"
+  },
+  "copyDialog": {
+    "title": "Copy to one of your projects",
+    "description": "The copy is yours to edit and study; the original stays unchanged.",
+    "destination": "Destination project",
+    "loadingProjects": "Loading projects…",
+    "choose": "Choose a project",
+    "createFirst": "Create a project first"
+  },
+  "content": {
+    "documents": "Documents",
+    "questions": "Questions",
+    "flashcards": "Flashcards",
+    "topics": "Topics",
+    "quizInfo": "{{questions}} · answers are revealed when you take the quiz",
+    "emptyNote": "Empty note",
+    "words_one": "{{formatted}} word",
+    "words_other": "{{formatted}} words",
+    "openOriginal": "Open original",
+    "summary": "Summary",
+    "planMissing": "This study plan hasn't been generated yet.",
+    "daysRemaining": "Days remaining",
+    "minutesPerDay": "Minutes / day",
+    "daysPerWeek": "Days / week",
+    "target": "Target",
+    "priorityTopics": "Priority topics",
+    "mastery": "({{value}}% mastery)"
+  },
+  "toasts": {
+    "joined": "You joined the project",
+    "joinFailed": "Could not join project",
+    "copied": "Copied to your project",
+    "copyFailed": "Could not copy"
+  },
+  "errors": {
+    "loadSharedWithMe": "Failed to load shared content.",
+    "unavailable": "This shared content is not available.",
+    "join": "Failed to join project.",
+    "copy": "Failed to copy."
+  }
+}

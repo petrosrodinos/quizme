@@ -1,13 +1,16 @@
 import { DocumentStatuses, type DocumentStatus } from "@/features/documents/interfaces/documents.interfaces";
+import { tOption } from "@/lib/i18n-options";
+
+const status = (id: DocumentStatus) => tOption(id, `documents:status.${id}.label`, `documents:status.${id}.description`) as { id: DocumentStatus; label: string; description: string };
 
 export const DocumentStatusOptions: { id: DocumentStatus; label: string; description: string }[] = [
-    { id: DocumentStatuses.UPLOADED, label: "Uploaded", description: "Waiting to be processed" },
-    { id: DocumentStatuses.PROCESSING, label: "Processing", description: "Preparing the file" },
-    { id: DocumentStatuses.EXTRACTING, label: "Extracting", description: "Reading text and structure" },
-    { id: DocumentStatuses.CHUNKING, label: "Chunking", description: "Splitting into study sections" },
-    { id: DocumentStatuses.INDEXING, label: "Indexing", description: "Building the searchable knowledge layer" },
-    { id: DocumentStatuses.READY, label: "Ready", description: "Available to the tutor and generators" },
-    { id: DocumentStatuses.FAILED, label: "Failed", description: "Processing failed" },
+    status(DocumentStatuses.UPLOADED),
+    status(DocumentStatuses.PROCESSING),
+    status(DocumentStatuses.EXTRACTING),
+    status(DocumentStatuses.CHUNKING),
+    status(DocumentStatuses.INDEXING),
+    status(DocumentStatuses.READY),
+    status(DocumentStatuses.FAILED),
 ];
 
 /** Ordered pipeline steps shown in the processing stepper. */

@@ -1,3 +1,4 @@
+import { tr } from "@/lib/i18n-options";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { createQuestion, deleteQuestion, getQuestion, getQuestions, restoreQuestionVersion, updateQuestion } from "../services/questions.services";
@@ -20,9 +21,9 @@ export const useCreateQuestion = (projectId: string) => {
         mutationFn: (dto: CreateQuestionDto) => createQuestion(projectId, dto),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["questions"] });
-            toast({ title: "Question added", duration: 2000 });
+            toast({ title: tr("questions:toasts.added"), duration: 2000 });
         },
-        onError: (error: Error) => toast({ title: "Could not add question", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("questions:toasts.addFailed"), description: error.message, variant: "error" }),
     });
 };
 
@@ -33,9 +34,9 @@ export const useUpdateQuestion = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["questions"] });
             queryClient.invalidateQueries({ queryKey: ["question"] });
-            toast({ title: "Question updated", description: "The previous version was saved to history.", duration: 2000 });
+            toast({ title: tr("questions:toasts.updated"), description: tr("questions:toasts.updatedDescription"), duration: 2000 });
         },
-        onError: (error: Error) => toast({ title: "Could not update question", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("questions:toasts.updateFailed"), description: error.message, variant: "error" }),
     });
 };
 
@@ -45,9 +46,9 @@ export const useDeleteQuestion = () => {
         mutationFn: deleteQuestion,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["questions"] });
-            toast({ title: "Question deleted", duration: 2000 });
+            toast({ title: tr("questions:toasts.deleted"), duration: 2000 });
         },
-        onError: (error: Error) => toast({ title: "Could not delete question", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("questions:toasts.deleteFailed"), description: error.message, variant: "error" }),
     });
 };
 
@@ -58,8 +59,8 @@ export const useRestoreQuestionVersion = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["questions"] });
             queryClient.invalidateQueries({ queryKey: ["question"] });
-            toast({ title: "Version restored", duration: 2000 });
+            toast({ title: tr("questions:toasts.restored"), duration: 2000 });
         },
-        onError: (error: Error) => toast({ title: "Could not restore version", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("questions:toasts.restoreFailed"), description: error.message, variant: "error" }),
     });
 };

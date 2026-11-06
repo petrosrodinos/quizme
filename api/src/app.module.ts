@@ -13,6 +13,7 @@ import { FileTokenModule } from './core/storage/file-token.service';
 import { AccessModule } from './shared/access/project-access.service';
 import { AuditModule } from './shared/audit/audit.service';
 import { DomainEventsModule } from './shared/events/domain-events.service';
+import { ServerI18nModule } from './shared/i18n/i18n.service';
 import { AiIntegrationModule } from './integrations/ai/ai.module';
 import { MailModule } from './integrations/notifications/mail/mail.service';
 import { AiModule } from './modules/ai/ai.module';
@@ -52,6 +53,7 @@ import { ExportsModule } from './modules/exports/exports.module';
         AccessModule,
         AuditModule,
         DomainEventsModule,
+        ServerI18nModule,
         AiIntegrationModule,
         MailModule,
         // domains

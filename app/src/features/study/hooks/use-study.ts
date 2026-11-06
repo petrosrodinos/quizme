@@ -3,6 +3,7 @@ import { toast } from "@/hooks/use-toast";
 import { completeDailySession, getDailySession } from "../services/study.services";
 import { createQuiz } from "@/features/quizzes/services/quizzes.services";
 import type { CreateQuizDto } from "@/features/quizzes/interfaces/quizzes.interfaces";
+import { tr } from "@/lib/i18n-options";
 
 export const useDailySession = (projectId?: string) =>
     useQuery({ queryKey: ["study-session", projectId ?? "all"], queryFn: () => getDailySession(projectId), staleTime: 30_000 });
@@ -15,9 +16,9 @@ export const useCompleteDailySession = () => {
             queryClient.invalidateQueries({ queryKey: ["study-session"] });
             queryClient.invalidateQueries({ queryKey: ["dashboard"] });
             queryClient.invalidateQueries({ queryKey: ["gamification-profile"] });
-            toast({ title: "Session complete", description: "Great work, the daily session is done.", duration: 2500 });
+            toast({ title: tr("study:toasts.complete.title"), description: tr("study:toasts.complete.description"), duration: 2500 });
         },
-        onError: (error: Error) => toast({ title: "Not quite yet", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("study:toasts.notYet"), description: error.message, variant: "error" }),
     });
 };
 
@@ -28,8 +29,8 @@ export const useStartSessionQuiz = () => {
         mutationFn: ({ projectId, dto }: { projectId: string; dto: CreateQuizDto }) => createQuiz(projectId, dto),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["quizzes"] });
-            toast({ title: "Preparing your questions", description: "Hang tight, this takes a few seconds.", duration: 2500 });
+            toast({ title: tr("study:toasts.preparing.title"), description: tr("study:toasts.preparing.description"), duration: 2500 });
         },
-        onError: (error: Error) => toast({ title: "Could not start the quiz", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("study:toasts.quizFailed"), description: error.message, variant: "error" }),
     });
 };

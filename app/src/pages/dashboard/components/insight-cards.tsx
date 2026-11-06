@@ -2,6 +2,8 @@ import type { FC } from "react";
 import { Link } from "react-router-dom";
 import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Target } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { currentLocale } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Routes } from "@/routes/routes";
 import { formatDate } from "@/lib/date";
@@ -18,56 +20,62 @@ const Card: FC<{ title: string; children: React.ReactNode; className?: string }>
 const tooltipStyle = { background: "var(--popover)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 };
 
 export const RecentScoresCard: FC<{ scores: Dashboard["recent_scores"] }> = ({ scores }) => {
+    const { t } = useTranslation("dashboard");
     const data = [...scores].reverse().map((s, i) => ({ name: `#${i + 1}`, score: Math.round(s.percentage), title: s.quiz_title, date: formatDate(s.completed_at) }));
     return (
-        <Card title="Recent quiz scores">
+        <Card title={t("insights.recentScores")}>
             {data.length ? (
-                <div className="h-40" role="img" aria-label={`Recent quiz scores: ${data.map((d) => `${d.score}%`).join(", ")}`}>
+                <div className="h-40" role="img" aria-label={t("insights.recentScoresAria", { scores: data.map((d) => `${d.score}%`).join(", ") })}>
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart data={data} margin={{ top: 6, right: 4, left: -24, bottom: 0 }}>
                             <XAxis dataKey="name" tickLine={false} axisLine={false} fontSize={11} stroke="var(--muted-foreground)" />
                             <YAxis domain={[0, 100]} tickLine={false} axisLine={false} fontSize={11} stroke="var(--muted-foreground)" />
-                            <Tooltip cursor={{ fill: "var(--muted)" }} contentStyle={tooltipStyle} formatter={(v) => [`${v}%`, "Score"]} labelFormatter={(_l, p) => (p?.[0]?.payload ? `${p[0].payload.title} · ${p[0].payload.date}` : "")} />
+                            <Tooltip cursor={{ fill: "var(--muted)" }} contentStyle={tooltipStyle} formatter={(v) => [`${v}%`, t("common:terms.score")]} labelFormatter={(_l, p) => (p?.[0]?.payload ? `${p[0].payload.title} · ${p[0].payload.date}` : "")} />
                             <Bar dataKey="score" fill="var(--chart-1)" radius={[4, 4, 0, 0]} maxBarSize={32} />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
             ) : (
-                <p className="text-sm text-muted-foreground">Take a quiz to see your scores here.</p>
+                <p className="text-sm text-muted-foreground">{t("insights.noScores")}</p>
             )}
         </Card>
     );
 };
 
-export const WeakTopicsCard: FC<{ topics: Dashboard["weak_topics"] }> = ({ topics }) => (
-    <Card title="Weak topics">
+export const WeakTopicsCard: FC<{ topics: Dashboard["weak_topics"] }> = ({ topics }) => {
+    const { t } = useTranslation("dashboard");
+    return (
+    <Card title={t("insights.weakTopics")}>
         {topics.length ? (
             <ul className="space-y-3">
-                {topics.map((t) => (
-                    <li key={t.id} className="flex items-center gap-3">
+                {topics.map((topic) => (
+                    <li key={topic.id} className="flex items-center gap-3">
                         <div className="min-w-0 flex-1">
-                            <div className="truncate text-sm font-medium">{t.name}</div>
+                            <div className="truncate text-sm font-medium">{topic.name}</div>
                             <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-strong">
-                                <div className="h-full rounded-full bg-warning" style={{ width: `${Math.max(4, t.mastery)}%` }} />
+                                <div className="h-full rounded-full bg-warning" style={{ width: `${Math.max(4, topic.mastery)}%` }} />
                             </div>
                         </div>
-                        <span className="w-10 text-right text-xs text-muted-foreground">{t.mastery}%</span>
+                        <span className="w-10 text-right text-xs text-muted-foreground">{topic.mastery}%</span>
                         <Button asChild size="sm" variant="outline">
-                            <Link to={Routes.projects.topics(t.project_id)} aria-label={`Practise ${t.name}`}>
-                                <Target /> Practise
+                            <Link to={Routes.projects.topics(topic.project_id)} aria-label={t("insights.practiseAria", { name: topic.name })}>
+                                <Target /> {t("insights.practise")}
                             </Link>
                         </Button>
                     </li>
                 ))}
             </ul>
         ) : (
-            <p className="text-sm text-muted-foreground">No weak spots detected yet. Keep practising to build your knowledge map.</p>
+            <p className="text-sm text-muted-foreground">{t("insights.noWeakTopics")}</p>
         )}
     </Card>
-);
+    );
+};
 
-export const UpcomingExamsCard: FC<{ exams: Dashboard["upcoming_exams"] }> = ({ exams }) => (
-    <Card title="Upcoming exams">
+export const UpcomingExamsCard: FC<{ exams: Dashboard["upcoming_exams"] }> = ({ exams }) => {
+    const { t } = useTranslation("dashboard");
+    return (
+    <Card title={t("insights.upcomingExams")}>
         {exams.length ? (
             <ul className="divide-y divide-border">
                 {exams.map((e) => (
@@ -77,19 +85,20 @@ export const UpcomingExamsCard: FC<{ exams: Dashboard["upcoming_exams"] }> = ({ 
                             <div className="text-xs text-muted-foreground">{formatDate(e.exam_date)}</div>
                         </Link>
                         <div className="text-right">
-                            <div className={cn("font-display text-xl", (e.days_to_exam ?? 99) <= 7 && "text-warning")}>{e.days_to_exam}d</div>
-                            <div className="text-[11px] text-muted-foreground">readiness {e.readiness}%</div>
+                            <div className={cn("font-display text-xl", (e.days_to_exam ?? 99) <= 7 && "text-warning")}>{t("insights.daysShort", { count: e.days_to_exam ?? 0 })}</div>
+                            <div className="text-[11px] text-muted-foreground">{t("insights.readiness", { value: e.readiness })}</div>
                         </div>
                     </li>
                 ))}
             </ul>
         ) : (
-            <p className="text-sm text-muted-foreground">Set an exam date on a project to get a countdown and study plan.</p>
+            <p className="text-sm text-muted-foreground">{t("insights.noExams")}</p>
         )}
     </Card>
-);
+    );
+};
 
-const dayLabel = (iso: string) => new Date(`${iso}T12:00:00`).toLocaleDateString(undefined, { weekday: "short" });
+const dayLabel = (iso: string) => new Date(`${iso}T12:00:00`).toLocaleDateString(currentLocale(), { weekday: "short" });
 
 export const WeekActivityCard: FC<{ week: Dashboard["week"]; goalMinutes: number }> = ({ week, goalMinutes }) => {
     const byDate = new Map(week.map((d) => [d.date, d]));
@@ -100,16 +109,17 @@ export const WeekActivityCard: FC<{ week: Dashboard["week"]; goalMinutes: number
         const row = byDate.get(key);
         return { date: key, label: dayLabel(key), minutes: row?.minutes ?? 0, goal_met: row?.goal_met ?? false };
     });
+    const { t } = useTranslation("dashboard");
     const total = days.reduce((s, d) => s + d.minutes, 0);
     return (
-        <Card title="This week">
-            <div className="mb-2 text-xs text-muted-foreground">{total} minutes studied · goal {goalMinutes} min/day</div>
-            <div className="h-36" role="img" aria-label={`Minutes studied this week: ${days.map((d) => `${d.label} ${d.minutes}`).join(", ")}`}>
+        <Card title={t("common:time.thisWeek")}>
+            <div className="mb-2 text-xs text-muted-foreground">{t("insights.weekSummary", { count: total, goal: goalMinutes })}</div>
+            <div className="h-36" role="img" aria-label={t("insights.weekAria", { days: days.map((d) => `${d.label} ${d.minutes}`).join(", ") })}>
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={days} margin={{ top: 6, right: 4, left: -28, bottom: 0 }}>
                         <XAxis dataKey="label" tickLine={false} axisLine={false} fontSize={11} stroke="var(--muted-foreground)" />
                         <YAxis tickLine={false} axisLine={false} fontSize={11} stroke="var(--muted-foreground)" allowDecimals={false} />
-                        <Tooltip cursor={{ fill: "var(--muted)" }} contentStyle={tooltipStyle} formatter={(v) => [`${v} min`, "Studied"]} />
+                        <Tooltip cursor={{ fill: "var(--muted)" }} contentStyle={tooltipStyle} formatter={(v) => [t("common:units.min", { count: Number(v) }), t("insights.studied")]} />
                         <Bar dataKey="minutes" radius={[4, 4, 0, 0]} maxBarSize={28}>
                             {days.map((d) => (
                                 <Cell key={d.date} fill={d.goal_met ? "var(--success)" : "var(--chart-2)"} />
@@ -120,10 +130,10 @@ export const WeekActivityCard: FC<{ week: Dashboard["week"]; goalMinutes: number
             </div>
             <div className="mt-2 flex items-center gap-4 text-[11px] text-muted-foreground">
                 <span className="inline-flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-success" /> Goal met
+                    <span className="h-2 w-2 rounded-full bg-success" /> {t("insights.goalMet")}
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full" style={{ background: "var(--chart-2)" }} /> Studied
+                    <span className="h-2 w-2 rounded-full" style={{ background: "var(--chart-2)" }} /> {t("insights.studied")}
                 </span>
             </div>
         </Card>

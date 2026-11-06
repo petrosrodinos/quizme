@@ -1,7 +1,8 @@
 import { z } from "zod";
+import { tr } from "@/lib/i18n-options";
 
 export const inviteMemberSchema = z.object({
-    email: z.string().trim().toLowerCase().email("Enter a valid email address"),
+    email: z.string().trim().toLowerCase().email({ error: () => tr("common:validation.email") }),
     role: z.enum(["ADMIN", "EDITOR", "CONTRIBUTOR", "VIEWER"]),
 });
 export type InviteMemberFormValues = z.infer<typeof inviteMemberSchema>;
@@ -20,16 +21,16 @@ export const shareSchema = z
     })
     .superRefine((v, ctx) => {
         if (["DOCUMENT", "DECK", "QUIZ", "NOTE"].includes(v.resource_type) && !v.resource_id)
-            ctx.addIssue({ code: "custom", path: ["resource_id"], message: "Choose what to share" });
+            ctx.addIssue({ code: "custom", path: ["resource_id"], message: tr("members:share.validation.chooseItem") });
         if (v.target_type === "USER" && !z.string().email().safeParse(v.email ?? "").success)
-            ctx.addIssue({ code: "custom", path: ["email"], message: "Enter a valid email address" });
-        if (v.target_type === "ORGANIZATION" && !v.organization_id) ctx.addIssue({ code: "custom", path: ["organization_id"], message: "Choose an organization" });
-        if (v.expires_in_days && !/^\d+$/.test(v.expires_in_days)) ctx.addIssue({ code: "custom", path: ["expires_in_days"], message: "Use a whole number of days" });
+            ctx.addIssue({ code: "custom", path: ["email"], message: tr("common:validation.email") });
+        if (v.target_type === "ORGANIZATION" && !v.organization_id) ctx.addIssue({ code: "custom", path: ["organization_id"], message: tr("members:share.validation.chooseOrganization") });
+        if (v.expires_in_days && !/^\d+$/.test(v.expires_in_days)) ctx.addIssue({ code: "custom", path: ["expires_in_days"], message: tr("members:share.validation.wholeDays") });
     });
 export type ShareFormValues = z.infer<typeof shareSchema>;
 
-export const organizationSchema = z.object({ name: z.string().trim().min(2, "At least 2 characters").max(120) });
+export const organizationSchema = z.object({ name: z.string().trim().min(2, { error: () => tr("common:validation.minLength", { count: 2 }) }).max(120, { error: () => tr("common:validation.maxLength", { count: 120 }) }) });
 export type OrganizationFormValues = z.infer<typeof organizationSchema>;
 
-export const orgMemberSchema = z.object({ email: z.string().trim().toLowerCase().email("Enter a valid email address") });
+export const orgMemberSchema = z.object({ email: z.string().trim().toLowerCase().email({ error: () => tr("common:validation.email") }) });
 export type OrgMemberFormValues = z.infer<typeof orgMemberSchema>;

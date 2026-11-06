@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { useRealtimeEvent } from "@/features/realtime/hooks/use-realtime";
 import { RealtimeEvents } from "@/features/realtime/interfaces/realtime-events.constants";
+import { tr } from "@/lib/i18n-options";
 
 interface GenerationStatusEvent {
     kind: string;
@@ -21,9 +22,9 @@ export const useFlashcardGenerationEvents = (projectId: string | undefined) => {
             queryClient.invalidateQueries({ queryKey: ["flashcards"] });
             queryClient.invalidateQueries({ queryKey: ["decks"] });
             queryClient.invalidateQueries({ queryKey: ["flashcard-stats"] });
-            toast({ title: "Flashcards ready", description: `${e.created ?? 0} new card${e.created === 1 ? "" : "s"} added.`, duration: 3000 });
+            toast({ title: tr("flashcards:toasts.generationReady"), description: tr("flashcards:toasts.generationReadyDescription", { count: e.created ?? 0 }), duration: 3000 });
         } else if (e.status === "FAILED") {
-            toast({ title: "Flashcard generation failed", description: e.error ?? "Please try again.", variant: "error" });
+            toast({ title: tr("flashcards:toasts.generationFailed"), description: e.error ?? tr("common:actions.tryAgain"), variant: "error" });
         }
     });
 };

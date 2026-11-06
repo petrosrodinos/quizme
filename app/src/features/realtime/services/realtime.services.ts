@@ -1,5 +1,6 @@
 import { io, type Socket } from "socket.io-client";
 import { environments } from "@/config/environments";
+import { tr } from "@/lib/i18n-options";
 
 type Handler = (payload: unknown) => void;
 
@@ -60,9 +61,9 @@ export const realtimeOn = (event: string, handler: Handler) => {
 /** Emits an event; resolves with the server acknowledgement (if any). */
 export const realtimeEmit = <T = unknown>(event: string, payload?: unknown, timeoutMs = 10_000): Promise<T> =>
     new Promise((resolve, reject) => {
-        if (!socket) return reject(new Error("Realtime connection is not available"));
+        if (!socket) return reject(new Error(tr("layout:realtime.unavailable")));
         socket.timeout(timeoutMs).emit(event, payload, (err: Error | null, response: T) => {
-            if (err) reject(new Error("Realtime request timed out"));
+            if (err) reject(new Error(tr("layout:realtime.timeout")));
             else if (response && typeof response === "object" && "error" in (response as object)) reject(new Error(String((response as unknown as { error: unknown }).error)));
             else resolve(response);
         });

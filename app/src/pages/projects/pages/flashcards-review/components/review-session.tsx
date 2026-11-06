@@ -15,6 +15,7 @@ import { useRealtimeEvent } from "@/features/realtime/hooks/use-realtime";
 import { RealtimeEvents } from "@/features/realtime/interfaces/realtime-events.constants";
 import type { ReviewCard, ReviewRating } from "@/features/flashcards/interfaces/flashcards.interfaces";
 import { ReviewRatingOptions } from "@/config/constants/dropdowns/flashcards/review-rating.options";
+import { useTranslation } from "react-i18next";
 
 interface ReviewSessionProps {
     /** Omit for a cross-project daily review. */
@@ -30,11 +31,22 @@ const ratingTone: Record<ReviewRating, string> = {
     EASY: "border-teal/50 hover:bg-teal/10 text-teal",
 };
 
+/** Localises server interval previews such as "10m", "3h", "4d". */
+const useIntervalLabel = () => {
+    const { t } = useTranslation("flashcards");
+    return (value?: string) => {
+        const m = /^(\d+)([mhd])$/.exec(value ?? "");
+        return m ? t(`intervals.${m[2]}`, { count: Number(m[1]) }) : (value ?? "");
+    };
+};
+
 const MAX_REQUEUES = 3;
 const EXIT_MS = 260;
 
 /** Distraction-free spaced-repetition session (project or cross-project). */
 export const ReviewSession = ({ projectId, onFinish, limit = 40 }: ReviewSessionProps) => {
+    const { t } = useTranslation("flashcards");
+    const intervalLabel = useIntervalLabel();
     const queryClient = useQueryClient();
     const { data, isPending, refetch, isFetching } = useReviewQueue(projectId, { limit });
     const review = useReviewFlashcard();
@@ -156,16 +168,16 @@ export const ReviewSession = ({ projectId, onFinish, limit = 40 }: ReviewSession
     if (done) {
         const accuracy = stats.reviewed ? Math.round((stats.remembered / stats.reviewed) * 100) : 0;
         return (
-            <section aria-label="Session summary" className="mx-auto max-w-2xl rounded-2xl border border-border bg-card p-8 text-center">
+            <section aria-label={t("review.summary.ariaLabel")} className="mx-auto max-w-2xl rounded-2xl border border-border bg-card p-8 text-center">
                 <CheckCircle2 className="mx-auto mb-3 h-10 w-10 text-success" aria-hidden />
-                <h2 className="font-display text-3xl">Session complete</h2>
-                <p className="mt-1 text-muted-foreground">Nice work — your next reviews are scheduled automatically.</p>
+                <h2 className="font-display text-3xl">{t("review.summary.title")}</h2>
+                <p className="mt-1 text-muted-foreground">{t("review.summary.description")}</p>
                 <dl className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
                     {[
-                        { icon: Layers, label: "Cards reviewed", value: stats.reviewed, suffix: "" },
-                        { icon: Target, label: "Remembered", value: accuracy, suffix: "%" },
-                        { icon: Sparkles, label: "XP earned", value: stats.xp, suffix: "" },
-                        { icon: Clock, label: "Minutes", value: Math.max(1, Math.round(elapsedSec / 60)), suffix: "" },
+                        { icon: Layers, label: t("review.summary.reviewed"), value: stats.reviewed, suffix: "" },
+                        { icon: Target, label: t("review.summary.remembered"), value: accuracy, suffix: "%" },
+                        { icon: Sparkles, label: t("review.summary.xp"), value: stats.xp, suffix: "" },
+                        { icon: Clock, label: t("review.summary.minutes"), value: Math.max(1, Math.round(elapsedSec / 60)), suffix: "" },
                     ].map((s) => (
                         <div key={s.label} className="rounded-xl bg-surface p-4">
                             <s.icon className="mx-auto mb-1 h-4 w-4 text-muted-foreground" aria-hidden />
@@ -178,9 +190,9 @@ export const ReviewSession = ({ projectId, onFinish, limit = 40 }: ReviewSession
                 </dl>
                 <div className="mt-8 flex flex-wrap justify-center gap-2">
                     <Button variant="outline" onClick={() => refetch()} loading={isFetching}>
-                        <RotateCcw /> Check for more
+                        <RotateCcw /> {t("review.summary.checkMore")}
                     </Button>
-                    {onFinish && <Button onClick={onFinish}>Done</Button>}
+                    {onFinish && <Button onClick={onFinish}>{t("common:actions.done")}</Button>}
                 </div>
             </section>
         );
@@ -190,9 +202,9 @@ export const ReviewSession = ({ projectId, onFinish, limit = 40 }: ReviewSession
         return (
             <EmptyState
                 icon={CheckCircle2}
-                title="All caught up"
-                description="No cards are due right now. New reviews will appear as your schedule comes around."
-                action={onFinish ? <Button onClick={onFinish}>Back</Button> : undefined}
+                title={t("review.empty.title")}
+                description={t("review.empty.description")}
+                action={onFinish ? <Button onClick={onFinish}>{t("common:actions.back")}</Button> : undefined}
             />
         );
     }
@@ -209,9 +221,9 @@ export const ReviewSession = ({ projectId, onFinish, limit = 40 }: ReviewSession
     return (
         <div className="mx-auto max-w-2xl">
             <div className="mb-4 flex items-center gap-3 text-sm text-muted-foreground">
-                <Progress value={progress} className="h-2 flex-1" aria-label="Session progress" />
+                <Progress value={progress} className="h-2 flex-1" aria-label={t("review.progressAria")} />
                 <span className="tabular-nums">
-                    {stats.reviewed} done · {queue.length} left
+                    {t("review.progress", { done: stats.reviewed, left: queue.length })}
                 </span>
             </div>
 
@@ -219,28 +231,29 @@ export const ReviewSession = ({ projectId, onFinish, limit = 40 }: ReviewSession
                 <button
                     type="button"
                     onClick={flip}
-                    aria-label={flipped ? "Show question" : "Show answer"}
+                    aria-label={flipped ? t("review.showQuestion") : t("review.showAnswer")}
                     className={cn("flip-card relative block min-h-72 w-full rounded-2xl text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", flipped && "is-flipped")}
                 >
                     <div className="flip-face absolute inset-0 flex flex-col rounded-2xl border border-border bg-card p-8 shadow-sm">
                         <div className="mb-4 flex items-center justify-between text-xs uppercase tracking-wider text-muted-foreground">
-                            <span>Question</span>
+                            <span>{t("review.question")}</span>
                             {current.deck?.name && <span className="normal-case tracking-normal">{current.deck.name}</span>}
                         </div>
                         <div className="flex flex-1 items-center justify-center text-center text-xl">
                             <Markdown content={current.front} />
                         </div>
-                        <p className="mt-4 text-center text-xs text-muted-foreground">Press Space to reveal</p>
+                        <p className="mt-4 text-center text-xs text-muted-foreground">{t("review.spaceHint")}</p>
                     </div>
                     <div className="flip-face flip-back absolute inset-0 flex flex-col overflow-y-auto rounded-2xl border border-border bg-surface-card p-8 shadow-sm">
-                        <div className="mb-4 text-xs uppercase tracking-wider text-muted-foreground">Answer</div>
+                        <div className="mb-4 text-xs uppercase tracking-wider text-muted-foreground">{t("review.answer")}</div>
                         <div className="flex flex-1 items-center justify-center text-center text-lg">
                             <Markdown content={current.back} />
                         </div>
                         {current.source_ref?.document_title && (
                             <p className="mt-4 text-center text-xs text-muted-foreground">
-                                Source: {current.source_ref.document_title}
-                                {current.source_ref.page ? `, page ${current.source_ref.page}` : ""}
+                                {current.source_ref.page
+                                    ? t("review.sourceWithPage", { title: current.source_ref.document_title, page: current.source_ref.page })
+                                    : t("review.source", { title: current.source_ref.document_title })}
                             </p>
                         )}
                     </div>
@@ -250,7 +263,7 @@ export const ReviewSession = ({ projectId, onFinish, limit = 40 }: ReviewSession
 
             <div className="mt-6" aria-live="polite">
                 {flipped ? (
-                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4" role="group" aria-label="How well did you remember?">
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4" role="group" aria-label={t("review.ratingGroup")}>
                         {ReviewRatingOptions.map((o) => (
                             <button
                                 key={o.id}
@@ -266,13 +279,13 @@ export const ReviewSession = ({ projectId, onFinish, limit = 40 }: ReviewSession
                                 <span>
                                     {o.label} <kbd className="ml-1 rounded border border-border px-1 text-[10px] text-muted-foreground">{o.key}</kbd>
                                 </span>
-                                <span className="mt-0.5 text-xs font-normal text-muted-foreground">{current.intervals?.[o.id] ?? ""}</span>
+                                <span className="mt-0.5 text-xs font-normal text-muted-foreground">{intervalLabel(current.intervals?.[o.id])}</span>
                             </button>
                         ))}
                     </div>
                 ) : (
                     <Button className="w-full" size="lg" onClick={flip}>
-                        Show answer
+                        {t("review.showAnswer")}
                     </Button>
                 )}
             </div>

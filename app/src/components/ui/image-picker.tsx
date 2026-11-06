@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { FileUpload, FileUploadDropzone, FileUploadTrigger, FileUploadList, FileUploadItem, FileUploadItemPreview, FileUploadItemMetadata, FileUploadItemDelete, FileUploadClear, FileUploadItemProgress } from "@/components/ui/file-upload";
 import { Image as ImageIcon, Upload, Trash2 as TrashIcon, Loader2, X, FileText, File, FileImage, FileSpreadsheet, FileVideo, FileAudio, FileArchive } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { tr } from "@/lib/i18n-options";
 import ConfirmationDialog from "@/components/ui/confirmation-dialog";
 
 interface ImagePickerProps {
@@ -85,7 +86,7 @@ const ImagePicker = ({
     } else if (mimetype.includes("zip") || mimetype.includes("rar") || mimetype.includes("archive")) {
       return <FileArchive className="h-8 w-8 text-yellow-600" />;
     } else {
-      return <File className="h-8 w-8 text-gray-500" />;
+      return <File className="h-8 w-8 text-muted-foreground" />;
     }
   };
 
@@ -137,7 +138,7 @@ const ImagePicker = ({
 
   const handleFileReject = (file: File, message: string) => {
     toast({
-      title: "File rejected",
+      title: tr("ui:imagePicker.rejected"),
       description: `${file.name}: ${message}`,
       variant: "destructive",
     });
@@ -209,7 +210,7 @@ const ImagePicker = ({
           </div>
         )}
 
-        <ConfirmationDialog isOpen={isDeleteDialogOpen} onClose={handleCancelDelete} onConfirm={handleConfirmDelete} title="Delete Image" description="Are you sure you want to delete this image? This action cannot be undone." confirmText="Delete" cancelText="Cancel" variant="destructive" icon={<TrashIcon className="h-5 w-5" />} isLoading={isDeleting} />
+        <ConfirmationDialog isOpen={isDeleteDialogOpen} onClose={handleCancelDelete} onConfirm={handleConfirmDelete} title={tr("ui:imagePicker.deleteTitle")} description={tr("ui:imagePicker.deleteDescription")} confirmText={tr("common:actions.delete")} cancelText={tr("common:actions.cancel")} variant="destructive" icon={<TrashIcon className="h-5 w-5" />} isLoading={isDeleting} />
       </>
     );
   }
@@ -315,7 +316,7 @@ const ImagePicker = ({
         </div>
       )}
 
-      <ConfirmationDialog isOpen={isDeleteDialogOpen} onClose={handleCancelDelete} onConfirm={handleConfirmDelete} title="Delete Image" description="Are you sure you want to delete this image? This action cannot be undone." confirmText="Delete" cancelText="Cancel" variant="destructive" icon={<TrashIcon className="h-5 w-5" />} isLoading={isDeleting} />
+      <ConfirmationDialog isOpen={isDeleteDialogOpen} onClose={handleCancelDelete} onConfirm={handleConfirmDelete} title={tr("ui:imagePicker.deleteTitle")} description={tr("ui:imagePicker.deleteDescription")} confirmText={tr("common:actions.delete")} cancelText={tr("common:actions.cancel")} variant="destructive" icon={<TrashIcon className="h-5 w-5" />} isLoading={isDeleting} />
     </div>
   );
 };

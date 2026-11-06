@@ -1,0 +1,46 @@
+{
+    "pageTitle": "Achievements",
+    "header": {
+        "eyebrow": "Progress",
+        "title": "Achievements & streaks",
+        "description": "Rewards for real learning — consistency, accuracy and mastery."
+    },
+    "totalXp": "{{xp}} XP",
+    "levelTitles": "Level titles",
+    "streak": {
+        "title": "Study streak",
+        "longest_one": "longest {{count}}",
+        "longest_other": "longest {{count}}",
+        "freezeHelp": "Earn one freeze per 7-day streak (max 2). Freezes protect a missed day automatically.",
+        "freezes_one": "{{count}} / {{max}} freeze",
+        "freezes_other": "{{count}} / {{max}} freezes",
+        "explainer": "Your streak grows when you complete your daily goal — not just by opening the app."
+    },
+    "unlockedCount_one": "{{count}} of {{total}} unlocked",
+    "unlockedCount_other": "{{count}} of {{total}} unlocked",
+    "empty": {
+        "title": "No achievements yet",
+        "description": "Start studying to unlock your first achievement."
+    },
+    "card": {
+        "ariaUnlocked": "{{title}}: unlocked",
+        "ariaLocked": "{{title}}: locked, {{progress}} of {{target}}",
+        "unlockedOn": "Unlocked {{date}}",
+        "progress": "{{progress}} / {{target}}"
+    },
+    "heatmap": {
+        "aria_one": "Daily goal met on {{count}} of the last {{total}} days",
+        "aria_other": "Daily goal met on {{count}} of the last {{total}} days",
+        "goalMet": "goal met",
+        "freeze": "streak freeze",
+        "noStudy": "No study",
+        "studied": "Studied",
+        "goalMetLegend": "Goal met",
+        "freezeUsed": "Freeze used"
+    },
+    "goal": {
+        "yourChoice": "Your choice",
+        "minutesPerDay": "Minutes per day",
+        "save": "Save goal"
+    }
+}

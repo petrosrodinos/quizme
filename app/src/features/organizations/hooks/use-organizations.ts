@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { addOrganizationMember, createOrganization, getOrganizationMembers, getOrganizations, removeOrganizationMember } from "../services/organizations.services";
+import { tr } from "@/lib/i18n-options";
 
-const onError = (title: string) => (error: Error) => toast({ title, description: error.message, variant: "error" });
+const onError = (titleKey: string) => (error: Error) => toast({ title: tr(titleKey), description: error.message, variant: "error" });
 
 export const useOrganizations = () => useQuery({ queryKey: ["organizations"], queryFn: getOrganizations });
 
@@ -15,9 +16,9 @@ export const useCreateOrganization = () => {
         mutationFn: createOrganization,
         onSuccess: (o) => {
             qc.invalidateQueries({ queryKey: ["organizations"] });
-            toast({ title: "Organization created", description: o.name, duration: 2000 });
+            toast({ title: tr("members:orgs.toasts.created"), description: o.name, duration: 2000 });
         },
-        onError: onError("Could not create organization"),
+        onError: onError("members:orgs.toasts.createFailed"),
     });
 };
 
@@ -28,9 +29,9 @@ export const useAddOrganizationMember = () => {
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: ["organizations"] });
             qc.invalidateQueries({ queryKey: ["organization-members"] });
-            toast({ title: "Member added", duration: 2000 });
+            toast({ title: tr("members:orgs.toasts.memberAdded"), duration: 2000 });
         },
-        onError: onError("Could not add member"),
+        onError: onError("members:orgs.toasts.addFailed"),
     });
 };
 
@@ -41,8 +42,8 @@ export const useRemoveOrganizationMember = () => {
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: ["organizations"] });
             qc.invalidateQueries({ queryKey: ["organization-members"] });
-            toast({ title: "Member removed", duration: 2000 });
+            toast({ title: tr("members:orgs.toasts.memberRemoved"), duration: 2000 });
         },
-        onError: onError("Could not remove member"),
+        onError: onError("members:orgs.toasts.removeFailed"),
     });
 };

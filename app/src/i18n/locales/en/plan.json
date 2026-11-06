@@ -1,0 +1,75 @@
+{
+  "errors": {
+    "load": "Failed to load the study plan."
+  },
+  "activities": {
+    "flashcards": "Flashcards",
+    "adaptive_quiz": "Adaptive quiz",
+    "recall": "Explain concepts",
+    "exam": "Exam simulation",
+    "weak_topics": "Weak topics"
+  },
+  "metaTitle": "{{title}} · Study plan",
+  "error": {
+    "title": "Couldn't build your study plan"
+  },
+  "title": "Your study plan",
+  "updated": "Adapts to your progress — updated {{date}}.",
+  "close": "Close",
+  "editGoals": "Edit goals",
+  "stats": {
+    "exam": "Exam",
+    "daySuffix_one": " day",
+    "daySuffix_other": " days",
+    "noExam": "Set an exam date for a countdown",
+    "recommended": "Recommended",
+    "minPerDay": " min/day",
+    "daysPerWeek_one": "{{count}} day per week",
+    "daysPerWeek_other": "{{count}} days per week"
+  },
+  "readiness": {
+    "label": "Readiness versus target",
+    "title": "Readiness vs target",
+    "target": "Target",
+    "pointsToGo_one": "{{count}} point to go",
+    "pointsToGo_other": "{{count}} points to go",
+    "reached": "Target reached",
+    "onTrack": "On track",
+    "behind": "Behind plan",
+    "weekMinutes": "{{actual}}/{{planned}} min this week"
+  },
+  "schedule": {
+    "title_one": "Next {{count}} day",
+    "title_other": "Next {{count}} days",
+    "today": "Today",
+    "restDay": "Rest day",
+    "minutes": "{{count}} min",
+    "rest": "Recharge — rest helps memory consolidate.",
+    "focus": "Focus:",
+    "activity": "{{label}} · {{minutes}}m"
+  },
+  "priority": {
+    "title": "Priority topics",
+    "mastery": "{{value}}% mastery",
+    "notPractised": "Not practised yet",
+    "practiseLabel": "Practise {{name}}",
+    "practise": "Practise",
+    "empty": "Topics appear once your documents are processed."
+  },
+  "advice": {
+    "title": "Advice"
+  },
+  "form": {
+    "examDate": "Exam date",
+    "targetScore": "Target score (%)",
+    "minutesPerDay": "Minutes per day",
+    "daysPerWeek": "Days per week",
+    "submit": "Update plan",
+    "errors": {
+      "targetRange": "Enter a value from 1 to 100",
+      "minutesMin": "At least 5 minutes",
+      "minutesMax": "At most 480 minutes",
+      "daysRange": "Enter 1–7 days"
+    }
+  }
+}

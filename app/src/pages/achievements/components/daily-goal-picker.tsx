@@ -3,11 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 import { DailyGoalFormOptions } from "@/config/constants/dropdowns/gamification/daily-goal-form.options";
 import { useUpdateDailyGoal } from "@/features/gamification/hooks/use-gamification";
 import { DailyGoalTypes, type DailyGoalProgress, type DailyGoalType } from "@/features/gamification/interfaces/gamification.interfaces";
 
 export const DailyGoalPicker: FC<{ goal: DailyGoalProgress }> = ({ goal }) => {
+    const { t } = useTranslation("achievements");
     const update = useUpdateDailyGoal();
     const [selected, setSelected] = useState<DailyGoalType>(goal.type as DailyGoalType);
     const [custom, setCustom] = useState(String(goal.minutes));
@@ -24,7 +26,7 @@ export const DailyGoalPicker: FC<{ goal: DailyGoalProgress }> = ({ goal }) => {
 
     return (
         <div className="space-y-3">
-            <div role="radiogroup" aria-label="Daily goal" className="grid gap-2 sm:grid-cols-5">
+            <div role="radiogroup" aria-label={t("common:terms.dailyGoal")} className="grid gap-2 sm:grid-cols-5">
                 {DailyGoalFormOptions.map((o) => (
                     <button
                         key={o.id}
@@ -39,7 +41,7 @@ export const DailyGoalPicker: FC<{ goal: DailyGoalProgress }> = ({ goal }) => {
                         )}
                     >
                         <div className="text-sm font-medium">{o.label}</div>
-                        <div className="text-xs text-muted-foreground">{o.minutes ? `${o.minutes} min` : "Your choice"}</div>
+                        <div className="text-xs text-muted-foreground">{o.minutes ? t("common:units.min", { count: o.minutes }) : t("goal.yourChoice")}</div>
                     </button>
                 ))}
             </div>
@@ -47,11 +49,11 @@ export const DailyGoalPicker: FC<{ goal: DailyGoalProgress }> = ({ goal }) => {
             {selected === DailyGoalTypes.CUSTOM && (
                 <div className="flex items-end gap-2">
                     <div className="space-y-1">
-                        <Label htmlFor="custom-goal">Minutes per day</Label>
+                        <Label htmlFor="custom-goal">{t("goal.minutesPerDay")}</Label>
                         <Input id="custom-goal" type="number" min={5} max={480} value={custom} onChange={(e) => setCustom(e.target.value)} className="w-32" />
                     </div>
                     <Button onClick={() => update.mutate({ type: DailyGoalTypes.CUSTOM, minutes: customMinutes })} loading={update.isPending}>
-                        Save goal
+                        {t("goal.save")}
                     </Button>
                 </div>
             )}

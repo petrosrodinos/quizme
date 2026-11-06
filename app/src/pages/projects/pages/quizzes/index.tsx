@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { ClipboardList, GraduationCap, Plus } from "lucide-react";
 import { Main } from "@/components/layout/main";
@@ -24,7 +25,8 @@ import { ReviewPanel } from "./components/review-panel";
 import { GroupResultsDialog } from "./components/group-results-dialog";
 
 export default function ProjectQuizzesPage() {
-    usePageMetadata({ title: "Quizzes" });
+    const { t } = useTranslation("quizzes");
+    usePageMetadata({ title: t("page.title") });
     const { project, projectId, can } = useProjectContext();
     const userId = useAuthStore((s) => s.user?.id);
     const navigate = useNavigate();
@@ -53,15 +55,15 @@ export default function ProjectQuizzesPage() {
     return (
         <Main width="wide">
             <PageHeader
-                title="Quizzes"
-                description="Generate quizzes from your material, track every attempt and turn mistakes into mastery."
+                title={t("page.title")}
+                description={t("page.description")}
                 actions={
                     <>
                         <Button variant="outline" onClick={() => navigate(Routes.projects.exam(projectId))}>
-                            <GraduationCap /> Exam simulation
+                            <GraduationCap /> {t("page.examSimulation")}
                         </Button>
                         <Button onClick={() => setCreateOpen(true)}>
-                            <Plus /> New quiz
+                            <Plus /> {t("page.newQuiz")}
                         </Button>
                     </>
                 }
@@ -69,9 +71,9 @@ export default function ProjectQuizzesPage() {
 
             <Tabs value={tab} onValueChange={setTab}>
                 <TabsList className="mb-5">
-                    <TabsTrigger value="quizzes">Quizzes</TabsTrigger>
-                    <TabsTrigger value="history">History</TabsTrigger>
-                    <TabsTrigger value="review">Mistake review</TabsTrigger>
+                    <TabsTrigger value="quizzes">{t("tabs.quizzes")}</TabsTrigger>
+                    <TabsTrigger value="history">{t("tabs.history")}</TabsTrigger>
+                    <TabsTrigger value="review">{t("tabs.review")}</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="quizzes">
@@ -95,11 +97,11 @@ export default function ProjectQuizzesPage() {
                     ) : (
                         <EmptyState
                             icon={ClipboardList}
-                            title="No quizzes yet"
-                            description="Create your first quiz — questions are generated from your uploaded documents and keep a reference to their source."
+                            title={t("empty.title")}
+                            description={t("empty.description")}
                             action={
                                 <Button onClick={() => setCreateOpen(true)}>
-                                    <Plus /> New quiz
+                                    <Plus /> {t("page.newQuiz")}
                                 </Button>
                             }
                         />
@@ -119,9 +121,9 @@ export default function ProjectQuizzesPage() {
                 isOpen={!!toDelete}
                 onClose={() => setToDelete(null)}
                 onConfirm={() => toDelete && deleteQuiz.mutate(toDelete.id, { onSuccess: () => setToDelete(null) })}
-                title="Delete this quiz?"
-                description="All attempts for this quiz will be removed. Questions stay in your question bank."
-                confirmText="Delete"
+                title={t("delete.title")}
+                description={t("delete.description")}
+                confirmText={t("common:actions.delete")}
                 variant="destructive"
                 isLoading={deleteQuiz.isPending}
             />

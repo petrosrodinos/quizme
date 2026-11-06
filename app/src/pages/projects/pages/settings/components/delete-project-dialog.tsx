@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { Trans, useTranslation } from "react-i18next";
 
 interface DeleteProjectDialogProps {
     open: boolean;
@@ -14,6 +15,7 @@ interface DeleteProjectDialogProps {
 
 /** Typed-confirmation delete (irreversible). */
 export const DeleteProjectDialog = ({ open, onOpenChange, projectTitle, isPending, onConfirm }: DeleteProjectDialogProps) => {
+    const { t } = useTranslation("projectSettings");
     const [value, setValue] = useState("");
     useEffect(() => {
         if (open) setValue("");
@@ -23,23 +25,23 @@ export const DeleteProjectDialog = ({ open, onOpenChange, projectTitle, isPendin
         <Dialog open={open} onOpenChange={(o) => !isPending && onOpenChange(o)}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Delete this project permanently?</DialogTitle>
+                    <DialogTitle>{t("deleteDialog.title")}</DialogTitle>
                     <DialogDescription>
-                        All documents, quizzes, flashcards, notes and everyone's progress in this project will be deleted. This cannot be undone.
+                        {t("deleteDialog.description")}
                     </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-2">
                     <Label htmlFor="confirm-title">
-                        Type <span className="font-semibold">{projectTitle}</span> to confirm
+                        <Trans t={t} i18nKey="deleteDialog.typeToConfirm" values={{ title: projectTitle }} components={{ b: <span className="font-semibold" /> }} />
                     </Label>
                     <Input id="confirm-title" value={value} onChange={(e) => setValue(e.target.value)} autoComplete="off" />
                 </div>
                 <DialogFooter>
                     <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={isPending}>
-                        Cancel
+                        {t("common:actions.cancel")}
                     </Button>
                     <Button variant="destructive" disabled={!matches} loading={isPending} onClick={onConfirm}>
-                        Delete project
+                        {t("danger.delete")}
                     </Button>
                 </DialogFooter>
             </DialogContent>

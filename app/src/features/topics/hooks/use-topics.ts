@@ -1,3 +1,4 @@
+import { tr } from "@/lib/i18n-options";
 import { useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
@@ -27,10 +28,10 @@ export const useRebuildTopics = (projectId: string) => {
     return useMutation({
         mutationFn: () => rebuildTopics(projectId),
         onSuccess: () => {
-            toast({ title: "Rebuilding knowledge map", description: "This runs in the background and takes a moment.", duration: 3000 });
+            toast({ title: tr("topics:toasts.rebuilding"), description: tr("topics:toasts.rebuildingDescription"), duration: 3000 });
             setTimeout(() => queryClient.invalidateQueries({ queryKey: ["topics"] }), 8000);
         },
-        onError: (error: Error) => toast({ title: "Could not rebuild map", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("topics:toasts.rebuildFailed"), description: error.message, variant: "error" }),
     });
 };
 
@@ -40,9 +41,9 @@ export const useCreateTopic = (projectId: string) => {
         mutationFn: (dto: CreateTopicDto) => createTopic(projectId, dto),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["topics"] });
-            toast({ title: "Topic added", duration: 2000 });
+            toast({ title: tr("topics:toasts.added"), duration: 2000 });
         },
-        onError: (error: Error) => toast({ title: "Could not add topic", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("topics:toasts.addFailed"), description: error.message, variant: "error" }),
     });
 };
 
@@ -52,9 +53,9 @@ export const useUpdateTopic = () => {
         mutationFn: ({ id, dto }: { id: string; dto: UpdateTopicDto }) => updateTopic(id, dto),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["topics"] });
-            toast({ title: "Topic updated", duration: 2000 });
+            toast({ title: tr("topics:toasts.updated"), duration: 2000 });
         },
-        onError: (error: Error) => toast({ title: "Could not update topic", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("topics:toasts.updateFailed"), description: error.message, variant: "error" }),
     });
 };
 
@@ -64,8 +65,8 @@ export const useDeleteTopic = () => {
         mutationFn: deleteTopic,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["topics"] });
-            toast({ title: "Topic deleted", duration: 2000 });
+            toast({ title: tr("topics:toasts.deleted"), duration: 2000 });
         },
-        onError: (error: Error) => toast({ title: "Could not delete topic", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("topics:toasts.deleteFailed"), description: error.message, variant: "error" }),
     });
 };

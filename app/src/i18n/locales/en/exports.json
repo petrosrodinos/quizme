@@ -1,0 +1,27 @@
+{
+  "menu": {
+    "button": "Export",
+    "downloadAs": "Download as"
+  },
+  "formats": {
+    "csv": "CSV (spreadsheet)",
+    "json": "JSON",
+    "md": "Markdown",
+    "txt": "Plain text",
+    "html": "PDF (print)"
+  },
+  "types": {
+    "flashcards": "Flashcards",
+    "questions": "Question bank",
+    "notes": "Notes",
+    "study_guides": "Study guides",
+    "attempts": "Quiz results"
+  },
+  "toasts": {
+    "ready": "Export ready",
+    "failed": "Export failed"
+  },
+  "errors": {
+    "failed": "Export failed."
+  }
+}

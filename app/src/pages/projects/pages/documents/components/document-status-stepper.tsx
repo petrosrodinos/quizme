@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { DocumentPipelineSteps, getDocumentStatusDescription, getDocumentStatusLabel } from "@/config/constants/dropdowns/documents/document-status.options";
 import { DocumentStatuses, type DocumentStatus } from "@/features/documents/interfaces/documents.interfaces";
+import { useTranslation } from "react-i18next";
 
 /** Maps every status to its position in the visible pipeline. */
 const stepIndex = (status: DocumentStatus) => {
@@ -18,23 +19,24 @@ interface DocumentStatusStepperProps {
 
 /** Uploading → Extracting → Chunking → Indexing → Ready, with a progress bar for the active step. */
 export const DocumentStatusStepper = ({ status, progress }: DocumentStatusStepperProps) => {
+    const { t } = useTranslation("documents");
     if (status === DocumentStatuses.FAILED) {
         return (
             <span className="inline-flex items-center gap-1.5 text-xs font-medium text-destructive">
-                <XCircle className="h-3.5 w-3.5" /> Failed
+                <XCircle className="h-3.5 w-3.5" /> {getDocumentStatusLabel(DocumentStatuses.FAILED)}
             </span>
         );
     }
     if (status === DocumentStatuses.READY) {
         return (
             <span className="inline-flex items-center gap-1.5 text-xs font-medium text-success">
-                <Check className="h-3.5 w-3.5" /> Ready
+                <Check className="h-3.5 w-3.5" /> {getDocumentStatusLabel(DocumentStatuses.READY)}
             </span>
         );
     }
     const current = stepIndex(status);
     return (
-        <div className="w-full max-w-xs space-y-1.5" role="status" aria-live="polite" aria-label={`${getDocumentStatusLabel(status)}: ${progress}%`}>
+        <div className="w-full max-w-xs space-y-1.5" role="status" aria-live="polite" aria-label={t("stepper.progressLabel", { status: getDocumentStatusLabel(status), progress })}>
             <ol className="flex items-center gap-1">
                 {DocumentPipelineSteps.map((step, i) => (
                     <li key={step} className="flex flex-1 items-center gap-1">

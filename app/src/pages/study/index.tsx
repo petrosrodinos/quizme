@@ -1,6 +1,7 @@
 import { lazy, Suspense, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { CheckCircle2, Layers, Sparkles } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Main } from "@/components/layout/main";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
@@ -29,7 +30,8 @@ const ALL = "all";
 const internalLink = (link?: string | null) => (link && link.startsWith("/") && !link.startsWith("//") ? link : null);
 
 export default function StudyPage() {
-    usePageMetadata({ title: "Today's study" });
+    const { t } = useTranslation("study");
+    usePageMetadata({ title: t("pageTitle") });
     const navigate = useNavigate();
     const [params, setParams] = useSearchParams();
     const projectId = params.get("project_id") ?? undefined;
@@ -80,7 +82,7 @@ export default function StudyPage() {
             onSuccess: () => {
                 play("goal");
                 celebrate("big");
-                pushCelebration({ kind: CelebrationKinds.DAILY_GOAL, title: "Daily session complete", description: "Consistency is what makes knowledge stick." });
+                pushCelebration({ kind: CelebrationKinds.DAILY_GOAL, title: t("celebration.title"), description: t("celebration.description") });
             },
         });
 
@@ -89,16 +91,16 @@ export default function StudyPage() {
     return (
         <Main width="default">
             <PageHeader
-                eyebrow="Study mode"
-                title="Today's recommended session"
-                description="Picked for you from your exam dates, knowledge gaps, spaced-repetition schedule and recent activity."
+                eyebrow={t("header.eyebrow")}
+                title={t("header.title")}
+                description={t("header.description")}
                 actions={
                     <Select value={projectId ?? ALL} onValueChange={setProject}>
-                        <SelectTrigger className="w-[220px]" aria-label="Choose project">
+                        <SelectTrigger className="w-[220px]" aria-label={t("header.chooseProject")}>
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value={ALL}>All projects</SelectItem>
+                            <SelectItem value={ALL}>{t("header.allProjects")}</SelectItem>
                             {(projects ?? []).map((p) => (
                                 <SelectItem key={p.id} value={p.id}>
                                     {p.title}
@@ -113,7 +115,7 @@ export default function StudyPage() {
                 <section className="mb-6 rounded-xl border border-border bg-card p-5" aria-labelledby="review-heading">
                     <div className="mb-4 flex items-center justify-between gap-3">
                         <h2 id="review-heading" className="inline-flex items-center gap-2 font-display text-lg">
-                            <Layers className="h-4 w-4 text-primary" aria-hidden /> Flashcard review
+                            <Layers className="h-4 w-4 text-primary" aria-hidden /> {t("review.title")}
                         </h2>
                         <Button
                             variant="ghost"
@@ -124,7 +126,7 @@ export default function StudyPage() {
                                 setParams(next, { replace: true });
                             }}
                         >
-                            Back to session
+                            {t("review.back")}
                         </Button>
                     </div>
                     <Suspense fallback={<ListSkeleton rows={2} />}>
@@ -145,59 +147,59 @@ export default function StudyPage() {
                 <ListSkeleton rows={4} />
             ) : isError || !data ? (
                 <EmptyState
-                    title="Couldn't build today's session"
+                    title={t("loadError")}
                     description={error?.message}
                     action={
                         <Button variant="outline" onClick={() => refetch()}>
-                            Try again
+                            {t("common:actions.tryAgain")}
                         </Button>
                     }
                 />
             ) : (
                 <div className="space-y-6">
-                    <section className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-5 sm:flex-row sm:items-center sm:p-6" aria-label="Progress today">
-                        <ProgressRing value={goalPct} size={104} label="Daily goal progress" indicatorClassName={data.progress.goal_met ? "stroke-success" : undefined}>
+                    <section className="flex flex-col gap-5 rounded-2xl border border-border bg-card p-5 sm:flex-row sm:items-center sm:p-6" aria-label={t("progress.aria")}>
+                        <ProgressRing value={goalPct} size={104} label={t("progress.goalLabel")} indicatorClassName={data.progress.goal_met ? "stroke-success" : undefined}>
                             <span className="font-display text-2xl">{data.progress.minutes}</span>
-                            <span className="text-[11px] text-muted-foreground">of {data.goal_minutes} min</span>
+                            <span className="text-[11px] text-muted-foreground">{t("progress.ofGoal", { count: data.goal_minutes })}</span>
                         </ProgressRing>
                         <div className="grid flex-1 grid-cols-3 gap-4 text-center sm:text-left">
                             <div>
                                 <div className="font-display text-2xl">{data.total_minutes}</div>
-                                <div className="text-xs text-muted-foreground">min planned</div>
+                                <div className="text-xs text-muted-foreground">{t("progress.planned")}</div>
                             </div>
                             <div>
                                 <div className="font-display text-2xl">{data.progress.questions ?? 0}</div>
-                                <div className="text-xs text-muted-foreground">questions today</div>
+                                <div className="text-xs text-muted-foreground">{t("progress.questions")}</div>
                             </div>
                             <div>
                                 <div className="font-display text-2xl">{data.progress.cards ?? 0}</div>
-                                <div className="text-xs text-muted-foreground">cards today</div>
+                                <div className="text-xs text-muted-foreground">{t("progress.cards")}</div>
                             </div>
                         </div>
                         {data.completed ? (
                             <span className="inline-flex items-center gap-2 text-sm font-medium text-success">
-                                <CheckCircle2 className="h-5 w-5" aria-hidden /> Session complete
+                                <CheckCircle2 className="h-5 w-5" aria-hidden /> {t("progress.complete")}
                             </span>
                         ) : (
                             <Button onClick={finish} loading={complete.isPending} disabled={!data.blocks.length} variant="outline">
-                                <Sparkles /> Complete session
+                                <Sparkles /> {t("progress.completeAction")}
                             </Button>
                         )}
                     </section>
 
                     {data.blocks.length ? (
-                        <ol className="space-y-3" aria-label="Session steps">
+                        <ol className="space-y-3" aria-label={t("steps")}>
                             {data.blocks.map((b, i) => (
                                 <SessionBlockCard key={`${b.type}-${i}`} block={b} index={i} onStart={(block) => start(block, i)} isStarting={startingIndex === i && startQuiz.isPending} />
                             ))}
                         </ol>
                     ) : (
                         <EmptyState
-                            title="Nothing to study yet"
-                            description="Create a project and upload your material to get a personalised daily session."
+                            title={t("empty.title")}
+                            description={t("empty.description")}
                             action={
                                 <Button asChild>
-                                    <Link to={Routes.projects.root}>Go to projects</Link>
+                                    <Link to={Routes.projects.root}>{t("empty.cta")}</Link>
                                 </Button>
                             }
                         />

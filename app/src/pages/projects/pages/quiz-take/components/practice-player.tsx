@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, Loader2, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +29,7 @@ const COMBO_MILESTONES = new Set([3, 5, 10, 15, 20]);
 
 /** One-question-at-a-time player with instant, animated feedback (practice / adaptive / review / selection). */
 export const PracticePlayer = ({ projectId, detail, onFinish, onExit, finishing }: PracticePlayerProps) => {
+    const { t } = useTranslation("quiz");
     const { attempt, questions, quiz } = detail;
     const feedback = useFeedback();
     const submit = useSubmitAnswer(attempt.id);
@@ -106,8 +108,8 @@ export const PracticePlayer = ({ projectId, detail, onFinish, onExit, finishing 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
             if (e.key !== "Enter" || e.shiftKey || e.metaKey || e.ctrlKey) return;
-            const t = e.target as HTMLElement;
-            if (t.tagName === "TEXTAREA" || t.tagName === "INPUT" || t.tagName === "BUTTON") return;
+            const target = e.target as HTMLElement;
+            if (target.tagName === "TEXTAREA" || target.tagName === "INPUT" || target.tagName === "BUTTON") return;
             e.preventDefault();
             if (result) handleNext();
             else handleSubmit();
@@ -123,11 +125,11 @@ export const PracticePlayer = ({ projectId, detail, onFinish, onExit, finishing 
     return (
         <div className="mx-auto w-full max-w-3xl space-y-5">
             <div className="flex items-center gap-3">
-                <Button variant="ghost" size="icon" onClick={onExit} aria-label="Exit quiz">
+                <Button variant="ghost" size="icon" onClick={onExit} aria-label={t("player.exit")}>
                     <X />
                 </Button>
                 <div className="flex-1">
-                    <Progress value={((answeredCount + (result ? 0 : 0)) / questions.length) * 100} className="h-2" aria-label="Quiz progress" />
+                    <Progress value={((answeredCount + (result ? 0 : 0)) / questions.length) * 100} className="h-2" aria-label={t("player.progress")} />
                 </div>
                 <span className="text-sm tabular-nums text-muted-foreground">
                     {index + 1}/{questions.length}
@@ -162,7 +164,7 @@ export const PracticePlayer = ({ projectId, detail, onFinish, onExit, finishing 
                         {result.feedback && question.type === "FREE_TEXT" && <EvaluationPanel evaluation={result.feedback} />}
                         {result.explanation && (
                             <div className="rounded-xl bg-surface p-4 text-sm leading-relaxed">
-                                <div className="mb-1 font-medium">Explanation</div>
+                                <div className="mb-1 font-medium">{t("player.explanation")}</div>
                                 <Markdown content={result.explanation} />
                             </div>
                         )}
@@ -175,20 +177,20 @@ export const PracticePlayer = ({ projectId, detail, onFinish, onExit, finishing 
                         <Button onClick={handleSubmit} disabled={!ready || submit.isPending} className="min-w-32">
                             {submit.isPending ? (
                                 <>
-                                    <Loader2 className="animate-spin" /> {question.type === "FREE_TEXT" ? "Grading…" : "Checking…"}
+                                    <Loader2 className="animate-spin" /> {question.type === "FREE_TEXT" ? t("player.grading") : t("player.checking")}
                                 </>
                             ) : (
-                                "Check answer"
+                                t("player.check")
                             )}
                         </Button>
                     ) : (
                         <Button onClick={handleNext} loading={finishing} className={cn("min-w-32")} autoFocus>
-                            {isLast ? "See results" : "Next question"} <ArrowRight />
+                            {isLast ? t("player.seeResults") : t("player.nextQuestion")} <ArrowRight />
                         </Button>
                     )}
                 </div>
             </div>
-            <p className="text-center text-xs text-muted-foreground">Press Enter to check / continue · number keys pick options</p>
+            <p className="text-center text-xs text-muted-foreground">{t("player.keyboardHint")}</p>
         </div>
     );
 };

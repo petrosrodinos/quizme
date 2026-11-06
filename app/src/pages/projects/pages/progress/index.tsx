@@ -15,19 +15,20 @@ import type { TopicScore } from "@/features/analytics/interfaces/analytics.inter
 import { useProjectContext } from "../../hooks/use-project-context";
 import { AttemptsTrendChart, ChartCard, DailyActivityChart, DifficultyChart, RatingsChart } from "./components/progress-charts";
 import { LeaderboardCard } from "./components/leaderboard-card";
+import { useTranslation } from "react-i18next";
 
 const TopicList: FC<{ topics: TopicScore[]; tone: "success" | "warning"; empty: string; projectId: string }> = ({ topics, tone, empty, projectId }) =>
     topics.length ? (
         <ul className="space-y-2.5">
-            {topics.map((t) => (
-                <li key={t.id}>
+            {topics.map((topic) => (
+                <li key={topic.id}>
                     <Link to={Routes.projects.topics(projectId)} className="block rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
                         <div className="flex justify-between text-sm">
-                            <span className="truncate">{t.name}</span>
-                            <span className="tabular-nums text-muted-foreground">{t.mastery}%</span>
+                            <span className="truncate">{topic.name}</span>
+                            <span className="tabular-nums text-muted-foreground">{topic.mastery}%</span>
                         </div>
                         <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-strong">
-                            <div className={tone === "success" ? "h-full rounded-full bg-success" : "h-full rounded-full bg-warning"} style={{ width: `${Math.max(3, t.mastery)}%` }} />
+                            <div className={tone === "success" ? "h-full rounded-full bg-success" : "h-full rounded-full bg-warning"} style={{ width: `${Math.max(3, topic.mastery)}%` }} />
                         </div>
                     </Link>
                 </li>
@@ -41,8 +42,9 @@ const pct = (v: number | null) => (v === null ? "—" : v);
 const pctSuffix = (v: number | null) => (v === null ? undefined : "%");
 
 export default function ProjectProgressPage() {
+    const { t } = useTranslation("progress");
     const { project, projectId } = useProjectContext();
-    usePageMetadata({ title: `${project.title} · Progress` });
+    usePageMetadata({ title: t("metaTitle", { title: project.title }) });
     const { data, isPending, isError, error } = useProjectProgress(projectId);
 
     if (isPending)
@@ -54,12 +56,12 @@ export default function ProjectProgressPage() {
     if (isError || !data)
         return (
             <Main>
-                <EmptyState title="Couldn't load progress" description={error?.message} />
+                <EmptyState title={t("loadError")} description={error?.message} />
             </Main>
         );
 
-    const t = data.totals;
-    const noData = !t.questions_answered && !t.cards_reviewed && !t.study_minutes;
+    const totals = data.totals;
+    const noData = !totals.questions_answered && !totals.cards_reviewed && !totals.study_minutes;
 
     return (
         <Main>
@@ -67,61 +69,61 @@ export default function ProjectProgressPage() {
                 <EmptyState
                     className="mb-6"
                     compact
-                    title="Your learning analytics will appear here"
-                    description="Take quizzes, review flashcards and explain concepts to build up your progress history."
+                    title={t("empty.title")}
+                    description={t("empty.description")}
                     action={
                         <Button asChild size="sm">
-                            <Link to={Routes.projects.quizzes(projectId)}>Start a quiz</Link>
+                            <Link to={Routes.projects.quizzes(projectId)}>{t("empty.action")}</Link>
                         </Button>
                     }
                 />
             )}
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <StatCard label="Study time" value={t.study_minutes} suffix=" min" icon={Clock} hint="Last 60 days" />
-                <StatCard label="Questions answered" value={t.questions_answered} icon={BookOpenCheck} hint={`${t.attempts} completed quizzes`} />
-                <StatCard label="Accuracy" value={pct(t.accuracy)} suffix={pctSuffix(t.accuracy)} icon={Percent} />
-                <StatCard label="Average score" value={pct(t.average_score)} suffix={pctSuffix(t.average_score)} icon={Sigma} />
-                <StatCard label="Flashcard retention" value={pct(t.retention)} suffix={pctSuffix(t.retention)} icon={Layers} hint={`${t.cards_reviewed} reviews`} />
+                <StatCard label={t("stats.studyTime")} value={totals.study_minutes} suffix={t("stats.minSuffix")} icon={Clock} hint={t("stats.last60")} />
+                <StatCard label={t("stats.questions")} value={totals.questions_answered} icon={BookOpenCheck} hint={t("stats.completedQuizzes", { count: totals.attempts })} />
+                <StatCard label={t("stats.accuracy")} value={pct(totals.accuracy)} suffix={pctSuffix(totals.accuracy)} icon={Percent} />
+                <StatCard label={t("stats.averageScore")} value={pct(totals.average_score)} suffix={pctSuffix(totals.average_score)} icon={Sigma} />
+                <StatCard label={t("stats.retention")} value={pct(totals.retention)} suffix={pctSuffix(totals.retention)} icon={Layers} hint={t("stats.reviews", { count: totals.cards_reviewed })} />
                 <StatCard
-                    label="Improvement"
-                    value={t.improvement_rate === null ? "—" : `${t.improvement_rate > 0 ? "+" : ""}${t.improvement_rate}`}
-                    suffix={t.improvement_rate === null ? undefined : " pts"}
+                    label={t("stats.improvement")}
+                    value={totals.improvement_rate === null ? "—" : `${totals.improvement_rate > 0 ? "+" : ""}${totals.improvement_rate}`}
+                    suffix={totals.improvement_rate === null ? undefined : t("stats.pts")}
                     icon={TrendingUp}
-                    tone={t.improvement_rate !== null && t.improvement_rate > 0 ? "success" : "default"}
-                    hint="First vs latest 5 quizzes"
+                    tone={totals.improvement_rate !== null && totals.improvement_rate > 0 ? "success" : "default"}
+                    hint={t("stats.improvementHint")}
                 />
-                <StatCard label="Recall score" value={pct(t.recall_average)} suffix={pctSuffix(t.recall_average)} icon={Brain} hint="Active recall & teach-back" />
+                <StatCard label={t("stats.recall")} value={pct(totals.recall_average)} suffix={pctSuffix(totals.recall_average)} icon={Brain} hint={t("stats.recallHint")} />
                 <div className="flex items-center gap-4 rounded-xl border border-border bg-card p-4">
-                    <ProgressRing value={data.readiness.score} size={72} strokeWidth={7} label="Exam readiness">
+                    <ProgressRing value={data.readiness.score} size={72} strokeWidth={7} label={t("stats.readinessLabel")}>
                         <span className="font-display text-lg">{data.readiness.score}%</span>
                     </ProgressRing>
                     <div>
-                        <div className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">Readiness</div>
+                        <div className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">{t("stats.readiness")}</div>
                         <div className="text-xs text-muted-foreground">{getReadinessConfidenceLabel(data.readiness.confidence)}</div>
                     </div>
                 </div>
             </div>
 
             <div className="mt-6 grid gap-4 lg:grid-cols-2">
-                <ChartCard title="Last 30 days" description="Minutes studied (bars) and answer accuracy (line)" className="lg:col-span-2">
+                <ChartCard title={t("charts.last30.title")} description={t("charts.last30.description")} className="lg:col-span-2">
                     <DailyActivityChart daily={data.daily} />
                 </ChartCard>
-                <ChartCard title="Quiz attempts over time">
-                    {data.attempts.length ? <AttemptsTrendChart attempts={data.attempts} /> : <p className="text-sm text-muted-foreground">No completed quizzes yet.</p>}
+                <ChartCard title={t("charts.attempts.title")}>
+                    {data.attempts.length ? <AttemptsTrendChart attempts={data.attempts} /> : <p className="text-sm text-muted-foreground">{t("charts.attempts.empty")}</p>}
                 </ChartCard>
-                <ChartCard title="Accuracy by difficulty" description="Are harder questions holding you back?">
+                <ChartCard title={t("charts.difficulty.title")} description={t("charts.difficulty.description")}>
                     <DifficultyChart rows={data.by_difficulty} />
                 </ChartCard>
-                <ChartCard title="Flashcard ratings" description="Last 60 days">
+                <ChartCard title={t("charts.ratings.title")} description={t("charts.ratings.description")}>
                     <RatingsChart rows={data.flashcards.by_rating} />
                 </ChartCard>
-                <ChartCard title="Readiness breakdown">
+                <ChartCard title={t("charts.readiness.title")}>
                     <ul className="space-y-2.5">
                         {data.readiness.factors.map((f) => (
                             <li key={f.key}>
                                 <div className="flex justify-between text-sm">
-                                    <span>{f.label}</span>
-                                    <span className="tabular-nums text-muted-foreground">{f.value === null ? "no data" : `${f.value}%`}</span>
+                                    <span>{t(`overview:readiness.factors.${f.key}`, { defaultValue: f.label })}</span>
+                                    <span className="tabular-nums text-muted-foreground">{f.value === null ? t("charts.readiness.noData") : `${f.value}%`}</span>
                                 </div>
                                 <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-strong">
                                     <div className="h-full rounded-full bg-primary" style={{ width: `${f.value ?? 0}%` }} />
@@ -137,11 +139,11 @@ export default function ProjectProgressPage() {
                         </ul>
                     )}
                 </ChartCard>
-                <ChartCard title="Strongest topics">
-                    <TopicList topics={data.strong_topics} tone="success" empty="Practise topics to see your strengths." projectId={projectId} />
+                <ChartCard title={t("charts.strong.title")}>
+                    <TopicList topics={data.strong_topics} tone="success" empty={t("charts.strong.empty")} projectId={projectId} />
                 </ChartCard>
-                <ChartCard title="Weakest topics">
-                    <TopicList topics={data.weak_topics} tone="warning" empty="No weak topics detected yet." projectId={projectId} />
+                <ChartCard title={t("charts.weak.title")}>
+                    <TopicList topics={data.weak_topics} tone="warning" empty={t("charts.weak.empty")} projectId={projectId} />
                 </ChartCard>
                 {(project.counts?.members ?? 1) > 1 && <LeaderboardCard projectId={projectId} />}
             </div>

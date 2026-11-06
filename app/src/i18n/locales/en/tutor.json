@@ -1,0 +1,74 @@
+{
+  "page": {
+    "title": "AI Tutor"
+  },
+  "modes": {
+    "TUTOR": { "label": "Tutor", "description": "Clear explanations grounded in your sources" },
+    "SOCRATIC": { "label": "Socratic", "description": "Guiding questions that lead you to the answer" }
+  },
+  "suggestions": {
+    "chapter": "Explain this chapter to me",
+    "concept": "I don't understand this concept: ",
+    "example": "Give me an example",
+    "quiz_me": "Ask me questions about this topic",
+    "beginner": "Teach me this as if I'm a beginner",
+    "why_wrong": "Why is this answer wrong? "
+  },
+  "threads": {
+    "title": "Conversations",
+    "newChat": "New chat",
+    "empty": "No conversations yet.",
+    "select": "Conversation",
+    "actionsFor": "Actions for {{title}}",
+    "renameTitle": "Rename conversation",
+    "titleField": "Conversation title"
+  },
+  "chat": {
+    "ariaLabel": "Chat",
+    "modeGroup": "Tutor mode",
+    "limitDocument": "Limit to document",
+    "allDocuments": "All documents",
+    "limitTopic": "Limit to topic",
+    "allTopics": "All topics",
+    "typing": "The tutor is typing",
+    "placeholder": "Ask your tutor…",
+    "socraticPlaceholder": "What are you trying to understand?",
+    "message": "Message",
+    "keyboardHint": "Enter to send · Shift+Enter for a new line"
+  },
+  "empty": {
+    "tutorTitle": "Ask anything about {{title}}",
+    "tutorDescription": "Answers come from your uploaded sources, with citations. If something isn't covered, I'll say so.",
+    "socraticTitle": "Let's think it through together",
+    "socraticDescription": "I'll guide you with questions instead of giving the answer straight away."
+  },
+  "citations": {
+    "sources": "Sources",
+    "notGrounded": "Not covered by your sources",
+    "page": "page {{page}}",
+    "pageShort": "p.{{page}}",
+    "passage": "Source passage",
+    "openInReader": "Open in reader"
+  },
+  "confirm": {
+    "deleteTitle": "Delete this conversation?",
+    "deleteDescription": "All messages in it will be removed."
+  },
+  "toasts": {
+    "created": "New conversation",
+    "createFailed": "Could not start conversation",
+    "updated": "Conversation updated",
+    "updateFailed": "Could not update conversation",
+    "deleted": "Conversation deleted",
+    "deleteFailed": "Could not delete conversation",
+    "sendFailed": "Message not sent"
+  },
+  "errors": {
+    "loadThreads": "Failed to load conversations.",
+    "createThread": "Failed to start a conversation.",
+    "updateThread": "Failed to update conversation.",
+    "deleteThread": "Failed to delete conversation.",
+    "loadMessages": "Failed to load messages.",
+    "send": "The tutor could not answer. Please retry."
+  }
+}

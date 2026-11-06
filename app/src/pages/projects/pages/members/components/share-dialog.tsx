@@ -13,6 +13,7 @@ import { useCreateShare, useShareableResources } from "@/features/shares/hooks/u
 import { useOrganizations } from "@/features/organizations/hooks/use-organizations";
 import type { ShareResourceType } from "@/features/shares/interfaces/shares.interfaces";
 import { shareSchema, type ShareFormValues } from "../validation-schemas/members.schema";
+import { useTranslation } from "react-i18next";
 
 interface ShareDialogProps {
     projectId: string;
@@ -35,6 +36,7 @@ const DEFAULTS: ShareFormValues = {
 const NEEDS_PICKER: ShareResourceType[] = ["DOCUMENT", "DECK", "QUIZ", "NOTE"];
 
 export const ShareDialog = ({ projectId, open, onOpenChange }: ShareDialogProps) => {
+    const { t } = useTranslation("members");
     const create = useCreateShare();
     const form = useForm<ShareFormValues>({ resolver: zodResolver(shareSchema), defaultValues: DEFAULTS });
     const resourceType = useWatch({ control: form.control, name: "resource_type" });
@@ -90,20 +92,20 @@ export const ShareDialog = ({ projectId, open, onOpenChange }: ShareDialogProps)
         <Dialog open={open} onOpenChange={(o) => !create.isPending && onOpenChange(o)}>
             <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-lg">
                 <DialogHeader>
-                    <DialogTitle className="font-display text-2xl font-normal">Share content</DialogTitle>
-                    <DialogDescription>Choose what to share, with whom, and what they can do with it.</DialogDescription>
+                    <DialogTitle className="font-display text-2xl font-normal">{t("share.dialog.title")}</DialogTitle>
+                    <DialogDescription>{t("share.dialog.description")}</DialogDescription>
                 </DialogHeader>
                 {createdUrl ? (
                     <div className="space-y-4">
-                        <p className="text-sm text-muted-foreground">Your link is ready. Anyone signed in with this link can open it.</p>
+                        <p className="text-sm text-muted-foreground">{t("share.dialog.linkReady")}</p>
                         <div className="flex gap-2">
-                            <Input readOnly value={createdUrl} aria-label="Share link" onFocus={(e) => e.currentTarget.select()} />
-                            <Button type="button" variant="outline" onClick={copyLink} aria-label="Copy link">
+                            <Input readOnly value={createdUrl} aria-label={t("share.dialog.linkAria")} onFocus={(e) => e.currentTarget.select()} />
+                            <Button type="button" variant="outline" onClick={copyLink} aria-label={t("share.dialog.copyLink")}>
                                 {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                             </Button>
                         </div>
                         <DialogFooter>
-                            <Button onClick={() => onOpenChange(false)}>Done</Button>
+                            <Button onClick={() => onOpenChange(false)}>{t("common:actions.done")}</Button>
                         </DialogFooter>
                     </div>
                 ) : (
@@ -115,10 +117,10 @@ export const ShareDialog = ({ projectId, open, onOpenChange }: ShareDialogProps)
                                     name="resource_type"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>What</FormLabel>
+                                            <FormLabel>{t("share.dialog.what")}</FormLabel>
                                             <Select value={field.value} onValueChange={field.onChange}>
                                                 <FormControl>
-                                                    <SelectTrigger aria-label="Content type">
+                                                    <SelectTrigger aria-label={t("share.dialog.contentType")}>
                                                         <SelectValue />
                                                     </SelectTrigger>
                                                 </FormControl>
@@ -139,10 +141,10 @@ export const ShareDialog = ({ projectId, open, onOpenChange }: ShareDialogProps)
                                     name="target_type"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>With</FormLabel>
+                                            <FormLabel>{t("share.dialog.with")}</FormLabel>
                                             <Select value={field.value} onValueChange={field.onChange}>
                                                 <FormControl>
-                                                    <SelectTrigger aria-label="Share with">
+                                                    <SelectTrigger aria-label={t("share.dialog.shareWith")}>
                                                         <SelectValue />
                                                     </SelectTrigger>
                                                 </FormControl>
@@ -165,11 +167,11 @@ export const ShareDialog = ({ projectId, open, onOpenChange }: ShareDialogProps)
                                     name="resource_id"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Item</FormLabel>
+                                            <FormLabel>{t("share.dialog.item")}</FormLabel>
                                             <Select value={field.value || undefined} onValueChange={field.onChange} disabled={resources.isPending}>
                                                 <FormControl>
-                                                    <SelectTrigger aria-label="Item to share">
-                                                        <SelectValue placeholder={resources.isPending ? "Loading…" : resources.data?.length ? "Choose…" : "Nothing to share yet"} />
+                                                    <SelectTrigger aria-label={t("share.dialog.itemAria")}>
+                                                        <SelectValue placeholder={resources.isPending ? t("common:status.loading") : resources.data?.length ? t("share.dialog.choose") : t("share.dialog.nothingToShare")} />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
@@ -191,9 +193,9 @@ export const ShareDialog = ({ projectId, open, onOpenChange }: ShareDialogProps)
                                     name="email"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Email</FormLabel>
+                                            <FormLabel>{t("invite.email")}</FormLabel>
                                             <FormControl>
-                                                <Input type="email" placeholder="friend@example.com" {...field} />
+                                                <Input type="email" placeholder={t("share.dialog.emailPlaceholder")} {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -206,11 +208,11 @@ export const ShareDialog = ({ projectId, open, onOpenChange }: ShareDialogProps)
                                     name="organization_id"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Organization</FormLabel>
+                                            <FormLabel>{t("share.dialog.organization")}</FormLabel>
                                             <Select value={field.value || undefined} onValueChange={field.onChange}>
                                                 <FormControl>
-                                                    <SelectTrigger aria-label="Organization">
-                                                        <SelectValue placeholder={orgs.data?.length ? "Choose…" : "Create an organization first"} />
+                                                    <SelectTrigger aria-label={t("share.dialog.organization")}>
+                                                        <SelectValue placeholder={orgs.data?.length ? t("share.dialog.choose") : t("share.dialog.createOrgFirst")} />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
@@ -232,10 +234,10 @@ export const ShareDialog = ({ projectId, open, onOpenChange }: ShareDialogProps)
                                     name="permission"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Permission</FormLabel>
+                                            <FormLabel>{t("share.dialog.permission")}</FormLabel>
                                             <Select value={field.value} onValueChange={field.onChange}>
                                                 <FormControl>
-                                                    <SelectTrigger aria-label="Permission">
+                                                    <SelectTrigger aria-label={t("share.dialog.permission")}>
                                                         <SelectValue />
                                                     </SelectTrigger>
                                                 </FormControl>
@@ -256,9 +258,9 @@ export const ShareDialog = ({ projectId, open, onOpenChange }: ShareDialogProps)
                                     name="expires_in_days"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Expires after (days)</FormLabel>
+                                            <FormLabel>{t("share.dialog.expiresAfter")}</FormLabel>
                                             <FormControl>
-                                                <Input inputMode="numeric" placeholder="Never" {...field} />
+                                                <Input inputMode="numeric" placeholder={t("share.dialog.never")} {...field} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -274,7 +276,7 @@ export const ShareDialog = ({ projectId, open, onOpenChange }: ShareDialogProps)
                                             <FormControl>
                                                 <Switch checked={field.value} onCheckedChange={field.onChange} />
                                             </FormControl>
-                                            <FormLabel className="font-normal">Allow copying</FormLabel>
+                                            <FormLabel className="font-normal">{t("share.dialog.allowCopy")}</FormLabel>
                                         </FormItem>
                                     )}
                                 />
@@ -286,17 +288,17 @@ export const ShareDialog = ({ projectId, open, onOpenChange }: ShareDialogProps)
                                             <FormControl>
                                                 <Switch checked={field.value} onCheckedChange={field.onChange} />
                                             </FormControl>
-                                            <FormLabel className="font-normal">Allow resharing</FormLabel>
+                                            <FormLabel className="font-normal">{t("share.dialog.allowReshare")}</FormLabel>
                                         </FormItem>
                                     )}
                                 />
                             </div>
                             <DialogFooter>
                                 <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} disabled={create.isPending}>
-                                    Cancel
+                                    {t("common:actions.cancel")}
                                 </Button>
                                 <Button type="submit" loading={create.isPending}>
-                                    Share
+                                    {t("share.dialog.submit")}
                                 </Button>
                             </DialogFooter>
                         </form>

@@ -3,6 +3,7 @@ import axiosInstance from "@/config/api/axios";
 import { ApiRoutes } from "@/config/api/routes";
 import type { HealthResponse, HealthScope } from "../interfaces/health.interfaces";
 import { HealthServiceName } from "../interfaces/health.interfaces";
+import { tr } from "@/lib/i18n-options";
 
 const getHealthParams = (scope: HealthScope) => {
     if (scope === HealthServiceName.POSTGRES) {
@@ -29,6 +30,6 @@ export const getHealth = async (scope: HealthScope): Promise<HealthResponse> => 
             return error.response.data as HealthResponse;
         }
 
-        throw new Error("Failed to fetch health status. Please try again.");
+        throw new Error(tr("common:errors.generic"));
     }
 };

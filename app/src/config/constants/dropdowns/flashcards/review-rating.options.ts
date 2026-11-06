@@ -1,10 +1,22 @@
 import { ReviewRatings, type ReviewRating } from "@/features/flashcards/interfaces/flashcards.interfaces";
+import { tr } from "@/lib/i18n-options";
+
+const rating = (id: ReviewRating, key: string) => ({
+    id,
+    key,
+    get label(): string {
+        return tr(`flashcards:rating.${id}.label`);
+    },
+    get description(): string {
+        return tr(`flashcards:rating.${id}.description`);
+    },
+});
 
 export const ReviewRatingOptions: { id: ReviewRating; label: string; key: string; description: string }[] = [
-    { id: ReviewRatings.AGAIN, label: "Again", key: "1", description: "Forgot it — show again soon" },
-    { id: ReviewRatings.HARD, label: "Hard", key: "2", description: "Recalled with serious effort" },
-    { id: ReviewRatings.GOOD, label: "Good", key: "3", description: "Recalled after a moment" },
-    { id: ReviewRatings.EASY, label: "Easy", key: "4", description: "Instant recall" },
+    rating(ReviewRatings.AGAIN, "1"),
+    rating(ReviewRatings.HARD, "2"),
+    rating(ReviewRatings.GOOD, "3"),
+    rating(ReviewRatings.EASY, "4"),
 ];
 
-export const getReviewRatingLabel = (rating: ReviewRating | string): string => ReviewRatingOptions.find((o) => o.id === rating)?.label ?? rating;
+export const getReviewRatingLabel = (r: ReviewRating | string): string => ReviewRatingOptions.find((o) => o.id === r)?.label ?? r;

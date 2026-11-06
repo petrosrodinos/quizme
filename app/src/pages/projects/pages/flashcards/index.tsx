@@ -39,6 +39,8 @@ import { FlashcardStats } from "./components/flashcard-stats";
 import { FlashcardEditorDialog } from "./components/flashcard-editor-dialog";
 import { GenerateFlashcardsDialog } from "./components/generate-flashcards-dialog";
 import { DeckDialog } from "./components/deck-dialog";
+import { useTranslation } from "react-i18next";
+import { formatDate } from "@/lib/date";
 
 const ALL = "all";
 const statusTone: Record<CardStatus, string> = {
@@ -49,7 +51,8 @@ const statusTone: Record<CardStatus, string> = {
 };
 
 export default function ProjectFlashcardsPage() {
-    usePageMetadata({ title: "Flashcards" });
+    const { t } = useTranslation("flashcards");
+    usePageMetadata({ title: t("page.title") });
     const { projectId, can } = useProjectContext();
     const navigate = useNavigate();
     useFlashcardGenerationEvents(projectId);
@@ -60,8 +63,8 @@ export default function ProjectFlashcardsPage() {
     const [search, setSearch] = useState("");
     const [query, setQuery] = useState<FlashcardQuery>({ page: 1, limit: 50 });
     useEffect(() => {
-        const t = setTimeout(() => setQuery((q) => ({ ...q, search: search.trim() || undefined, page: 1 })), 300);
-        return () => clearTimeout(t);
+        const timer = setTimeout(() => setQuery((q) => ({ ...q, search: search.trim() || undefined, page: 1 })), 300);
+        return () => clearTimeout(timer);
     }, [search]);
     const { data, isPending } = useFlashcards(projectId, query);
 
@@ -97,15 +100,15 @@ export default function ProjectFlashcardsPage() {
     return (
         <Main width="wide">
             <PageHeader
-                title="Flashcards"
-                description="Spaced repetition schedules each card just before you would forget it."
+                title={t("page.title")}
+                description={t("page.description")}
                 actions={
                     <div className="flex flex-wrap gap-2">
                         <ExportMenu projectId={projectId} type="flashcards" deckId={query.deck_id} />
                         {can.contribute && (
                             <>
                                 <Button variant="outline" onClick={() => setGenerateOpen(true)}>
-                                    <Sparkles /> Generate with AI
+                                    <Sparkles /> {t("actions.generateWithAi")}
                                 </Button>
                                 <Button
                                     variant="outline"
@@ -114,12 +117,12 @@ export default function ProjectFlashcardsPage() {
                                         setEditorOpen(true);
                                     }}
                                 >
-                                    <Plus /> New card
+                                    <Plus /> {t("actions.newCard")}
                                 </Button>
                             </>
                         )}
                         <Button disabled={!dueCount} onClick={() => navigate(Routes.projects.flashcards_review(projectId))}>
-                            <Play /> Review now{dueCount ? ` (${dueCount})` : ""}
+                            <Play /> {dueCount ? t("actions.reviewNowCount", { count: dueCount }) : t("actions.reviewNow")}
                         </Button>
                     </div>
                 }
@@ -128,11 +131,11 @@ export default function ProjectFlashcardsPage() {
             <FlashcardStats stats={stats.data} isPending={stats.isPending} />
 
             <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
-                <aside aria-label="Decks" className="space-y-1">
+                <aside aria-label={t("decks.title")} className="space-y-1">
                     <div className="mb-2 flex items-center justify-between">
-                        <h2 className="text-sm font-medium text-muted-foreground">Decks</h2>
+                        <h2 className="text-sm font-medium text-muted-foreground">{t("decks.title")}</h2>
                         {can.contribute && (
-                            <Button size="icon" variant="ghost" aria-label="New deck" onClick={() => setDeckDialog({ open: true, deck: null })}>
+                            <Button size="icon" variant="ghost" aria-label={t("decks.newTitle")} onClick={() => setDeckDialog({ open: true, deck: null })}>
                                 <Plus />
                             </Button>
                         )}
@@ -146,7 +149,7 @@ export default function ProjectFlashcardsPage() {
                                 !query.deck_id ? "bg-surface-card font-medium" : "hover:bg-muted",
                             )}
                         >
-                            All cards
+                            {t("decks.allCards")}
                             <span className="text-xs text-muted-foreground">{stats.data?.counts.total ?? ""}</span>
                         </button>
                         {decks.map((d) => (
@@ -161,23 +164,23 @@ export default function ProjectFlashcardsPage() {
                                 >
                                     <span className={cn("truncate", query.deck_id === d.id && "font-medium")}>{d.name}</span>
                                     <span className="text-xs text-muted-foreground">
-                                        {d.due_count ? <span className="text-primary">{d.due_count} due · </span> : null}
+                                        {d.due_count ? <span className="text-primary">{t("decks.dueCount", { count: d.due_count })} · </span> : null}
                                         {d.card_count}
                                     </span>
                                 </button>
                                 {can.edit && (
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                            <Button size="icon" variant="ghost" className="h-7 w-7" aria-label={`Deck actions for ${d.name}`}>
+                                            <Button size="icon" variant="ghost" className="h-7 w-7" aria-label={t("decks.actionsFor", { name: d.name })}>
                                                 <MoreHorizontal />
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
                                             <DropdownMenuItem onSelect={() => setDeckDialog({ open: true, deck: d })}>
-                                                <Pencil /> Rename
+                                                <Pencil /> {t("common:actions.rename")}
                                             </DropdownMenuItem>
                                             <DropdownMenuItem className="text-destructive" onSelect={() => setDeckToDelete(d)}>
-                                                <Trash2 /> Delete
+                                                <Trash2 /> {t("common:actions.delete")}
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>
@@ -187,14 +190,14 @@ export default function ProjectFlashcardsPage() {
                     </div>
                 </aside>
 
-                <section aria-label="Cards">
+                <section aria-label={t("list.ariaLabel")}>
                     <div className="mb-4 flex flex-col gap-2 rounded-xl border border-border bg-card p-3 sm:flex-row sm:flex-wrap sm:items-center">
                         <div className="relative min-w-48 flex-1">
                             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-                            <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search cards…" className="pl-9" aria-label="Search cards" />
+                            <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t("list.searchPlaceholder")} className="pl-9" aria-label={t("list.searchAria")} />
                         </div>
                         <Select value={query.status ?? ALL} onValueChange={(v) => setFilter("status", v === ALL ? undefined : (v as CardStatus))}>
-                            <SelectTrigger className="w-40" aria-label="Filter by status">
+                            <SelectTrigger className="w-auto min-w-36 max-w-full" aria-label={t("list.filterStatus")}>
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -206,11 +209,11 @@ export default function ProjectFlashcardsPage() {
                             </SelectContent>
                         </Select>
                         <Select value={query.topic_id ?? ALL} onValueChange={(v) => setFilter("topic_id", v === ALL ? undefined : v)}>
-                            <SelectTrigger className="w-44" aria-label="Filter by topic">
+                            <SelectTrigger className="w-auto min-w-40 max-w-64" aria-label={t("list.filterTopic")}>
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value={ALL}>All topics</SelectItem>
+                                <SelectItem value={ALL}>{t("list.allTopics")}</SelectItem>
                                 {topics.map((t) => (
                                     <SelectItem key={t.id} value={t.id}>
                                         {t.depth ? "↳ " : ""}
@@ -221,8 +224,8 @@ export default function ProjectFlashcardsPage() {
                         </Select>
                         <Input
                             className="w-28"
-                            placeholder="#tag"
-                            aria-label="Filter by tag"
+                            placeholder={t("list.tagPlaceholder")}
+                            aria-label={t("list.filterTag")}
                             value={query.tag ?? ""}
                             onChange={(e) => setFilter("tag", e.target.value.replace(/^#/, "").trim().toLowerCase() || undefined)}
                         />
@@ -233,12 +236,12 @@ export default function ProjectFlashcardsPage() {
                     ) : !cards.length ? (
                         <EmptyState
                             icon={Layers}
-                            title={query.search || query.status || query.tag || query.topic_id ? "No cards match these filters" : "No flashcards yet"}
-                            description="Generate cards from your documents, or write your own."
+                            title={query.search || query.status || query.tag || query.topic_id ? t("empty.filteredTitle") : t("empty.title")}
+                            description={t("empty.description")}
                             action={
                                 can.contribute ? (
                                     <Button onClick={() => setGenerateOpen(true)}>
-                                        <Sparkles /> Generate with AI
+                                        <Sparkles /> {t("actions.generateWithAi")}
                                     </Button>
                                 ) : undefined
                             }
@@ -262,13 +265,13 @@ export default function ProjectFlashcardsPage() {
                                                         <Markdown content={c.back} />
                                                     </div>
                                                 ) : (
-                                                    <p className="mt-1 text-xs text-muted-foreground">Click to show answer</p>
+                                                    <p className="mt-1 text-xs text-muted-foreground">{t("list.showAnswer")}</p>
                                                 )}
                                             </button>
                                             {(can.edit || can.contribute) && (
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger asChild>
-                                                        <Button size="icon" variant="ghost" aria-label="Card actions">
+                                                        <Button size="icon" variant="ghost" aria-label={t("list.cardActions")}>
                                                             <MoreHorizontal />
                                                         </Button>
                                                     </DropdownMenuTrigger>
@@ -280,11 +283,11 @@ export default function ProjectFlashcardsPage() {
                                                                 setEditorOpen(true);
                                                             }}
                                                         >
-                                                            <Pencil /> Edit
+                                                            <Pencil /> {t("common:actions.edit")}
                                                         </DropdownMenuItem>
                                                         <DropdownMenuSeparator />
                                                         <DropdownMenuItem disabled={!can.edit} className="text-destructive" onSelect={() => setCardToDelete(c)}>
-                                                            <Trash2 /> Delete
+                                                            <Trash2 /> {t("common:actions.delete")}
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
@@ -295,13 +298,13 @@ export default function ProjectFlashcardsPage() {
                                             {c.deck && <Badge variant="outline">{c.deck.name}</Badge>}
                                             {c.topic && <Badge variant="outline">{c.topic.name}</Badge>}
                                             <span className="text-muted-foreground">{getQuestionDifficultyLabel(c.difficulty)}</span>
-                                            {c.origin === "AI" && <Badge variant="secondary">AI</Badge>}
+                                            {c.origin === "AI" && <Badge variant="secondary">{t("list.aiBadge")}</Badge>}
                                             {c.tags.map((t) => (
                                                 <span key={t} className="text-muted-foreground">
                                                     #{t}
                                                 </span>
                                             ))}
-                                            {c.state.due_at && <span className="ml-auto text-muted-foreground">Due {new Date(c.state.due_at).toLocaleDateString()}</span>}
+                                            {c.state.due_at && <span className="ml-auto text-muted-foreground">{t("list.dueOn", { date: formatDate(c.state.due_at) })}</span>}
                                         </div>
                                     </li>
                                 );
@@ -312,14 +315,14 @@ export default function ProjectFlashcardsPage() {
                     {pagination && pagination.total_pages > 1 && (
                         <div className="mt-4 flex items-center justify-between text-sm">
                             <span className="text-muted-foreground">
-                                Page {pagination.page} of {pagination.total_pages} · {pagination.total} cards
+                                {t("list.pagination", { page: pagination.page, pages: pagination.total_pages, count: pagination.total })}
                             </span>
                             <div className="flex gap-2">
                                 <Button variant="outline" size="sm" disabled={pagination.page <= 1} onClick={() => setQuery((q) => ({ ...q, page: (q.page ?? 1) - 1 }))}>
-                                    Previous
+                                    {t("common:actions.previous")}
                                 </Button>
                                 <Button variant="outline" size="sm" disabled={!pagination.has_next} onClick={() => setQuery((q) => ({ ...q, page: (q.page ?? 1) + 1 }))}>
-                                    Next
+                                    {t("common:actions.next")}
                                 </Button>
                             </div>
                         </div>
@@ -366,9 +369,9 @@ export default function ProjectFlashcardsPage() {
                 isOpen={!!cardToDelete}
                 onClose={() => setCardToDelete(null)}
                 onConfirm={() => cardToDelete && deleteCard.mutate(cardToDelete.id, { onSuccess: () => setCardToDelete(null) })}
-                title="Delete this flashcard?"
-                description="Its review history will be removed too. This cannot be undone."
-                confirmText="Delete"
+                title={t("confirm.deleteCardTitle")}
+                description={t("confirm.deleteCardDescription")}
+                confirmText={t("common:actions.delete")}
                 variant="destructive"
                 isLoading={deleteCard.isPending}
             />
@@ -384,9 +387,9 @@ export default function ProjectFlashcardsPage() {
                         },
                     })
                 }
-                title={`Delete deck "${deckToDelete?.name ?? ""}"?`}
-                description="All cards in this deck and their review history will be deleted. This cannot be undone."
-                confirmText="Delete deck"
+                title={t("confirm.deleteDeckTitle", { name: deckToDelete?.name ?? "" })}
+                description={t("confirm.deleteDeckDescription")}
+                confirmText={t("confirm.deleteDeckConfirm")}
                 variant="destructive"
                 isLoading={deleteDeck.isPending}
             />

@@ -1,5 +1,6 @@
 import { ChevronsUpDown, LogOut, Moon, Settings, SlidersHorizontal, Sun, Trophy } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     DropdownMenu,
@@ -18,18 +19,19 @@ import { initials } from "@/lib/format";
 import { Routes } from "@/routes/routes";
 
 export function NavUser() {
+    const { t } = useTranslation("layout");
     const user = useAuthStore((s) => s.user);
     const { isMobile } = useSidebar();
     const logout = useLogout();
     const { toggleTheme, getThemeIconType } = useTheme();
-    const name = user?.full_name || user?.email?.split("@")[0] || "Student";
+    const name = user?.full_name || user?.email?.split("@")[0] || t("userMenu.fallbackName");
 
     return (
         <SidebarMenu>
             <SidebarMenuItem>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <SidebarMenuButton size="lg" className="data-[state=open]:bg-sidebar-accent" aria-label="Account menu">
+                        <SidebarMenuButton size="lg" className="data-[state=open]:bg-sidebar-accent" aria-label={t("userMenu.aria")}>
                             <Avatar className="h-8 w-8 rounded-lg">
                                 <AvatarImage src={user?.avatar_url || ""} alt={name} />
                                 <AvatarFallback className="rounded-lg bg-primary/15 text-primary">{initials(name)}</AvatarFallback>
@@ -50,26 +52,26 @@ export function NavUser() {
                         <DropdownMenuGroup>
                             <DropdownMenuItem asChild>
                                 <Link to={Routes.settings.profile}>
-                                    <Settings /> Account settings
+                                    <Settings /> {t("userMenu.accountSettings")}
                                 </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
                                 <Link to={Routes.settings.preferences}>
-                                    <SlidersHorizontal /> Preferences
+                                    <SlidersHorizontal /> {t("userMenu.preferences")}
                                 </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem asChild>
                                 <Link to={Routes.achievements}>
-                                    <Trophy /> Achievements
+                                    <Trophy /> {t("userMenu.achievements")}
                                 </Link>
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={toggleTheme}>
-                                {getThemeIconType() === "sun" ? <Sun /> : <Moon />} Toggle theme
+                                {getThemeIconType() === "sun" ? <Sun /> : <Moon />} {t("userMenu.toggleTheme")}
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => logout.mutate()} disabled={logout.isPending}>
-                            <LogOut /> Sign out
+                            <LogOut /> {t("common:actions.signOut")}
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

@@ -5,8 +5,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ExportFormatFormOptions, ExportTypeFormOptions } from "@/config/constants/dropdowns/collaboration/export-form.options";
 import { useExport } from "@/features/exports/hooks/use-exports";
 import type { ExportFormat, ExportType } from "@/features/exports/interfaces/exports.interfaces";
+import { useTranslation } from "react-i18next";
 
 export const ExportCenter = ({ projectId }: { projectId: string }) => {
+    const { t } = useTranslation("projectSettings");
     const exporter = useExport();
     const [format, setFormat] = useState<ExportFormat>("csv");
     const [busy, setBusy] = useState<ExportType | null>(null);
@@ -20,7 +22,7 @@ export const ExportCenter = ({ projectId }: { projectId: string }) => {
         <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-3">
                 <span className="text-sm text-muted-foreground" id="export-format-label">
-                    Format
+                    {t("export.format")}
                 </span>
                 <Select value={format} onValueChange={(v) => setFormat(v as ExportFormat)}>
                     <SelectTrigger className="w-56" aria-labelledby="export-format-label">
@@ -42,8 +44,8 @@ export const ExportCenter = ({ projectId }: { projectId: string }) => {
                             <p className="text-sm font-medium">{o.label}</p>
                             <p className="text-xs text-muted-foreground">{o.description}</p>
                         </div>
-                        <Button variant="outline" size="sm" onClick={() => run(o.id)} loading={busy === o.id} disabled={!!busy && busy !== o.id} aria-label={`Export ${o.label}`}>
-                            <Download className="mr-2 h-4 w-4" /> Export
+                        <Button variant="outline" size="sm" onClick={() => run(o.id)} loading={busy === o.id} disabled={!!busy && busy !== o.id} aria-label={t("export.exportAria", { type: o.label })}>
+                            <Download className="mr-2 h-4 w-4" /> {t("common:actions.export")}
                         </Button>
                     </li>
                 ))}

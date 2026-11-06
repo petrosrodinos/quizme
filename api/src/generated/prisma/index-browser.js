@@ -177,6 +177,7 @@ exports.Prisma.UserPreferencesScalarFieldEnum = {
   focus_mode: 'focus_mode',
   leaderboard_opt_in: 'leaderboard_opt_in',
   achievement_popups: 'achievement_popups',
+  language: 'language',
   notification_prefs: 'notification_prefs',
   updated_at: 'updated_at'
 };

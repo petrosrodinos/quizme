@@ -1,0 +1,71 @@
+{
+  "page": {
+    "metaTitle": "{{project}} · Settings",
+    "title": "Project settings",
+    "description": "Details, cover, exports and lifecycle of this project."
+  },
+  "details": {
+    "title": "Details",
+    "description": "Title, exam date, target score and study goals.",
+    "subject": "Subject",
+    "examDate": "Exam date",
+    "targetScore": "Target score",
+    "difficulty": "Difficulty",
+    "status": "Status",
+    "dailyGoal": "Daily goal",
+    "dailyGoalValue": "{{minutes}} min · {{days}} days/week",
+    "edit": "Edit details"
+  },
+  "cover": {
+    "title": "Cover image",
+    "description": "Shown on your project card. PNG, JPEG, WEBP or GIF up to {{size}} MB.",
+    "uploadAria": "Upload cover image",
+    "replace": "Replace cover",
+    "upload": "Upload cover",
+    "toasts": {
+      "notImage": { "title": "Choose an image", "description": "PNG, JPEG, WEBP or GIF." },
+      "tooLarge": { "title": "Image too large", "description": "Cover images must be under {{size}} MB." }
+    }
+  },
+  "export": {
+    "title": "Export",
+    "description": "Download your study material. Choose “Print / save as PDF” for a printable version.",
+    "format": "Format",
+    "exportAria": "Export {{type}}",
+    "types": {
+      "flashcards": { "label": "Flashcards", "description": "Front, back, deck, topic and tags" },
+      "questions": { "label": "Question bank", "description": "Questions with answers and explanations" },
+      "notes": { "label": "Notes", "description": "Your notes, highlights and annotations" },
+      "study_guides": { "label": "Study guides", "description": "Generated summaries and cheat sheets" },
+      "attempts": { "label": "Quiz results", "description": "Your attempt history and scores" }
+    },
+    "formats": {
+      "csv": "CSV (spreadsheet)",
+      "json": "JSON",
+      "md": "Markdown",
+      "txt": "Plain text",
+      "html": "Print / save as PDF"
+    }
+  },
+  "copy": {
+    "title": "Copy",
+    "description": "Create your own copy with documents, topics, questions and flashcards (personal progress is not copied).",
+    "duplicate": "Duplicate project"
+  },
+  "danger": {
+    "title": "Danger zone",
+    "restore": "Restore project",
+    "archive": "Archive project",
+    "delete": "Delete project",
+    "archiveConfirm": {
+      "title": "Archive this project?",
+      "description": "It will be hidden from your active projects and daily sessions. You can restore it at any time.",
+      "confirm": "Archive"
+    }
+  },
+  "deleteDialog": {
+    "title": "Delete this project permanently?",
+    "description": "All documents, quizzes, flashcards, notes and everyone's progress in this project will be deleted. This cannot be undone.",
+    "typeToConfirm": "Type <b>{{title}}</b> to confirm"
+  }
+}

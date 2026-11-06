@@ -1,0 +1,182 @@
+{
+  "status": {
+    "NOT_STARTED": "Not started",
+    "IN_PROGRESS": "In progress",
+    "REVIEWING": "Reviewing",
+    "EXAM_READY": "Exam ready",
+    "COMPLETED": "Completed"
+  },
+  "difficulty": {
+    "BEGINNER": "Beginner",
+    "INTERMEDIATE": "Intermediate",
+    "ADVANCED": "Advanced",
+    "EXPERT": "Expert"
+  },
+  "roles": {
+    "OWNER": {
+      "label": "Owner",
+      "description": "Full control, including deleting the project"
+    },
+    "ADMIN": {
+      "label": "Admin",
+      "description": "Manage members, sharing and all content"
+    },
+    "EDITOR": {
+      "label": "Editor",
+      "description": "Edit all study material"
+    },
+    "CONTRIBUTOR": {
+      "label": "Contributor",
+      "description": "Add documents, notes and questions"
+    },
+    "VIEWER": {
+      "label": "Viewer",
+      "description": "Study and view only"
+    }
+  },
+  "toasts": {
+    "created": {
+      "title": "Project created",
+      "description": "\"{{title}}\" is ready for your study material."
+    },
+    "createFailed": "Could not create project",
+    "updated": "Project updated",
+    "updateFailed": "Could not update project",
+    "deleted": "Project deleted",
+    "deleteFailed": "Could not delete project",
+    "archived": "Project archived",
+    "restored": "Project restored",
+    "archiveFailed": "Could not change archive state",
+    "duplicated": {
+      "title": "Project duplicated",
+      "description": "Created \"{{title}}\"."
+    },
+    "duplicateFailed": "Could not duplicate project",
+    "coverUpdated": "Cover updated",
+    "coverFailed": "Could not upload cover"
+  },
+  "errors": {
+    "loadList": "Failed to load projects.",
+    "load": "Failed to load project.",
+    "create": "Failed to create project.",
+    "update": "Failed to update project.",
+    "delete": "Failed to delete project.",
+    "archive": "Failed to archive project.",
+    "restore": "Failed to restore project.",
+    "duplicate": "Failed to duplicate project.",
+    "cover": "Failed to upload cover image.",
+    "overview": "Failed to load project overview."
+  },
+  "page": {
+    "metaTitle": "Projects",
+    "eyebrow": "Your learning",
+    "title": "Study projects",
+    "description": "Each project is a subject, course or exam with its own material, quizzes, flashcards and progress.",
+    "newProject": "New project",
+    "searchPlaceholder": "Search projects, subjects, tags",
+    "searchLabel": "Search projects",
+    "loadError": "Couldn't load projects",
+    "noResults": {
+      "title": "No projects found",
+      "description": "Try a different search or view."
+    },
+    "empty": {
+      "title": "Create your first study project",
+      "description": "Add a subject or exam, upload your notes and textbooks, and QuizMe will turn them into quizzes, flashcards and a personal study plan."
+    }
+  },
+  "views": {
+    "active": "Active",
+    "archived": "Archived",
+    "all": "All"
+  },
+  "delete": {
+    "title": "Delete \"{{title}}\"?",
+    "description": "This permanently deletes the project with all its documents, quizzes, flashcards, notes and progress for every member. This cannot be undone.",
+    "confirm": "Delete project"
+  },
+  "sections": {
+    "overview": "Overview",
+    "documents": "Documents",
+    "tutor": "Tutor",
+    "quizzes": "Quizzes",
+    "flashcards": "Flashcards",
+    "questions": "Question Bank",
+    "notes": "Notes",
+    "topics": "Topics",
+    "summaries": "Summaries",
+    "recall": "Recall",
+    "progress": "Progress",
+    "plan": "Study Plan",
+    "exam": "Exam",
+    "members": "Members",
+    "settings": "Settings"
+  },
+  "layout": {
+    "unavailable": {
+      "title": "Project unavailable",
+      "description": "This project doesn't exist or you don't have access to it."
+    },
+    "backToProjects": "Back to projects",
+    "allProjects": "All projects",
+    "archived": "Archived",
+    "exam": "Exam {{date}}",
+    "target": "Target {{value}}%",
+    "progress": "Progress",
+    "progressLabel": "Project progress",
+    "sectionsLabel": "Project sections"
+  },
+  "card": {
+    "open": "Open {{title}}",
+    "actions": "Project actions",
+    "edit": "Edit",
+    "changeCover": "Change cover",
+    "duplicate": "Duplicate",
+    "restore": "Restore",
+    "archive": "Archive",
+    "delete": "Delete",
+    "archived": "Archived",
+    "progress": "Progress",
+    "progressLabel": "{{title}} progress",
+    "examOn": "Exam {{date}}",
+    "cardsDue_one": "{{count}} card due",
+    "cardsDue_other": "{{count}} cards due",
+    "docs_one": "{{count}} doc",
+    "docs_other": "{{count}} docs"
+  },
+  "form": {
+    "editTitle": "Edit project",
+    "createTitle": "New study project",
+    "description": "A project holds the material, quizzes and progress for one subject, course or exam.",
+    "fields": {
+      "title": "Title",
+      "titlePlaceholder": "Biology — Final Exam",
+      "subject": "Subject / category",
+      "subjectPlaceholder": "Biology",
+      "examDate": "Exam date",
+      "description": "Description",
+      "descriptionPlaceholder": "What are you studying and why?",
+      "targetScore": "Target score (%)",
+      "difficulty": "Difficulty",
+      "status": "Status",
+      "dailyMinutes": "Daily study (minutes)",
+      "weeklyDays": "Study days per week",
+      "tags": "Tags"
+    },
+    "cancel": "Cancel",
+    "save": "Save changes",
+    "create": "Create project",
+    "tags": {
+      "placeholder": "Add a tag and press Enter",
+      "remove": "Remove tag {{tag}}"
+    },
+    "errors": {
+      "titleRequired": "Title is required",
+      "titleMax": "Keep it under 160 characters",
+      "targetRange": "Enter a value from 1 to 100",
+      "dailyMin": "At least 5 minutes",
+      "dailyMax": "At most 8 hours",
+      "weeklyRange": "Enter a value from 1 to 7"
+    }
+  }
+}

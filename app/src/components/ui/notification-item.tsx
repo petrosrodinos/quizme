@@ -2,6 +2,7 @@ import type { FC, ReactNode } from "react";
 import { Award, Bell, BookOpenCheck, CalendarDays, Flame, Layers, Target, UserPlus, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { formatRelative } from "@/lib/date";
+import { useTranslation } from "react-i18next";
 
 /** Visual icon per notification type (presentational only). */
 const ICONS: Record<string, typeof Bell> = {
@@ -29,6 +30,7 @@ interface NotificationItemProps {
 }
 
 export const NotificationItem: FC<NotificationItemProps> = ({ type, title, body, createdAt, unread, typeLabel, onSelect, actions, compact }) => {
+    const { t } = useTranslation("ui");
     const Icon = ICONS[type] ?? Bell;
     return (
         <div className={cn("group flex items-start gap-3 rounded-lg", compact ? "p-2.5" : "p-4", unread ? "bg-primary/5" : "bg-transparent")}>
@@ -43,7 +45,7 @@ export const NotificationItem: FC<NotificationItemProps> = ({ type, title, body,
                     {formatRelative(createdAt)}
                 </div>
             </button>
-            {unread && <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary" aria-label="Unread" />}
+            {unread && <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary" aria-label={t("notification.unread")} />}
             {actions}
         </div>
     );

@@ -1,12 +1,23 @@
+import { tr } from "@/lib/i18n-options";
 import { SessionBlockTypes, type SessionBlockType } from "@/features/study/interfaces/study.interfaces";
 
+const block = (id: SessionBlockType) => ({
+    id,
+    get label(): string {
+        return tr(`study:blocks.${id}.label`);
+    },
+    get action(): string {
+        return tr(`study:blocks.${id}.action`);
+    },
+});
+
 export const SessionBlockTypeOptions: { id: SessionBlockType; label: string; action: string }[] = [
-    { id: SessionBlockTypes.FLASHCARDS, label: "Flashcard review", action: "Review cards" },
-    { id: SessionBlockTypes.WEAK_TOPICS, label: "Weak topics", action: "Practise weak spots" },
-    { id: SessionBlockTypes.ADAPTIVE_QUIZ, label: "Adaptive quiz", action: "Start quiz" },
-    { id: SessionBlockTypes.RECALL, label: "Explain concepts", action: "Start recall" },
-    { id: SessionBlockTypes.EXAM, label: "Exam simulation", action: "Set up exam" },
-    { id: SessionBlockTypes.UPLOAD, label: "Upload material", action: "Upload" },
+    block(SessionBlockTypes.FLASHCARDS),
+    block(SessionBlockTypes.WEAK_TOPICS),
+    block(SessionBlockTypes.ADAPTIVE_QUIZ),
+    block(SessionBlockTypes.RECALL),
+    block(SessionBlockTypes.EXAM),
+    block(SessionBlockTypes.UPLOAD),
 ];
 
-export const getSessionBlockAction = (type: string) => SessionBlockTypeOptions.find((o) => o.id === type)?.action ?? "Start";
+export const getSessionBlockAction = (type: string) => SessionBlockTypeOptions.find((o) => o.id === type)?.action ?? tr("common:actions.start");

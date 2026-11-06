@@ -1,0 +1,71 @@
+{
+  "page": {
+    "title": "Knowledge map",
+    "description": "Topics detected in your material, with your mastery of each. Weak areas are where your next study minutes pay off most.",
+    "rebuild": "Rebuild map",
+    "add": "Add topic"
+  },
+  "empty": {
+    "title": "No topics yet",
+    "description": "Your knowledge map is built automatically after documents finish processing. You can also add topics manually.",
+    "build": "Build map now"
+  },
+  "stats": {
+    "topics": "Topics",
+    "mastered": "Mastered",
+    "average": "Average mastery",
+    "weakest": "Weakest"
+  },
+  "legend": "Legend",
+  "weakestFirst": "Weakest first",
+  "quizTitles": {
+    "review": "Review: {{name}}",
+    "practice": "Practice: {{name}}"
+  },
+  "form": {
+    "renameTitle": "Rename topic",
+    "addSubtopicTitle": "Add subtopic to {{name}}",
+    "addTitle": "Add topic",
+    "name": "Name",
+    "description": "Description (optional)"
+  },
+  "delete": {
+    "title": "Delete “{{name}}”?",
+    "description": "Subtopics are removed too. Questions and flashcards stay, but lose this topic label."
+  },
+  "tree": {
+    "collapse": "Collapse {{name}}",
+    "expand": "Expand {{name}}",
+    "mastered": "Mastered",
+    "answers_one": "{{count}} answer",
+    "answers_other": "{{count}} answers",
+    "notPractised": "not practised",
+    "masteryOf": "{{name}} mastery",
+    "practice": "Practice",
+    "actionsFor": "Actions for {{name}}",
+    "practiceTopic": "Practice this topic",
+    "reviewMistakes": "Review mistakes in topic",
+    "addSubtopic": "Add subtopic"
+  },
+  "validation": {
+    "nameRequired": "Name is required"
+  },
+  "toasts": {
+    "rebuilding": "Rebuilding knowledge map",
+    "rebuildingDescription": "This runs in the background and takes a moment.",
+    "rebuildFailed": "Could not rebuild map",
+    "added": "Topic added",
+    "addFailed": "Could not add topic",
+    "updated": "Topic updated",
+    "updateFailed": "Could not update topic",
+    "deleted": "Topic deleted",
+    "deleteFailed": "Could not delete topic"
+  },
+  "errors": {
+    "load": "Failed to load topics.",
+    "rebuild": "Failed to rebuild the knowledge map.",
+    "create": "Failed to create topic.",
+    "update": "Failed to update topic.",
+    "delete": "Failed to delete topic."
+  }
+}

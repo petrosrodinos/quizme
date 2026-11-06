@@ -12,6 +12,7 @@ import { ProjectStatusFormOptions } from "@/config/constants/dropdowns/projects/
 import type { CreateProjectDto, Project } from "@/features/projects/interfaces/projects.interfaces";
 import { projectFormSchema, type ProjectFormValues } from "../validation-schemas/project.schema";
 import { TagsInput } from "./tags-input";
+import { useTranslation } from "react-i18next";
 
 interface ProjectFormDialogProps {
     open: boolean;
@@ -35,6 +36,7 @@ const toDefaults = (p?: Project | null): ProjectFormValues => ({
 });
 
 export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSubmit }: ProjectFormDialogProps) => {
+    const { t } = useTranslation("projects");
     const form = useForm<ProjectFormValues>({
         resolver: zodResolver(projectFormSchema) as unknown as Resolver<ProjectFormValues>,
         defaultValues: toDefaults(project),
@@ -62,8 +64,8 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
         <Dialog open={open} onOpenChange={(o) => !isPending && onOpenChange(o)}>
             <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-xl">
                 <DialogHeader>
-                    <DialogTitle className="font-display text-2xl font-normal">{project ? "Edit project" : "New study project"}</DialogTitle>
-                    <DialogDescription>A project holds the material, quizzes and progress for one subject, course or exam.</DialogDescription>
+                    <DialogTitle className="font-display text-2xl font-normal">{project ? t("form.editTitle") : t("form.createTitle")}</DialogTitle>
+                    <DialogDescription>{t("form.description")}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(submit)} className="space-y-4" noValidate>
@@ -72,9 +74,9 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
                             name="title"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Title</FormLabel>
+                                    <FormLabel>{t("form.fields.title")}</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Biology — Final Exam" autoFocus {...field} />
+                                        <Input placeholder={t("form.fields.titlePlaceholder")} autoFocus {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -86,9 +88,9 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
                                 name="subject"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Subject / category</FormLabel>
+                                        <FormLabel>{t("form.fields.subject")}</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Biology" {...field} />
+                                            <Input placeholder={t("form.fields.subjectPlaceholder")} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -99,7 +101,7 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
                                 name="exam_date"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Exam date</FormLabel>
+                                        <FormLabel>{t("form.fields.examDate")}</FormLabel>
                                         <FormControl>
                                             <Input type="date" {...field} />
                                         </FormControl>
@@ -113,9 +115,9 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
                             name="description"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Description</FormLabel>
+                                    <FormLabel>{t("form.fields.description")}</FormLabel>
                                     <FormControl>
-                                        <Textarea rows={3} placeholder="What are you studying and why?" {...field} />
+                                        <Textarea rows={3} placeholder={t("form.fields.descriptionPlaceholder")} {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -127,7 +129,7 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
                                 name="target_score"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Target score (%)</FormLabel>
+                                        <FormLabel>{t("form.fields.targetScore")}</FormLabel>
                                         <FormControl>
                                             <Input type="number" min={1} max={100} {...field} />
                                         </FormControl>
@@ -140,10 +142,10 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
                                 name="difficulty"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Difficulty</FormLabel>
+                                        <FormLabel>{t("form.fields.difficulty")}</FormLabel>
                                         <Select value={field.value} onValueChange={field.onChange}>
                                             <FormControl>
-                                                <SelectTrigger aria-label="Difficulty">
+                                                <SelectTrigger aria-label={t("form.fields.difficulty")}>
                                                     <SelectValue />
                                                 </SelectTrigger>
                                             </FormControl>
@@ -164,10 +166,10 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
                                 name="status"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Status</FormLabel>
+                                        <FormLabel>{t("form.fields.status")}</FormLabel>
                                         <Select value={field.value} onValueChange={field.onChange}>
                                             <FormControl>
-                                                <SelectTrigger aria-label="Status">
+                                                <SelectTrigger aria-label={t("form.fields.status")}>
                                                     <SelectValue />
                                                 </SelectTrigger>
                                             </FormControl>
@@ -190,7 +192,7 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
                                 name="daily_minutes_goal"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Daily study (minutes)</FormLabel>
+                                        <FormLabel>{t("form.fields.dailyMinutes")}</FormLabel>
                                         <FormControl>
                                             <Input type="number" min={5} max={480} {...field} />
                                         </FormControl>
@@ -203,7 +205,7 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
                                 name="weekly_days_target"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Study days per week</FormLabel>
+                                        <FormLabel>{t("form.fields.weeklyDays")}</FormLabel>
                                         <FormControl>
                                             <Input type="number" min={1} max={7} {...field} />
                                         </FormControl>
@@ -217,7 +219,7 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
                             name="tags"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Tags</FormLabel>
+                                    <FormLabel>{t("form.fields.tags")}</FormLabel>
                                     <TagsInput value={field.value} onChange={field.onChange} />
                                     <FormMessage />
                                 </FormItem>
@@ -225,10 +227,10 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
                         />
                         <DialogFooter className="gap-2 pt-2">
                             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
-                                Cancel
+                                {t("form.cancel")}
                             </Button>
                             <Button type="submit" loading={isPending}>
-                                {project ? "Save changes" : "Create project"}
+                                {project ? t("form.save") : t("form.create")}
                             </Button>
                         </DialogFooter>
                     </form>

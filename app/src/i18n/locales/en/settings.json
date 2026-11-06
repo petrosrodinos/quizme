@@ -1,0 +1,275 @@
+{
+    "title": "Settings",
+    "description": "Manage your account, study preferences and security.",
+    "sectionsAria": "Settings sections",
+    "tabs": {
+        "profile": "Profile",
+        "preferences": "Preferences",
+        "notifications": "Notifications",
+        "sessions": "Sessions & security"
+    },
+    "profile": {
+        "pageTitle": "Profile",
+        "title": "Profile",
+        "description": "How you appear to collaborators.",
+        "timezone": "Timezone",
+        "timezonePlaceholder": "Select timezone",
+        "timezoneHint": "Streaks and daily goals reset at midnight in this timezone.",
+        "save": "Save profile",
+        "email": {
+            "title": "Email",
+            "verified": "Verified",
+            "notVerified": "Not verified",
+            "resend": "Resend verification email"
+        },
+        "password": {
+            "title": "Change password",
+            "description": "Changing your password signs you out of all other devices.",
+            "current": "Current password"
+        },
+        "danger": {
+            "title": "Danger zone",
+            "description": "Deleting your account permanently removes your projects, documents, progress and notes. This cannot be undone.",
+            "action": "Delete account"
+        },
+        "delete": {
+            "title": "Delete your account?",
+            "description": "All projects you own and everything in them will be deleted. Type {{word}} to confirm.",
+            "confirmWord": "DELETE",
+            "confirmation": "Confirmation",
+            "submit": "Delete permanently"
+        }
+    },
+    "validation": {
+        "nameTooLong": "Name is too long",
+        "timezoneRequired": "Choose a timezone",
+        "currentPasswordRequired": "Enter your current password"
+    },
+    "preferences": {
+        "pageTitle": "Preferences",
+        "language": {
+            "title": "Language",
+            "description": "The language of the interface, notifications and emails."
+        },
+        "focus": {
+            "title": "Focus",
+            "description": "Gamification should never get in the way of serious study."
+        },
+        "sound": {
+            "title": "Sound",
+            "description": "Short, gentle sounds generated in your browser. Sounds are always off during exam simulations.",
+            "master": "Sound effects",
+            "masterDescription": "Master switch for all sounds",
+            "volume": "Volume",
+            "preview": "Preview"
+        },
+        "motion": "Motion & feedback",
+        "social": "Social",
+        "appearance": "Appearance",
+        "themeLabel": "Theme"
+    },
+    "notificationsPage": {
+        "pageTitle": "Notification settings",
+        "inApp": {
+            "title": "In-app notifications",
+            "description": "Choose what QuizMe tells you about. Reminders respect your timezone and are sent at most once a day."
+        },
+        "email": "Email"
+    },
+    "notificationPrefs": {
+        "study_reminders": {
+            "label": "Study reminders",
+            "description": "A nudge in the afternoon if you haven't studied yet"
+        },
+        "flashcards_due": {
+            "label": "Flashcards due",
+            "description": "When cards are waiting for review"
+        },
+        "streak_risk": {
+            "label": "Streak at risk",
+            "description": "Evening reminder before your streak breaks"
+        },
+        "exams": {
+            "label": "Upcoming exams",
+            "description": "7, 3 and 1 day before an exam date"
+        },
+        "goals": {
+            "label": "Study goals",
+            "description": "When you complete your daily goal"
+        },
+        "quiz_completion": {
+            "label": "Quiz results",
+            "description": "Summary after each quiz or exam simulation"
+        },
+        "achievements": {
+            "label": "Achievements",
+            "description": "When you unlock an achievement"
+        },
+        "invitations": {
+            "label": "Invitations",
+            "description": "When someone invites you to a project"
+        },
+        "collaboration": {
+            "label": "Collaboration activity",
+            "description": "Shares, new members and project activity"
+        },
+        "email": {
+            "label": "Also send by email",
+            "description": "Email copies of enabled notifications (invitations are always emailed)"
+        }
+    },
+    "theme": {
+        "system": "Match system",
+        "light": "Light",
+        "dark": "Dark"
+    },
+    "sounds": {
+        "correct": "Correct",
+        "wrong": "Wrong",
+        "flip": "Card flip",
+        "levelUp": "Level up",
+        "achievement": "Achievement",
+        "timerTick": "Timer"
+    },
+    "toggles": {
+        "sound_feedback": {
+            "label": "Answer feedback",
+            "description": "Correct / wrong sounds, card flips, XP ticks"
+        },
+        "sound_celebrations": {
+            "label": "Celebrations",
+            "description": "Level up, achievements, daily goal"
+        },
+        "sound_timers": {
+            "label": "Timers",
+            "description": "Exam countdown ticks and study-room timers"
+        },
+        "animations_enabled": {
+            "label": "Animations",
+            "description": "Motion for feedback and celebrations (always reduced if your OS asks)"
+        },
+        "haptics_enabled": {
+            "label": "Haptic feedback",
+            "description": "Vibration on supported mobile devices"
+        },
+        "focus_mode": {
+            "label": "Focus mode",
+            "description": "Hide celebrations, sounds, combos and XP popups. Progress is still tracked."
+        },
+        "achievement_popups": {
+            "label": "Achievement popups",
+            "description": "Show a toast or modal when you unlock an achievement"
+        },
+        "leaderboard_opt_in": {
+            "label": "Appear on leaderboards",
+            "description": "Let collaborators see your weekly XP in shared projects"
+        }
+    },
+    "aiTasks": {
+        "answer_evaluation": "Answer evaluation",
+        "embeddings": "Document indexing",
+        "flashcard_generation": "Flashcard generation",
+        "query_embedding": "Search indexing",
+        "question_generation": "Question generation",
+        "recall_prompts": "Recall prompts",
+        "retrieval": "Source retrieval",
+        "room_tutor": "Study-room tutor",
+        "topics": "Topic extraction",
+        "word_lookup": "Word lookup",
+        "tutor": "AI tutor",
+        "socratic": "Socratic mode",
+        "teach_back_eval": "Teach-it-back evaluation",
+        "recall_eval": "Recall evaluation",
+        "summary_any": "Summaries",
+        "text_any": "Text actions",
+        "notes_any": "Notes"
+    },
+    "timezones": {
+        "WET": "Western European Time",
+        "CET": "Central European Time",
+        "EET": "Eastern European Time"
+    },
+    "cities": {
+        "Amsterdam": "Amsterdam",
+        "Athens": "Athens",
+        "Berlin": "Berlin",
+        "Bratislava": "Bratislava",
+        "Brussels": "Brussels",
+        "Bucharest": "Bucharest",
+        "Budapest": "Budapest",
+        "Copenhagen": "Copenhagen",
+        "Dublin": "Dublin",
+        "Helsinki": "Helsinki",
+        "Lisbon": "Lisbon",
+        "Ljubljana": "Ljubljana",
+        "Luxembourg": "Luxembourg",
+        "Madrid": "Madrid",
+        "Malta": "Malta",
+        "Nicosia": "Nicosia",
+        "Paris": "Paris",
+        "Prague": "Prague",
+        "Riga": "Riga",
+        "Rome": "Rome",
+        "Sofia": "Sofia",
+        "Stockholm": "Stockholm",
+        "Tallinn": "Tallinn",
+        "Vienna": "Vienna",
+        "Vilnius": "Vilnius",
+        "Warsaw": "Warsaw",
+        "Zagreb": "Zagreb"
+    },
+    "sessions": {
+        "title": "Active sessions",
+        "description": "Devices currently signed in to your account. Revoke any you don't recognise.",
+        "device": "{{browser}} on {{os}}",
+        "current": "This device",
+        "signedIn": "Signed in {{date}}",
+        "active": "active {{time}}",
+        "revoke": "Revoke",
+        "revokeOthers": "Sign out all other sessions",
+        "revokeDialog": {
+            "title": "Revoke this session?",
+            "description": "That device will be signed out immediately."
+        },
+        "othersDialog": {
+            "title": "Sign out everywhere else?",
+            "description_one": "{{count}} other session will be signed out. You'll stay signed in here.",
+            "description_other": "All {{count}} other sessions will be signed out. You'll stay signed in here.",
+            "confirm": "Sign out others"
+        },
+        "unknownBrowser": "Unknown browser",
+        "unknownDevice": "Unknown device",
+        "genericBrowser": "Browser",
+        "unknownOs": "Unknown OS"
+    },
+    "aiUsage": {
+        "title": "AI usage",
+        "description": "Generation is grounded in your own sources. Usage is tracked to keep costs under control.",
+        "provider": "Provider: {{provider}}",
+        "notConfigured": "AI provider not configured",
+        "last24h": "Last 24 hours: {{tokens}} tokens",
+        "caption": "AI usage by task over the last 30 days",
+        "task": "Task",
+        "calls": "Calls",
+        "tokens": "Tokens"
+    },
+    "toasts": {
+        "profileSaved": "Profile saved",
+        "profileFailed": "Couldn't save your profile",
+        "accountDeleted": {
+            "title": "Account deleted",
+            "description": "Your account and data have been removed."
+        },
+        "deleteFailed": "Couldn't delete your account",
+        "saved": "Preferences saved",
+        "saveFailed": "Couldn't save preferences"
+    },
+    "errors": {
+        "updateProfile": "Couldn't update your profile",
+        "deleteAccount": "Couldn't delete your account",
+        "loadPreferences": "Couldn't load preferences",
+        "savePreferences": "Couldn't save preferences",
+        "aiStatus": "Couldn't load AI status",
+        "aiUsage": "Couldn't load AI usage"
+    }
+}

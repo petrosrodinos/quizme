@@ -15,10 +15,12 @@ import { InviteMemberDialog } from "./components/invite-member-dialog";
 import { ShareDialog } from "./components/share-dialog";
 import { SharesList } from "./components/shares-list";
 import { OrganizationsDialog } from "./components/organizations-dialog";
+import { useTranslation } from "react-i18next";
 
 export default function ProjectMembersPage() {
+    const { t } = useTranslation("members");
     const { project, projectId } = useProjectContext();
-    usePageMetadata({ title: `${project.title} · Members` });
+    usePageMetadata({ title: t("page.metaTitle", { project: project.title }) });
     const { data, isPending, isError, error } = useMembers(projectId);
     const [inviteOpen, setInviteOpen] = useState(false);
     const [shareOpen, setShareOpen] = useState(false);
@@ -29,19 +31,19 @@ export default function ProjectMembersPage() {
     return (
         <Main>
             <PageHeader
-                title="Members & sharing"
-                description="Study together: invite collaborators, control what they can do, and share material."
+                title={t("page.title")}
+                description={t("page.description")}
                 actions={
                     <div className="flex flex-wrap gap-2">
                         <Button variant="outline" onClick={() => setOrgsOpen(true)}>
-                            <Building2 className="mr-2 h-4 w-4" /> Groups
+                            <Building2 className="mr-2 h-4 w-4" /> {t("page.groups")}
                         </Button>
                         <Button variant="outline" onClick={() => setShareOpen(true)}>
-                            <Share2 className="mr-2 h-4 w-4" /> Share
+                            <Share2 className="mr-2 h-4 w-4" /> {t("page.share")}
                         </Button>
                         {canManage ? (
                             <Button onClick={() => setInviteOpen(true)}>
-                                <UserPlus className="mr-2 h-4 w-4" /> Invite
+                                <UserPlus className="mr-2 h-4 w-4" /> {t("page.invite")}
                             </Button>
                         ) : null}
                     </div>
@@ -50,12 +52,12 @@ export default function ProjectMembersPage() {
             <div className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
                 <section aria-labelledby="members-heading" className="space-y-4">
                     <h2 id="members-heading" className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
-                        People {data ? `(${data.members.length})` : ""}
+                        {data ? t("page.peopleCount", { count: data.members.length }) : t("page.people")}
                     </h2>
                     {isPending ? (
                         <ListSkeleton rows={3} />
                     ) : isError ? (
-                        <EmptyState icon={Users} title="Couldn't load members" description={error?.message} />
+                        <EmptyState icon={Users} title={t("page.loadError")} description={error?.message} />
                     ) : (
                         <>
                             <MembersList projectId={projectId} myRole={myRole} members={data.members} />
@@ -65,7 +67,7 @@ export default function ProjectMembersPage() {
                 </section>
                 <section aria-labelledby="shares-heading" className="space-y-4">
                     <h2 id="shares-heading" className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
-                        Active shares
+                        {t("page.activeShares")}
                     </h2>
                     <SharesList projectId={projectId} />
                 </section>

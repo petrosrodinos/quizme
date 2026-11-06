@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -18,6 +19,7 @@ interface TopicFormDialogProps {
 }
 
 export const TopicFormDialog = ({ open, onOpenChange, title, initial, pending, onSubmit }: TopicFormDialogProps) => {
+    const { t } = useTranslation("topics");
     const form = useForm<TopicFormValues>({ resolver: zodResolver(topicFormSchema), defaultValues: { name: "", description: "" } });
     useEffect(() => {
         if (open) form.reset({ name: initial?.name ?? "", description: initial?.description ?? "" });
@@ -35,7 +37,7 @@ export const TopicFormDialog = ({ open, onOpenChange, title, initial, pending, o
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Name</FormLabel>
+                                    <FormLabel>{t("form.name")}</FormLabel>
                                     <FormControl>
                                         <Input autoFocus {...field} />
                                     </FormControl>
@@ -48,7 +50,7 @@ export const TopicFormDialog = ({ open, onOpenChange, title, initial, pending, o
                             name="description"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Description (optional)</FormLabel>
+                                    <FormLabel>{t("form.description")}</FormLabel>
                                     <FormControl>
                                         <Textarea rows={3} {...field} />
                                     </FormControl>
@@ -58,10 +60,10 @@ export const TopicFormDialog = ({ open, onOpenChange, title, initial, pending, o
                         />
                         <DialogFooter>
                             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} disabled={pending}>
-                                Cancel
+                                {t("common:actions.cancel")}
                             </Button>
                             <Button type="submit" loading={pending}>
-                                Save
+                                {t("common:actions.save")}
                             </Button>
                         </DialogFooter>
                     </form>

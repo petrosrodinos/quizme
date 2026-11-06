@@ -316,6 +316,8 @@ model UserPreferences {
   focus_mode           Boolean  @default(false)
   leaderboard_opt_in   Boolean  @default(false)
   achievement_popups   Boolean  @default(true)
+  // UI / email / notification language ("en" | "el")
+  language             String   @default("en")
   // notification preferences: { study_reminders, flashcards_due, invitations, collaboration, quiz_completion, goals, exams, streak_risk, achievements, email }
   notification_prefs   Json     @default("{}")
   updated_at           DateTime @updatedAt

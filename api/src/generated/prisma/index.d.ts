@@ -11445,6 +11445,7 @@ export namespace Prisma {
     focus_mode: boolean | null
     leaderboard_opt_in: boolean | null
     achievement_popups: boolean | null
+    language: string | null
     updated_at: Date | null
   }
 
@@ -11460,6 +11461,7 @@ export namespace Prisma {
     focus_mode: boolean | null
     leaderboard_opt_in: boolean | null
     achievement_popups: boolean | null
+    language: string | null
     updated_at: Date | null
   }
 
@@ -11475,6 +11477,7 @@ export namespace Prisma {
     focus_mode: number
     leaderboard_opt_in: number
     achievement_popups: number
+    language: number
     notification_prefs: number
     updated_at: number
     _all: number
@@ -11501,6 +11504,7 @@ export namespace Prisma {
     focus_mode?: true
     leaderboard_opt_in?: true
     achievement_popups?: true
+    language?: true
     updated_at?: true
   }
 
@@ -11516,6 +11520,7 @@ export namespace Prisma {
     focus_mode?: true
     leaderboard_opt_in?: true
     achievement_popups?: true
+    language?: true
     updated_at?: true
   }
 
@@ -11531,6 +11536,7 @@ export namespace Prisma {
     focus_mode?: true
     leaderboard_opt_in?: true
     achievement_popups?: true
+    language?: true
     notification_prefs?: true
     updated_at?: true
     _all?: true
@@ -11634,6 +11640,7 @@ export namespace Prisma {
     focus_mode: boolean
     leaderboard_opt_in: boolean
     achievement_popups: boolean
+    language: string
     notification_prefs: JsonValue
     updated_at: Date
     _count: UserPreferencesCountAggregateOutputType | null
@@ -11669,6 +11676,7 @@ export namespace Prisma {
     focus_mode?: boolean
     leaderboard_opt_in?: boolean
     achievement_popups?: boolean
+    language?: boolean
     notification_prefs?: boolean
     updated_at?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -11686,6 +11694,7 @@ export namespace Prisma {
     focus_mode?: boolean
     leaderboard_opt_in?: boolean
     achievement_popups?: boolean
+    language?: boolean
     notification_prefs?: boolean
     updated_at?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -11703,6 +11712,7 @@ export namespace Prisma {
     focus_mode?: boolean
     leaderboard_opt_in?: boolean
     achievement_popups?: boolean
+    language?: boolean
     notification_prefs?: boolean
     updated_at?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -11720,11 +11730,12 @@ export namespace Prisma {
     focus_mode?: boolean
     leaderboard_opt_in?: boolean
     achievement_popups?: boolean
+    language?: boolean
     notification_prefs?: boolean
     updated_at?: boolean
   }
 
-  export type UserPreferencesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"user_id" | "sound_enabled" | "volume" | "sound_feedback" | "sound_celebrations" | "sound_timers" | "animations_enabled" | "haptics_enabled" | "focus_mode" | "leaderboard_opt_in" | "achievement_popups" | "notification_prefs" | "updated_at", ExtArgs["result"]["userPreferences"]>
+  export type UserPreferencesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"user_id" | "sound_enabled" | "volume" | "sound_feedback" | "sound_celebrations" | "sound_timers" | "animations_enabled" | "haptics_enabled" | "focus_mode" | "leaderboard_opt_in" | "achievement_popups" | "language" | "notification_prefs" | "updated_at", ExtArgs["result"]["userPreferences"]>
   export type UserPreferencesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -11752,6 +11763,7 @@ export namespace Prisma {
       focus_mode: boolean
       leaderboard_opt_in: boolean
       achievement_popups: boolean
+      language: string
       notification_prefs: Prisma.JsonValue
       updated_at: Date
     }, ExtArgs["result"]["userPreferences"]>
@@ -12189,6 +12201,7 @@ export namespace Prisma {
     readonly focus_mode: FieldRef<"UserPreferences", 'Boolean'>
     readonly leaderboard_opt_in: FieldRef<"UserPreferences", 'Boolean'>
     readonly achievement_popups: FieldRef<"UserPreferences", 'Boolean'>
+    readonly language: FieldRef<"UserPreferences", 'String'>
     readonly notification_prefs: FieldRef<"UserPreferences", 'Json'>
     readonly updated_at: FieldRef<"UserPreferences", 'DateTime'>
   }
@@ -62933,6 +62946,7 @@ export namespace Prisma {
     focus_mode: 'focus_mode',
     leaderboard_opt_in: 'leaderboard_opt_in',
     achievement_popups: 'achievement_popups',
+    language: 'language',
     notification_prefs: 'notification_prefs',
     updated_at: 'updated_at'
   };
@@ -64516,6 +64530,7 @@ export namespace Prisma {
     focus_mode?: BoolFilter<"UserPreferences"> | boolean
     leaderboard_opt_in?: BoolFilter<"UserPreferences"> | boolean
     achievement_popups?: BoolFilter<"UserPreferences"> | boolean
+    language?: StringFilter<"UserPreferences"> | string
     notification_prefs?: JsonFilter<"UserPreferences">
     updated_at?: DateTimeFilter<"UserPreferences"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -64533,6 +64548,7 @@ export namespace Prisma {
     focus_mode?: SortOrder
     leaderboard_opt_in?: SortOrder
     achievement_popups?: SortOrder
+    language?: SortOrder
     notification_prefs?: SortOrder
     updated_at?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -64553,6 +64569,7 @@ export namespace Prisma {
     focus_mode?: BoolFilter<"UserPreferences"> | boolean
     leaderboard_opt_in?: BoolFilter<"UserPreferences"> | boolean
     achievement_popups?: BoolFilter<"UserPreferences"> | boolean
+    language?: StringFilter<"UserPreferences"> | string
     notification_prefs?: JsonFilter<"UserPreferences">
     updated_at?: DateTimeFilter<"UserPreferences"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -64570,6 +64587,7 @@ export namespace Prisma {
     focus_mode?: SortOrder
     leaderboard_opt_in?: SortOrder
     achievement_popups?: SortOrder
+    language?: SortOrder
     notification_prefs?: SortOrder
     updated_at?: SortOrder
     _count?: UserPreferencesCountOrderByAggregateInput
@@ -64594,6 +64612,7 @@ export namespace Prisma {
     focus_mode?: BoolWithAggregatesFilter<"UserPreferences"> | boolean
     leaderboard_opt_in?: BoolWithAggregatesFilter<"UserPreferences"> | boolean
     achievement_popups?: BoolWithAggregatesFilter<"UserPreferences"> | boolean
+    language?: StringWithAggregatesFilter<"UserPreferences"> | string
     notification_prefs?: JsonWithAggregatesFilter<"UserPreferences">
     updated_at?: DateTimeWithAggregatesFilter<"UserPreferences"> | Date | string
   }
@@ -68780,6 +68799,7 @@ export namespace Prisma {
     focus_mode?: boolean
     leaderboard_opt_in?: boolean
     achievement_popups?: boolean
+    language?: string
     notification_prefs?: JsonNullValueInput | InputJsonValue
     updated_at?: Date | string
     user: UserCreateNestedOneWithoutPreferencesInput
@@ -68797,6 +68817,7 @@ export namespace Prisma {
     focus_mode?: boolean
     leaderboard_opt_in?: boolean
     achievement_popups?: boolean
+    language?: string
     notification_prefs?: JsonNullValueInput | InputJsonValue
     updated_at?: Date | string
   }
@@ -68812,6 +68833,7 @@ export namespace Prisma {
     focus_mode?: BoolFieldUpdateOperationsInput | boolean
     leaderboard_opt_in?: BoolFieldUpdateOperationsInput | boolean
     achievement_popups?: BoolFieldUpdateOperationsInput | boolean
+    language?: StringFieldUpdateOperationsInput | string
     notification_prefs?: JsonNullValueInput | InputJsonValue
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutPreferencesNestedInput
@@ -68829,6 +68851,7 @@ export namespace Prisma {
     focus_mode?: BoolFieldUpdateOperationsInput | boolean
     leaderboard_opt_in?: BoolFieldUpdateOperationsInput | boolean
     achievement_popups?: BoolFieldUpdateOperationsInput | boolean
+    language?: StringFieldUpdateOperationsInput | string
     notification_prefs?: JsonNullValueInput | InputJsonValue
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -68845,6 +68868,7 @@ export namespace Prisma {
     focus_mode?: boolean
     leaderboard_opt_in?: boolean
     achievement_popups?: boolean
+    language?: string
     notification_prefs?: JsonNullValueInput | InputJsonValue
     updated_at?: Date | string
   }
@@ -68860,6 +68884,7 @@ export namespace Prisma {
     focus_mode?: BoolFieldUpdateOperationsInput | boolean
     leaderboard_opt_in?: BoolFieldUpdateOperationsInput | boolean
     achievement_popups?: BoolFieldUpdateOperationsInput | boolean
+    language?: StringFieldUpdateOperationsInput | string
     notification_prefs?: JsonNullValueInput | InputJsonValue
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -68876,6 +68901,7 @@ export namespace Prisma {
     focus_mode?: BoolFieldUpdateOperationsInput | boolean
     leaderboard_opt_in?: BoolFieldUpdateOperationsInput | boolean
     achievement_popups?: BoolFieldUpdateOperationsInput | boolean
+    language?: StringFieldUpdateOperationsInput | string
     notification_prefs?: JsonNullValueInput | InputJsonValue
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -73556,6 +73582,7 @@ export namespace Prisma {
     focus_mode?: SortOrder
     leaderboard_opt_in?: SortOrder
     achievement_popups?: SortOrder
+    language?: SortOrder
     notification_prefs?: SortOrder
     updated_at?: SortOrder
   }
@@ -73576,6 +73603,7 @@ export namespace Prisma {
     focus_mode?: SortOrder
     leaderboard_opt_in?: SortOrder
     achievement_popups?: SortOrder
+    language?: SortOrder
     updated_at?: SortOrder
   }
 
@@ -73591,6 +73619,7 @@ export namespace Prisma {
     focus_mode?: SortOrder
     leaderboard_opt_in?: SortOrder
     achievement_popups?: SortOrder
+    language?: SortOrder
     updated_at?: SortOrder
   }
 
@@ -81593,6 +81622,7 @@ export namespace Prisma {
     focus_mode?: boolean
     leaderboard_opt_in?: boolean
     achievement_popups?: boolean
+    language?: string
     notification_prefs?: JsonNullValueInput | InputJsonValue
     updated_at?: Date | string
   }
@@ -81608,6 +81638,7 @@ export namespace Prisma {
     focus_mode?: boolean
     leaderboard_opt_in?: boolean
     achievement_popups?: boolean
+    language?: string
     notification_prefs?: JsonNullValueInput | InputJsonValue
     updated_at?: Date | string
   }
@@ -82356,6 +82387,7 @@ export namespace Prisma {
     focus_mode?: BoolFieldUpdateOperationsInput | boolean
     leaderboard_opt_in?: BoolFieldUpdateOperationsInput | boolean
     achievement_popups?: BoolFieldUpdateOperationsInput | boolean
+    language?: StringFieldUpdateOperationsInput | string
     notification_prefs?: JsonNullValueInput | InputJsonValue
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -82371,6 +82403,7 @@ export namespace Prisma {
     focus_mode?: BoolFieldUpdateOperationsInput | boolean
     leaderboard_opt_in?: BoolFieldUpdateOperationsInput | boolean
     achievement_popups?: BoolFieldUpdateOperationsInput | boolean
+    language?: StringFieldUpdateOperationsInput | string
     notification_prefs?: JsonNullValueInput | InputJsonValue
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }

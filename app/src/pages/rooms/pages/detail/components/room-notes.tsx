@@ -3,6 +3,8 @@ import { Check, Loader2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { saveRoomNotes } from "@/features/rooms/services/rooms.services";
+import { translateRoomError } from "@/features/rooms/utils/room-errors.utils";
+import { useTranslation } from "react-i18next";
 
 interface RoomNotesProps {
     roomId: string;
@@ -12,6 +14,7 @@ interface RoomNotesProps {
 
 /** Shared notes synced over the socket. Remote edits apply only while the local editor isn't focused. */
 export const RoomNotes = ({ roomId, content }: RoomNotesProps) => {
+    const { t } = useTranslation("rooms");
     const [value, setValue] = useState(content);
     const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle");
     const focused = useRef(false);
@@ -34,7 +37,7 @@ export const RoomNotes = ({ roomId, content }: RoomNotesProps) => {
                 .then(() => setStatus("saved"))
                 .catch((e: Error) => {
                     setStatus("idle");
-                    toast({ title: "Notes not saved", description: e.message, variant: "error" });
+                    toast({ title: t("notes.saveFailed"), description: translateRoomError(e.message), variant: "error" });
                 });
         }, 700);
     };
@@ -43,16 +46,16 @@ export const RoomNotes = ({ roomId, content }: RoomNotesProps) => {
         <section aria-labelledby="room-notes" className="rounded-xl border border-border bg-card p-5">
             <div className="mb-3 flex items-center justify-between">
                 <h2 id="room-notes" className="font-medium">
-                    Shared notes
+                    {t("notes.title")}
                 </h2>
                 <span className="flex items-center gap-1 text-xs text-muted-foreground" aria-live="polite">
                     {status === "saving" ? (
                         <>
-                            <Loader2 className="h-3 w-3 animate-spin" /> Saving…
+                            <Loader2 className="h-3 w-3 animate-spin" /> {t("common:status.saving")}
                         </>
                     ) : status === "saved" ? (
                         <>
-                            <Check className="h-3 w-3" /> Saved
+                            <Check className="h-3 w-3" /> {t("common:status.saved")}
                         </>
                     ) : null}
                 </span>
@@ -65,7 +68,7 @@ export const RoomNotes = ({ roomId, content }: RoomNotesProps) => {
                     focused.current = false;
                 }}
                 rows={10}
-                placeholder="Everyone in the room can edit these notes…"
+                placeholder={t("notes.placeholder")}
                 aria-labelledby="room-notes"
                 className="font-mono text-sm"
             />

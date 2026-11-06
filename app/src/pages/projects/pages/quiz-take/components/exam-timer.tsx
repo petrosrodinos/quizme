@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Timer } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { formatClock } from "@/lib/date";
 import { useFeedback } from "@/hooks/use-feedback";
@@ -12,6 +13,7 @@ interface ExamTimerProps {
 
 /** Countdown synced to server time; warns visually in the last minute and ticks in the final seconds. */
 export const ExamTimer = ({ deadline, serverTime, onExpire }: ExamTimerProps) => {
+    const { t } = useTranslation("quiz");
     const { play } = useFeedback();
     const offset = useRef(new Date(serverTime).getTime() - Date.now());
     const deadlineMs = new Date(deadline).getTime();
@@ -22,7 +24,7 @@ export const ExamTimer = ({ deadline, serverTime, onExpire }: ExamTimerProps) =>
     expireRef.current = onExpire;
 
     useEffect(() => {
-        const t = setInterval(() => {
+        const timer = setInterval(() => {
             const r = compute();
             setRemaining(r);
             if (r > 0 && r <= 10) play("timerTick");
@@ -31,7 +33,7 @@ export const ExamTimer = ({ deadline, serverTime, onExpire }: ExamTimerProps) =>
                 expireRef.current();
             }
         }, 1000);
-        return () => clearInterval(t);
+        return () => clearInterval(timer);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [deadlineMs]);
 
@@ -40,7 +42,7 @@ export const ExamTimer = ({ deadline, serverTime, onExpire }: ExamTimerProps) =>
         <div
             role="timer"
             aria-live={remaining <= 60 && remaining % 15 === 0 ? "assertive" : "off"}
-            aria-label={`Time remaining ${formatClock(remaining)}`}
+            aria-label={t("exam.timeRemaining", { time: formatClock(remaining) })}
             className={cn(
                 "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 font-mono text-sm tabular-nums",
                 warning ? "border-destructive/50 bg-destructive/10 text-destructive" : "border-border bg-card",

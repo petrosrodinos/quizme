@@ -1,3 +1,5 @@
+import { tOption } from "@/lib/i18n-options";
+
 export const MasteryLevels = {
     MASTERED: "MASTERED",
     STRONG: "STRONG",
@@ -7,12 +9,12 @@ export const MasteryLevels = {
 } as const;
 export type MasteryLevel = (typeof MasteryLevels)[keyof typeof MasteryLevels];
 
-export const MasteryLevelOptions: { id: MasteryLevel; label: string }[] = [
-    { id: MasteryLevels.MASTERED, label: "Mastered (≥ 85%)" },
-    { id: MasteryLevels.STRONG, label: "Strong (70–84%)" },
-    { id: MasteryLevels.DEVELOPING, label: "Developing (50–69%)" },
-    { id: MasteryLevels.WEAK, label: "Weak (< 50%)" },
-    { id: MasteryLevels.UNPRACTISED, label: "Not practised" },
+export const MasteryLevelOptions = [
+    tOption(MasteryLevels.MASTERED, "quiz:mastery.MASTERED"),
+    tOption(MasteryLevels.STRONG, "quiz:mastery.STRONG"),
+    tOption(MasteryLevels.DEVELOPING, "quiz:mastery.DEVELOPING"),
+    tOption(MasteryLevels.WEAK, "quiz:mastery.WEAK"),
+    tOption(MasteryLevels.UNPRACTISED, "quiz:mastery.UNPRACTISED"),
 ];
 
 export const getMasteryLevel = (mastery: number, attempts: number): MasteryLevel => {

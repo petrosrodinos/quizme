@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "i18n:check": "node scripts/i18n-check.mjs",
+    "i18n:scan": "node scripts/i18n-check.mjs --scan"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^1.16.10",
@@ -43,6 +45,8 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
+    "i18next": "^26.7.2",
+    "i18next-browser-languagedetector": "^8.3.0",
     "katex": "^0.19.1",
     "lucide-react": "^0.518.0",
     "motion": "^14.9.1",
@@ -50,6 +54,7 @@
     "react-day-picker": "^9.9.0",
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.58.1",
+    "react-i18next": "^17.1.13",
     "react-markdown": "^10.1.0",
     "react-phone-number-input": "^3.4.14",
     "react-router-dom": "^7.6.2",

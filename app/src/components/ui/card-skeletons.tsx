@@ -1,8 +1,9 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { tr } from "@/lib/i18n-options";
 
 export const GridSkeleton = ({ count = 6, className }: { count?: number; className?: string }) => (
-    <div className={cn("grid gap-4 sm:grid-cols-2 xl:grid-cols-3", className)} aria-busy="true" aria-label="Loading">
+    <div className={cn("grid gap-4 sm:grid-cols-2 xl:grid-cols-3", className)} aria-busy="true" aria-label={tr("common:status.loading")}>
         {Array.from({ length: count }).map((_, i) => (
             <div key={i} className="space-y-3 rounded-xl border border-border bg-card p-5">
                 <Skeleton className="h-5 w-2/3" />
@@ -18,7 +19,7 @@ export const GridSkeleton = ({ count = 6, className }: { count?: number; classNa
 );
 
 export const ListSkeleton = ({ rows = 6, className }: { rows?: number; className?: string }) => (
-    <div className={cn("space-y-2", className)} aria-busy="true" aria-label="Loading">
+    <div className={cn("space-y-2", className)} aria-busy="true" aria-label={tr("common:status.loading")}>
         {Array.from({ length: rows }).map((_, i) => (
             <div key={i} className="flex items-center gap-4 rounded-lg border border-border bg-card p-4">
                 <Skeleton className="h-10 w-10 shrink-0 rounded-lg" />
@@ -33,7 +34,7 @@ export const ListSkeleton = ({ rows = 6, className }: { rows?: number; className
 );
 
 export const DetailSkeleton = ({ className }: { className?: string }) => (
-    <div className={cn("space-y-6", className)} aria-busy="true" aria-label="Loading">
+    <div className={cn("space-y-6", className)} aria-busy="true" aria-label={tr("common:status.loading")}>
         <div className="space-y-2">
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-9 w-1/2" />

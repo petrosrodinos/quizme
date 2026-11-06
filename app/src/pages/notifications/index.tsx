@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BellOff, CheckCheck, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Main } from "@/components/layout/main";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
@@ -18,7 +19,8 @@ const PAGE_SIZE = 20;
 const isInternal = (link?: string | null) => !!link && link.startsWith("/") && !link.startsWith("//");
 
 export default function NotificationsPage() {
-    usePageMetadata({ title: "Notifications" });
+    const { t } = useTranslation("notifications");
+    usePageMetadata({ title: t("pageTitle") });
     const navigate = useNavigate();
     const [unreadOnly, setUnreadOnly] = useState(false);
     const [page, setPage] = useState(1);
@@ -36,11 +38,11 @@ export default function NotificationsPage() {
     return (
         <Main width="narrow">
             <PageHeader
-                title="Notifications"
-                description="Reminders, results, invitations and achievements."
+                title={t("pageTitle")}
+                description={t("description")}
                 actions={
                     <Button variant="outline" onClick={() => markAll.mutate()} loading={markAll.isPending}>
-                        <CheckCheck /> Mark all read
+                        <CheckCheck /> {t("markAllRead")}
                     </Button>
                 }
             />
@@ -53,15 +55,15 @@ export default function NotificationsPage() {
                 className="mb-4"
             >
                 <TabsList>
-                    <TabsTrigger value="all">All</TabsTrigger>
-                    <TabsTrigger value="unread">Unread</TabsTrigger>
+                    <TabsTrigger value="all">{t("tabs.all")}</TabsTrigger>
+                    <TabsTrigger value="unread">{t("tabs.unread")}</TabsTrigger>
                 </TabsList>
             </Tabs>
 
             {isPending ? (
                 <ListSkeleton rows={6} />
             ) : !data?.data.length ? (
-                <EmptyState icon={BellOff} title={unreadOnly ? "You're all caught up" : "No notifications yet"} description="We'll let you know about due reviews, exams, results and invitations." />
+                <EmptyState icon={BellOff} title={unreadOnly ? t("empty.caughtUp") : t("empty.title")} description={t("empty.description")} />
             ) : (
                 <>
                     <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border bg-card">
@@ -76,7 +78,7 @@ export default function NotificationsPage() {
                                     typeLabel={getNotificationTypeLabel(n.type)}
                                     onSelect={() => open(n)}
                                     actions={
-                                        <Button variant="ghost" size="icon" aria-label="Delete notification" onClick={() => setToDelete(n)}>
+                                        <Button variant="ghost" size="icon" aria-label={t("delete.aria")} onClick={() => setToDelete(n)}>
                                             <Trash2 />
                                         </Button>
                                     }
@@ -87,13 +89,13 @@ export default function NotificationsPage() {
                     {data.pagination.total_pages > 1 && (
                         <div className="mt-4 flex items-center justify-between text-sm">
                             <Button variant="outline" size="sm" disabled={!data.pagination.has_prev} onClick={() => setPage((p) => p - 1)}>
-                                Previous
+                                {t("common:actions.previous")}
                             </Button>
                             <span className="text-muted-foreground">
-                                Page {data.pagination.page} of {data.pagination.total_pages}
+                                {t("pagination", { page: data.pagination.page, total: data.pagination.total_pages })}
                             </span>
                             <Button variant="outline" size="sm" disabled={!data.pagination.has_next} onClick={() => setPage((p) => p + 1)}>
-                                Next
+                                {t("common:actions.next")}
                             </Button>
                         </div>
                     )}
@@ -103,9 +105,9 @@ export default function NotificationsPage() {
                 isOpen={!!toDelete}
                 onClose={() => setToDelete(null)}
                 onConfirm={() => toDelete && remove.mutate(toDelete.id, { onSuccess: () => setToDelete(null) })}
-                title="Delete notification?"
-                description="This notification will be removed permanently."
-                confirmText="Delete"
+                title={t("delete.title")}
+                description={t("delete.description")}
+                confirmText={t("common:actions.delete")}
                 variant="destructive"
                 isLoading={remove.isPending}
             />

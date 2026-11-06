@@ -7,6 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useUpdateProject } from "@/features/projects/hooks/use-projects";
 import type { ProjectHeader } from "@/features/projects/interfaces/project-header.interfaces";
 import { planSettingsSchema, type PlanSettingsFormValues } from "../validation-schemas/plan-settings.schema";
+import { useTranslation } from "react-i18next";
 
 interface PlanSettingsFormProps {
     project: ProjectHeader;
@@ -16,6 +17,7 @@ interface PlanSettingsFormProps {
 
 /** Inline editor for the goals that drive the plan (exam date, target, daily minutes, days per week). */
 export const PlanSettingsForm: FC<PlanSettingsFormProps> = ({ project, defaults, onSaved }) => {
+    const { t } = useTranslation("plan");
     const update = useUpdateProject();
     const form = useForm<PlanSettingsFormValues>({
         resolver: zodResolver(planSettingsSchema) as never,
@@ -40,10 +42,10 @@ export const PlanSettingsForm: FC<PlanSettingsFormProps> = ({ project, defaults,
             { onSuccess: onSaved },
         );
     const fields: { name: keyof PlanSettingsFormValues; label: string; type: string; min?: number; max?: number }[] = [
-        { name: "exam_date", label: "Exam date", type: "date" },
-        { name: "target_score", label: "Target score (%)", type: "number", min: 1, max: 100 },
-        { name: "daily_minutes_goal", label: "Minutes per day", type: "number", min: 5, max: 480 },
-        { name: "weekly_days_target", label: "Days per week", type: "number", min: 1, max: 7 },
+        { name: "exam_date", label: t("form.examDate"), type: "date" },
+        { name: "target_score", label: t("form.targetScore"), type: "number", min: 1, max: 100 },
+        { name: "daily_minutes_goal", label: t("form.minutesPerDay"), type: "number", min: 5, max: 480 },
+        { name: "weekly_days_target", label: t("form.daysPerWeek"), type: "number", min: 1, max: 7 },
     ];
     return (
         <Form {...form}>
@@ -66,7 +68,7 @@ export const PlanSettingsForm: FC<PlanSettingsFormProps> = ({ project, defaults,
                 ))}
                 <div className="sm:col-span-2 lg:col-span-4">
                     <Button type="submit" loading={update.isPending}>
-                        Update plan
+                        {t("form.submit")}
                     </Button>
                 </div>
             </form>

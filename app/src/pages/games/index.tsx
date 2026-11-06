@@ -22,8 +22,12 @@ import type { AnswerValue } from "@/features/quizzes/interfaces/quizzes.interfac
 import { GameLeaderboard } from "./components/game-leaderboard";
 import { GamePodium } from "./components/game-podium";
 import { GameQuestion } from "./components/game-question";
+import { translateGameError } from "@/features/games/utils/game-errors.utils";
+import { tCount } from "@/lib/format";
+import { useTranslation } from "react-i18next";
 
 export default function GamePage() {
+    const { t } = useTranslation("games");
     const { gameId } = useParams<{ gameId: string }>();
     const navigate = useNavigate();
     const me = useAuthStore((s) => s.user);
@@ -39,7 +43,7 @@ export default function GamePage() {
     const [locked, setLocked] = useState<Record<string, boolean>>({});
     const celebrated = useRef(false);
     const revealedFor = useRef<string | null>(null);
-    usePageMetadata({ title: game?.quiz.title ? `Multiplayer · ${game.quiz.title}` : "Multiplayer quiz" });
+    usePageMetadata({ title: game?.quiz.title ? t("page.metaTitleWithQuiz", { quiz: game.quiz.title }) : t("page.metaTitle") });
 
     const apply = useCallback((state: GameState) => {
         setGame(state);
@@ -55,8 +59,8 @@ export default function GamePage() {
         if (!gameId || !connected) return;
         joinGameSocket(gameId)
             .then(apply)
-            .catch((e: Error) => toast({ title: "Could not join the game", description: e.message, variant: "error" }));
-    }, [gameId, connected, apply]);
+            .catch((e: Error) => toast({ title: t("toasts.joinFailed"), description: translateGameError(e.message), variant: "error" }));
+    }, [gameId, connected, apply, t]);
 
     useRealtimeEvent<GameState>(RealtimeEvents.GAME_STATE, (state) => {
         if (state.id === gameId) apply(state);
@@ -106,7 +110,7 @@ export default function GamePage() {
     if (initial.isError && !game)
         return (
             <Main width="narrow">
-                <EmptyState icon={Gamepad2} title="Game unavailable" description={initial.error.message} action={<Button onClick={() => navigate(Routes.rooms.root)}>Back to rooms</Button>} />
+                <EmptyState icon={Gamepad2} title={t("page.unavailable")} description={translateGameError(initial.error.message)} action={<Button onClick={() => navigate(Routes.rooms.root)}>{t("page.backToRooms")}</Button>} />
             </Main>
         );
 
@@ -129,18 +133,18 @@ export default function GamePage() {
     return (
         <Main width="wide">
             <Link to={backLink} className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-                <ArrowLeft className="h-4 w-4" /> Leave game
+                <ArrowLeft className="h-4 w-4" /> {t("page.leave")}
             </Link>
-            <PageHeader eyebrow="Multiplayer quiz" title={game.quiz.title} />
+            <PageHeader eyebrow={t("page.metaTitle")} title={game.quiz.title} />
 
             {game.status === GameStatuses.LOBBY ? (
                 <div className="mx-auto max-w-xl rounded-2xl border border-border bg-card p-8 text-center">
                     <Users className="mx-auto h-10 w-10 text-primary" aria-hidden />
-                    <h2 className="mt-3 font-display text-2xl">Waiting in the lobby</h2>
+                    <h2 className="mt-3 font-display text-2xl">{t("lobby.title")}</h2>
                     <p className="mt-1 text-sm text-muted-foreground">
-                        {game.total} questions · {game.seconds_per_question}s each · faster correct answers score more.
+                        {t("lobby.info", { questions: tCount("question", game.total), seconds: game.seconds_per_question })}
                     </p>
-                    <ul className="mt-6 flex flex-wrap justify-center gap-3" aria-label="Players">
+                    <ul className="mt-6 flex flex-wrap justify-center gap-3" aria-label={t("lobby.players")}>
                         {game.players.map((p) => (
                             <li key={p.user_id} className="flex flex-col items-center gap-1">
                                 <UserAvatar name={p.name} src={p.avatar_url} online />
@@ -151,18 +155,18 @@ export default function GamePage() {
                     <div className="mt-8">
                         {isHost ? (
                             <Button size="lg" onClick={() => start.mutate(game.id)} loading={start.isPending}>
-                                <Play className="mr-2 h-4 w-4" /> Start game ({game.players.length} player{game.players.length === 1 ? "" : "s"})
+                                <Play className="mr-2 h-4 w-4" /> {t("lobby.start", { players: tCount("player", game.players.length) })}
                             </Button>
                         ) : (
                             <p className="text-sm text-muted-foreground" role="status">
-                                Waiting for the host to start…
+                                {t("lobby.waitingHost")}
                             </p>
                         )}
                     </div>
                 </div>
             ) : game.status === GameStatuses.IN_PROGRESS ? (
                 <div className="grid gap-8 lg:grid-cols-[1.6fr_1fr]">
-                    <section className="rounded-2xl border border-border bg-card p-6" aria-label="Current question">
+                    <section className="rounded-2xl border border-border bg-card p-6" aria-label={t("question.currentAria")}>
                         <GameQuestion
                             game={game}
                             clockOffset={clockOffset}
@@ -177,18 +181,18 @@ export default function GamePage() {
                         {reveal && isHost ? (
                             <div className="mt-6 flex justify-end">
                                 <Button variant="outline" onClick={() => next.mutate(game.id)} loading={next.isPending}>
-                                    <SkipForward className="mr-2 h-4 w-4" /> Next now
+                                    <SkipForward className="mr-2 h-4 w-4" /> {t("question.nextNow")}
                                 </Button>
                             </div>
                         ) : null}
                         {reveal ? (
                             <p className="mt-4 text-center text-xs text-muted-foreground" role="status">
-                                Next question in a few seconds…
+                                {t("question.nextSoon")}
                             </p>
                         ) : null}
                     </section>
-                    <aside aria-label="Live rankings" className="space-y-3">
-                        <h2 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">Rankings</h2>
+                    <aside aria-label={t("rankings.liveAria")} className="space-y-3">
+                        <h2 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">{t("rankings.title")}</h2>
                         <GameLeaderboard players={game.players} myId={myId} reveal={reveal} showAnswered={!reveal} reduceMotion={reduceMotion} />
                     </aside>
                 </div>
@@ -197,13 +201,13 @@ export default function GamePage() {
                     <div className="rounded-2xl border border-border bg-card p-8 text-center">
                         <Trophy className="mx-auto h-10 w-10 text-amber" aria-hidden />
                         <h2 className="mt-3 font-display text-3xl">
-                            {game.players[0]?.user_id === myId && game.players.length > 1 ? "You won!" : `${game.players[0]?.name ?? "Someone"} wins!`}
+                            {game.players[0]?.user_id === myId && game.players.length > 1 ? t("finished.youWon") : t("finished.wins", { name: game.players[0]?.name ?? t("finished.someone") })}
                         </h2>
                         <GamePodium players={game.players} />
                     </div>
                     <GameLeaderboard players={game.players} myId={myId} reduceMotion={reduceMotion} />
                     <div className="flex justify-center">
-                        <Button onClick={() => navigate(backLink)}>Back to the room</Button>
+                        <Button onClick={() => navigate(backLink)}>{t("finished.backToRoom")}</Button>
                     </div>
                 </div>
             )}

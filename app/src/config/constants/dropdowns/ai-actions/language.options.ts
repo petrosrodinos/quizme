@@ -1,19 +1,26 @@
+import { tOption } from "@/lib/i18n-options";
+
+/**
+ * Translation target languages. `id` is the English language name sent to the AI; `label` is shown in the UI language.
+ */
+const lang = (id: string, key: string) => tOption(id, `reader:languages.${key}`);
+
 export const LanguageOptions: { id: string; label: string }[] = [
-    { id: "English", label: "English" },
-    { id: "Spanish", label: "Spanish" },
-    { id: "French", label: "French" },
-    { id: "German", label: "German" },
-    { id: "Italian", label: "Italian" },
-    { id: "Portuguese", label: "Portuguese" },
-    { id: "Greek", label: "Greek" },
-    { id: "Dutch", label: "Dutch" },
-    { id: "Polish", label: "Polish" },
-    { id: "Turkish", label: "Turkish" },
-    { id: "Arabic", label: "Arabic" },
-    { id: "Chinese (Simplified)", label: "Chinese (Simplified)" },
-    { id: "Japanese", label: "Japanese" },
-    { id: "Korean", label: "Korean" },
-    { id: "Hindi", label: "Hindi" },
-    { id: "Russian", label: "Russian" },
-    { id: "Ukrainian", label: "Ukrainian" },
+    lang("English", "english"),
+    lang("Spanish", "spanish"),
+    lang("French", "french"),
+    lang("German", "german"),
+    lang("Italian", "italian"),
+    lang("Portuguese", "portuguese"),
+    lang("Greek", "greek"),
+    lang("Dutch", "dutch"),
+    lang("Polish", "polish"),
+    lang("Turkish", "turkish"),
+    lang("Arabic", "arabic"),
+    lang("Chinese (Simplified)", "chineseSimplified"),
+    lang("Japanese", "japanese"),
+    lang("Korean", "korean"),
+    lang("Hindi", "hindi"),
+    lang("Russian", "russian"),
+    lang("Ukrainian", "ukrainian"),
 ];

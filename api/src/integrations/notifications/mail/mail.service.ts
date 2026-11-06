@@ -8,6 +8,8 @@ export interface MailMessage {
     heading: string;
     body: string;
     cta?: { label: string; url: string };
+    /** Footer text (already localised by the caller). */
+    footer?: string;
 }
 
 /**
@@ -40,7 +42,7 @@ export class MailService {
         }
     }
 
-    private render({ heading, body, cta }: MailMessage): string {
+    private render({ heading, body, cta, footer }: MailMessage): string {
         const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
         return `<!doctype html><html><body style="margin:0;background:#faf9f5;font-family:Inter,Arial,sans-serif;color:#141413">
 <div style="max-width:560px;margin:0 auto;padding:40px 24px">
@@ -50,7 +52,7 @@ export class MailService {
 <p style="font-size:15px;line-height:1.6;color:#3d3d3a;margin:0 0 24px">${esc(body)}</p>
 ${cta ? `<a href="${esc(cta.url)}" style="display:inline-block;background:#cc785c;color:#fff;text-decoration:none;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:500">${esc(cta.label)}</a>` : ''}
 </div>
-<p style="font-size:12px;color:#8e8b82;margin-top:24px">You received this email because of activity on your QuizMe account.</p>
+<p style="font-size:12px;color:#8e8b82;margin-top:24px">${esc(footer ?? 'You received this email because of activity on your QuizMe account.')}</p>
 </div></body></html>`;
     }
 }

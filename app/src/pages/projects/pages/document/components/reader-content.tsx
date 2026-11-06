@@ -1,6 +1,7 @@
 import { Fragment, memo } from "react";
 import type { DocumentChunk } from "@/features/documents/interfaces/documents.interfaces";
 import { renderWithHighlights, type HighlightSpan } from "../utils/highlight.utils";
+import { useTranslation } from "react-i18next";
 
 interface ReaderContentProps {
     chunks: DocumentChunk[];
@@ -16,6 +17,7 @@ const displayText = (chunk: DocumentChunk) => {
 
 /** Renders processed chunks as a continuous, distraction-free document with section headings and page markers. */
 export const ReaderContent = memo(({ chunks, highlights }: ReaderContentProps) => {
+    const { t } = useTranslation("reader");
     let prevPath = "";
     let prevPage: number | null = null;
     return (
@@ -34,9 +36,9 @@ export const ReaderContent = memo(({ chunks, highlights }: ReaderContentProps) =
                 return (
                     <Fragment key={chunk.id}>
                         {newPage && (
-                            <div className="my-6 flex items-center gap-3 text-[11px] uppercase tracking-[0.14em] text-muted-foreground" aria-label={`Page ${chunk.page_start}`}>
+                            <div className="my-6 flex items-center gap-3 text-[11px] uppercase tracking-[0.14em] text-muted-foreground" aria-label={t("content.page", { page: chunk.page_start })}>
                                 <span className="h-px flex-1 bg-border" aria-hidden />
-                                Page {chunk.page_start}
+                                {t("content.page", { page: chunk.page_start })}
                                 <span className="h-px flex-1 bg-border" aria-hidden />
                             </div>
                         )}

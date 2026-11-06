@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { PasswordInput } from "@/components/ui/password-input";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,8 @@ import { resetPasswordSchema, type ResetPasswordFormValues } from "../../validat
 import { AuthHeading } from "../../components/auth-heading";
 
 export default function ResetPasswordPage() {
-    usePageMetadata({ title: "Choose a new password" });
+    const { t } = useTranslation("auth");
+    usePageMetadata({ title: t("reset.title") });
     const [params] = useSearchParams();
     const token = params.get("token") ?? "";
     const reset = useResetPassword();
@@ -21,9 +23,9 @@ export default function ResetPasswordPage() {
     if (!token) {
         return (
             <>
-                <AuthHeading title="Invalid reset link" description="This password reset link is missing or malformed." />
+                <AuthHeading title={t("reset.invalidTitle")} description={t("reset.invalidDescription")} />
                 <Button asChild className="w-full">
-                    <Link to={Routes.auth.forgot_password}>Request a new link</Link>
+                    <Link to={Routes.auth.forgot_password}>{t("reset.requestNew")}</Link>
                 </Button>
             </>
         );
@@ -31,13 +33,13 @@ export default function ResetPasswordPage() {
 
     return (
         <>
-            <AuthHeading title="Choose a new password" description="For your security, all other sessions will be signed out." />
+            <AuthHeading title={t("reset.title")} description={t("reset.description")} />
             {reset.isError && (
                 <Alert variant="destructive" className="mb-4">
                     <AlertDescription>
                         {reset.error.message}{" "}
                         <Link to={Routes.auth.forgot_password} className="underline">
-                            Request a new link
+                            {t("reset.requestNew")}
                         </Link>
                     </AlertDescription>
                 </Alert>
@@ -49,9 +51,9 @@ export default function ResetPasswordPage() {
                         name="password"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>New password</FormLabel>
+                                <FormLabel>{t("fields.newPassword")}</FormLabel>
                                 <FormControl>
-                                    <PasswordInput autoComplete="new-password" placeholder="At least 8 characters" {...field} />
+                                    <PasswordInput autoComplete="new-password" placeholder={t("fields.passwordPlaceholder", { count: 8 })} {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -62,16 +64,16 @@ export default function ResetPasswordPage() {
                         name="confirm_password"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Confirm new password</FormLabel>
+                                <FormLabel>{t("fields.confirmNewPassword")}</FormLabel>
                                 <FormControl>
-                                    <PasswordInput autoComplete="new-password" placeholder="Repeat password" {...field} />
+                                    <PasswordInput autoComplete="new-password" placeholder={t("fields.repeatPassword")} {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
                     <Button type="submit" className="h-10 w-full" loading={reset.isPending}>
-                        Update password
+                        {t("reset.submit")}
                     </Button>
                 </form>
             </Form>

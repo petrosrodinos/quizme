@@ -13,6 +13,8 @@ import { ZodValidationPipe } from '@/shared/pipes/zod.validation.pipe';
 import { sha256 } from '@/shared/utils/hash.utils';
 import { AiService } from '../ai/ai.service';
 import { KnowledgeService } from '../knowledge/knowledge.service';
+import { I18nService } from '@/shared/i18n/i18n.service';
+
 
 export class CreateSummaryDto {
     @ApiProperty({ enum: SummaryLevel }) @IsEnum(SummaryLevel) level: SummaryLevel;
@@ -35,6 +37,7 @@ export class SummariesService implements OnModuleInit {
         private readonly realtime: RealtimeService,
         private readonly ai: AiService,
         private readonly knowledge: KnowledgeService,
+        private readonly i18n: I18nService,
     ) { }
 
     onModuleInit() {
@@ -89,7 +92,7 @@ export class SummariesService implements OnModuleInit {
             if (direct) {
                 const cited = [...new Set([...content.matchAll(/\[(\d+)\]/g)].map((m) => Number(m[1])))].filter((n) => n >= 1 && n <= passages.length).sort((a, b) => a - b);
                 if (cited.length) {
-                    content += `\n\n---\n**Sources**\n${cited
+                    content += `\n\n---\n**${this.i18n.t(await this.i18n.languageOf(s.created_by), 'summary.sources')}**\n${cited
                         .map((n) => {
                             const p = passages[n - 1];
                             return `[${n}] ${p.documentTitle}${p.section ? ` · ${p.section}` : ''}${p.pageStart ? ` · p.${p.pageStart}` : ''}`;

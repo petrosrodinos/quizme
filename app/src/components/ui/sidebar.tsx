@@ -4,6 +4,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { type VariantProps, cva } from "class-variance-authority";
 import { PanelLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { tr } from "@/lib/i18n-options";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -150,7 +151,7 @@ const Sidebar = React.forwardRef<
     return (
       <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
         <VisuallyHidden asChild>
-          <SheetTitle />
+          <SheetTitle>{tr("ui:sidebar.title")}</SheetTitle>
         </VisuallyHidden>
         <SheetContent
           data-sidebar="sidebar"
@@ -164,7 +165,7 @@ const Sidebar = React.forwardRef<
           side={side}
         >
           <VisuallyHidden asChild>
-            <SheetDescription />
+            <SheetDescription>{tr("ui:sidebar.description")}</SheetDescription>
           </VisuallyHidden>
           <div className="flex h-full w-full flex-col">{children}</div>
         </SheetContent>
@@ -212,7 +213,7 @@ const SidebarTrigger = React.forwardRef<React.ElementRef<typeof Button>, React.C
       {...props}
     >
       <PanelLeft />
-      <span className="sr-only">Toggle Sidebar</span>
+      <span className="sr-only">{tr("ui:sidebar.toggle")}</span>
     </Button>
   );
 });
@@ -225,10 +226,10 @@ const SidebarRail = React.forwardRef<HTMLButtonElement, React.ComponentProps<"bu
     <button
       ref={ref}
       data-sidebar="rail"
-      aria-label="Toggle Sidebar"
+      aria-label={tr("ui:sidebar.toggle")}
       tabIndex={-1}
       onClick={toggleSidebar}
-      title="Toggle Sidebar"
+      title={tr("ui:sidebar.toggle")}
       className={cn(
         "absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border group-data-[side=left]:-right-4 group-data-[side=right]:left-0 sm:flex",
         "[[data-side=left]_&]:cursor-w-resize [[data-side=right]_&]:cursor-e-resize",

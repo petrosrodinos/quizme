@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, Trash2 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -75,6 +76,7 @@ const toDto = (v: QuestionFormValues): CreateQuestionDto => {
 
 /** Create or edit a question of any type. Edits are versioned server-side. */
 export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, topics }: QuestionEditorDialogProps) => {
+    const { t } = useTranslation("questions");
     const create = useCreateQuestion(projectId);
     const update = useUpdateQuestion();
     const form = useForm<QuestionFormValues>({ resolver: zodResolver(questionFormSchema), defaultValues: toForm(question) });
@@ -104,8 +106,8 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
         <Dialog open={open} onOpenChange={(o) => !pending && onOpenChange(o)}>
             <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl">
                 <DialogHeader>
-                    <DialogTitle className="font-display text-2xl font-normal">{question ? `Edit question · v${question.version}` : "Add question"}</DialogTitle>
-                    <DialogDescription>{question ? "Saving creates a new version; the previous one stays in history." : getQuestionTypeDescription(type)}</DialogDescription>
+                    <DialogTitle className="font-display text-2xl font-normal">{question ? t("editor.editTitle", { version: question.version }) : t("page.add")}</DialogTitle>
+                    <DialogDescription>{question ? t("editor.editDescription") : getQuestionTypeDescription(type)}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -115,7 +117,7 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
                                 name="type"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Type</FormLabel>
+                                        <FormLabel>{t("editor.type")}</FormLabel>
                                         <Select value={field.value} onValueChange={field.onChange}>
                                             <FormControl>
                                                 <SelectTrigger>
@@ -138,7 +140,7 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
                                 name="difficulty"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Difficulty</FormLabel>
+                                        <FormLabel>{t("editor.difficulty")}</FormLabel>
                                         <Select value={field.value} onValueChange={field.onChange}>
                                             <FormControl>
                                                 <SelectTrigger>
@@ -163,9 +165,9 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
                             name="prompt"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{type === "TRUE_FALSE" ? "Statement" : "Question"}</FormLabel>
+                                    <FormLabel>{type === "TRUE_FALSE" ? t("editor.statement") : t("editor.question")}</FormLabel>
                                     <FormControl>
-                                        <Textarea rows={3} placeholder={type === "FILL_BLANK" ? "The powerhouse of the cell is the _____." : "Write the question…"} {...field} />
+                                        <Textarea rows={3} placeholder={type === "FILL_BLANK" ? t("editor.blankPlaceholder") : t("editor.questionPlaceholder")} {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -174,7 +176,7 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
 
                         {(type === "MCQ" || type === "MULTI_SELECT") && (
                             <div className="space-y-2">
-                                <FormLabel>Options {type === "MCQ" ? "(mark the one correct answer)" : "(mark all correct answers)"}</FormLabel>
+                                <FormLabel>{type === "MCQ" ? t("editor.optionsSingle") : t("editor.optionsMulti")}</FormLabel>
                                 {options.fields.map((f, i) => (
                                     <div key={f.id} className="flex items-center gap-2">
                                         <FormField
@@ -183,7 +185,7 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
                                             render={({ field }) => (
                                                 <Checkbox
                                                     checked={field.value}
-                                                    aria-label={`Option ${i + 1} is correct`}
+                                                    aria-label={t("editor.optionCorrect", { number: i + 1 })}
                                                     onCheckedChange={(c) => {
                                                         if (type === "MCQ" && c) options.fields.forEach((_, j) => j !== i && form.setValue(`options.${j}.correct`, false));
                                                         field.onChange(!!c);
@@ -191,15 +193,15 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
                                                 />
                                             )}
                                         />
-                                        <Input {...form.register(`options.${i}.text`)} placeholder={`Option ${i + 1}`} aria-label={`Option ${i + 1}`} />
-                                        <Button type="button" variant="ghost" size="icon" onClick={() => options.remove(i)} disabled={options.fields.length <= 2} aria-label="Remove option">
+                                        <Input {...form.register(`options.${i}.text`)} placeholder={t("editor.option", { number: i + 1 })} aria-label={t("editor.option", { number: i + 1 })} />
+                                        <Button type="button" variant="ghost" size="icon" onClick={() => options.remove(i)} disabled={options.fields.length <= 2} aria-label={t("editor.removeOption")}>
                                             <Trash2 />
                                         </Button>
                                     </div>
                                 ))}
                                 {options.fields.length < 8 && (
                                     <Button type="button" variant="outline" size="sm" onClick={() => options.append({ text: "", correct: false })}>
-                                        <Plus /> Add option
+                                        <Plus /> {t("editor.addOption")}
                                     </Button>
                                 )}
                                 {arrayError("options") && <p className="text-sm text-destructive">{arrayError("options")}</p>}
@@ -212,13 +214,13 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
                                 name="tf_correct"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Correct answer</FormLabel>
+                                        <FormLabel>{t("editor.correctAnswer")}</FormLabel>
                                         <RadioGroup value={field.value} onValueChange={field.onChange} className="flex gap-6">
                                             <label className="flex items-center gap-2 text-sm">
-                                                <RadioGroupItem value="true" /> True
+                                                <RadioGroupItem value="true" /> {t("quiz:inputs.true")}
                                             </label>
                                             <label className="flex items-center gap-2 text-sm">
-                                                <RadioGroupItem value="false" /> False
+                                                <RadioGroupItem value="false" /> {t("quiz:inputs.false")}
                                             </label>
                                         </RadioGroup>
                                     </FormItem>
@@ -232,9 +234,9 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
                                 name="answers"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Accepted answers (comma separated, first is canonical)</FormLabel>
+                                        <FormLabel>{t("editor.acceptedAnswers")}</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="mitochondria, mitochondrion" {...field} />
+                                            <Input placeholder={t("editor.acceptedPlaceholder")} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -244,20 +246,20 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
 
                         {type === "MATCHING" && (
                             <div className="space-y-2">
-                                <FormLabel>Pairs</FormLabel>
+                                <FormLabel>{t("editor.pairs")}</FormLabel>
                                 {pairs.fields.map((f, i) => (
                                     <div key={f.id} className="flex items-center gap-2">
-                                        <Input {...form.register(`pairs.${i}.left`)} placeholder="Term" aria-label={`Pair ${i + 1} left`} />
+                                        <Input {...form.register(`pairs.${i}.left`)} placeholder={t("editor.term")} aria-label={t("editor.pairLeft", { number: i + 1 })} />
                                         <span className="text-muted-foreground">→</span>
-                                        <Input {...form.register(`pairs.${i}.right`)} placeholder="Definition" aria-label={`Pair ${i + 1} right`} />
-                                        <Button type="button" variant="ghost" size="icon" onClick={() => pairs.remove(i)} disabled={pairs.fields.length <= 2} aria-label="Remove pair">
+                                        <Input {...form.register(`pairs.${i}.right`)} placeholder={t("editor.definition")} aria-label={t("editor.pairRight", { number: i + 1 })} />
+                                        <Button type="button" variant="ghost" size="icon" onClick={() => pairs.remove(i)} disabled={pairs.fields.length <= 2} aria-label={t("editor.removePair")}>
                                             <Trash2 />
                                         </Button>
                                     </div>
                                 ))}
                                 {pairs.fields.length < 8 && (
                                     <Button type="button" variant="outline" size="sm" onClick={() => pairs.append({ left: "", right: "" })}>
-                                        <Plus /> Add pair
+                                        <Plus /> {t("editor.addPair")}
                                     </Button>
                                 )}
                                 {arrayError("pairs") && <p className="text-sm text-destructive">{arrayError("pairs")}</p>}
@@ -266,19 +268,19 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
 
                         {type === "ORDERING" && (
                             <div className="space-y-2">
-                                <FormLabel>Items in the correct order</FormLabel>
+                                <FormLabel>{t("editor.itemsOrder")}</FormLabel>
                                 {items.fields.map((f, i) => (
                                     <div key={f.id} className="flex items-center gap-2">
                                         <span className="w-6 text-center text-sm text-muted-foreground">{i + 1}</span>
-                                        <Input {...form.register(`items.${i}.text`)} placeholder={`Step ${i + 1}`} aria-label={`Item ${i + 1}`} />
-                                        <Button type="button" variant="ghost" size="icon" onClick={() => items.remove(i)} disabled={items.fields.length <= 2} aria-label="Remove item">
+                                        <Input {...form.register(`items.${i}.text`)} placeholder={t("editor.step", { number: i + 1 })} aria-label={t("editor.item", { number: i + 1 })} />
+                                        <Button type="button" variant="ghost" size="icon" onClick={() => items.remove(i)} disabled={items.fields.length <= 2} aria-label={t("editor.removeItem")}>
                                             <Trash2 />
                                         </Button>
                                     </div>
                                 ))}
                                 {items.fields.length < 10 && (
                                     <Button type="button" variant="outline" size="sm" onClick={() => items.append({ text: "" })}>
-                                        <Plus /> Add item
+                                        <Plus /> {t("editor.addItem")}
                                     </Button>
                                 )}
                                 {arrayError("items") && <p className="text-sm text-destructive">{arrayError("items")}</p>}
@@ -292,7 +294,7 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
                                     name="expected_answer"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Model answer</FormLabel>
+                                            <FormLabel>{t("editor.modelAnswer")}</FormLabel>
                                             <FormControl>
                                                 <Textarea rows={3} {...field} />
                                             </FormControl>
@@ -305,7 +307,7 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
                                     name="key_concepts"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Key concepts (comma separated)</FormLabel>
+                                            <FormLabel>{t("editor.keyConcepts")}</FormLabel>
                                             <FormControl>
                                                 <Input {...field} />
                                             </FormControl>
@@ -320,7 +322,7 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
                             name="explanation"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Explanation (optional)</FormLabel>
+                                    <FormLabel>{t("editor.explanation")}</FormLabel>
                                     <FormControl>
                                         <Textarea rows={2} {...field} />
                                     </FormControl>
@@ -334,7 +336,7 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
                                 name="topic_id"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Topic</FormLabel>
+                                        <FormLabel>{t("editor.topic")}</FormLabel>
                                         <Select value={field.value ?? NO_TOPIC} onValueChange={field.onChange}>
                                             <FormControl>
                                                 <SelectTrigger>
@@ -342,11 +344,11 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value={NO_TOPIC}>No topic</SelectItem>
-                                                {topics.map((t) => (
-                                                    <SelectItem key={t.id} value={t.id}>
-                                                        {t.depth ? "↳ " : ""}
-                                                        {t.name}
+                                                <SelectItem value={NO_TOPIC}>{t("list.noTopic")}</SelectItem>
+                                                {topics.map((topic) => (
+                                                    <SelectItem key={topic.id} value={topic.id}>
+                                                        {topic.depth ? "↳ " : ""}
+                                                        {topic.name}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -359,7 +361,7 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
                                 name="concept"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Concept</FormLabel>
+                                        <FormLabel>{t("editor.concept")}</FormLabel>
                                         <FormControl>
                                             <Input {...field} />
                                         </FormControl>
@@ -371,9 +373,9 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
                                 name="tags"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Tags</FormLabel>
+                                        <FormLabel>{t("editor.tags")}</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="chapter-4, key" {...field} />
+                                            <Input placeholder={t("editor.tagsPlaceholder")} {...field} />
                                         </FormControl>
                                     </FormItem>
                                 )}
@@ -382,10 +384,10 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
 
                         <DialogFooter>
                             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} disabled={pending}>
-                                Cancel
+                                {t("common:actions.cancel")}
                             </Button>
                             <Button type="submit" loading={pending}>
-                                {question ? "Save new version" : "Add question"}
+                                {question ? t("editor.saveVersion") : t("page.add")}
                             </Button>
                         </DialogFooter>
                     </form>

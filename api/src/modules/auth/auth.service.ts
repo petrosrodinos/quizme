@@ -12,6 +12,7 @@ import { randomToken, sha256 } from '@/shared/utils/hash.utils';
 import { safeZone } from '@/shared/utils/date.utils';
 import { ChangePasswordDto, ForgotPasswordDto, GoogleLoginDto, LoginDto, RegisterDto, ResetPasswordDto } from './dto/auth.dto';
 import { JwtStrategy } from './jwt.strategy';
+import { I18nService } from '@/shared/i18n/i18n.service';
 
 export interface RequestMeta {
     ip?: string;
@@ -45,6 +46,7 @@ export class AuthService {
         private readonly mail: MailService,
         private readonly audit: AuditService,
         private readonly jwtStrategy: JwtStrategy,
+        private readonly i18n: I18nService,
     ) {
         this.sessionTtlMs = this.parseDuration(config.get<string>('JWT_EXPIRATION_TIME') || '30d');
     }
@@ -59,7 +61,7 @@ export class AuthService {
                 password: await bcrypt.hash(dto.password, BCRYPT_ROUNDS),
                 full_name: dto.full_name?.trim() || null,
                 timezone: safeZone(dto.timezone),
-                preferences: { create: {} },
+                preferences: { create: { language: dto.language ?? 'en' } },
                 gamification: { create: {} },
             },
         });
@@ -110,7 +112,7 @@ export class AuthService {
                     avatar_url: info.picture ?? null,
                     email_verified_at: new Date(),
                     timezone: safeZone(dto.timezone),
-                    preferences: { create: {} },
+                    preferences: { create: { language: dto.language ?? 'en' } },
                     gamification: { create: {} },
                 },
             });
@@ -191,12 +193,14 @@ export class AuthService {
             ]);
             setImmediate(async () => {
                 try {
+                    const { t } = await this.i18n.forUser(user.id);
                     await this.mail.send({
                         to: user.email,
-                        subject: 'Reset your QuizMe password',
-                        heading: 'Reset your password',
-                        body: 'We received a request to reset your password. This link expires in 1 hour. If you did not request this, you can ignore this email.',
-                        cta: { label: 'Reset password', url: AppUrls.resetPassword(token) },
+                        subject: t('email.reset.subject'),
+                        heading: t('email.reset.heading'),
+                        body: t('email.reset.body'),
+                        footer: t('email.footer'),
+                        cta: { label: t('email.reset.cta'), url: AppUrls.resetPassword(token) },
                     });
                 } catch (error) {
                     this.logger.warn(`Reset email failed: ${error?.message}`);
@@ -226,12 +230,14 @@ export class AuthService {
         await this.prisma.emailVerificationToken.create({
             data: { token_hash: sha256(token), user_id: user.id, expires_at: new Date(Date.now() + VERIFY_TOKEN_TTL_MS) },
         });
+        const { t } = await this.i18n.forUser(user.id);
         await this.mail.send({
             to: user.email,
-            subject: 'Verify your email for QuizMe',
-            heading: 'Confirm your email',
-            body: 'Welcome to QuizMe! Please confirm your email address to secure your account.',
-            cta: { label: 'Verify email', url: AppUrls.verifyEmail(token) },
+            subject: t('email.verify.subject'),
+            heading: t('email.verify.heading'),
+            body: t('email.verify.body'),
+            footer: t('email.footer'),
+            cta: { label: t('email.verify.cta'), url: AppUrls.verifyEmail(token) },
         });
         return { message: 'Verification email sent' };
     }

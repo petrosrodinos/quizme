@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronRight, MoreHorizontal, Pencil, Play, Plus, RotateCcw, Sparkles, Trash2 } from "lucide-react";
 import { motion } from "motion/react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
@@ -31,15 +32,19 @@ interface TopicTreeProps extends TopicActions {
 }
 
 /** Indented hierarchy with connector lines and per-topic mastery bars. Mastered nodes glow. */
-export const TopicTree = ({ nodes, reduceMotion, ...actions }: TopicTreeProps) => (
-    <ul role="tree" aria-label="Knowledge map" className="space-y-1">
+export const TopicTree = ({ nodes, reduceMotion, ...actions }: TopicTreeProps) => {
+    const { t } = useTranslation("topics");
+    return (
+    <ul role="tree" aria-label={t("page.title")} className="space-y-1">
         {nodes.map((n) => (
             <TopicTreeItem key={n.id} node={n} depth={0} reduceMotion={reduceMotion} {...actions} />
         ))}
     </ul>
-);
+    );
+};
 
 const TopicTreeItem = ({ node, depth, reduceMotion, ...actions }: TopicActions & { node: TopicNode; depth: number; reduceMotion: boolean }) => {
+    const { t } = useTranslation("topics");
     const [open, setOpen] = useState(depth === 0);
     const hasChildren = node.children.length > 0;
     return (
@@ -56,21 +61,21 @@ const TopicTreeItem = ({ node, depth, reduceMotion, ...actions }: TopicActions &
                     onClick={() => setOpen((o) => !o)}
                     disabled={!hasChildren}
                     className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground disabled:opacity-0"
-                    aria-label={open ? `Collapse ${node.name}` : `Expand ${node.name}`}
+                    aria-label={open ? t("tree.collapse", { name: node.name }) : t("tree.expand", { name: node.name })}
                 >
                     <ChevronRight className={cn("h-4 w-4 transition-transform", open && "rotate-90")} />
                 </button>
                 <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                         <span className={cn("truncate", depth === 0 ? "font-medium" : "text-sm")}>{node.name}</span>
-                        {node.mastered && <Sparkles className="h-3.5 w-3.5 shrink-0 text-success" aria-label="Mastered" />}
+                        {node.mastered && <Sparkles className="h-3.5 w-3.5 shrink-0 text-success" aria-label={t("tree.mastered")} />}
                     </div>
                     <div className="text-xs text-muted-foreground">
-                        {node.counts.questions} questions · {node.counts.flashcards} cards · {node.attempts ? `${node.attempts} answers` : "not practised"}
+                        {t("common:count.question", { count: node.counts.questions })} · {t("common:count.card", { count: node.counts.flashcards })} · {node.attempts ? t("tree.answers", { count: node.attempts }) : t("tree.notPractised")}
                     </div>
                 </div>
                 <div className="hidden w-40 items-center gap-2 sm:flex">
-                    <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-card" role="progressbar" aria-valuenow={node.mastery} aria-valuemin={0} aria-valuemax={100} aria-label={`${node.name} mastery`}>
+                    <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-card" role="progressbar" aria-valuenow={node.mastery} aria-valuemin={0} aria-valuemax={100} aria-label={t("tree.masteryOf", { name: node.name })}>
                         <motion.div
                             className={cn("h-full rounded-full", masteryColor(node.mastery, node.attempts))}
                             initial={{ width: reduceMotion ? `${node.mastery}%` : 0 }}
@@ -81,35 +86,35 @@ const TopicTreeItem = ({ node, depth, reduceMotion, ...actions }: TopicActions &
                     <span className="w-10 text-right text-sm tabular-nums">{node.attempts ? `${node.mastery}%` : "—"}</span>
                 </div>
                 <Button size="sm" variant="ghost" className="hidden md:inline-flex" onClick={() => actions.onPractice(node)}>
-                    <Play /> Practice
+                    <Play /> {t("tree.practice")}
                 </Button>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={`Actions for ${node.name}`}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t("tree.actionsFor", { name: node.name })}>
                             <MoreHorizontal />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => actions.onPractice(node)}>
-                            <Play /> Practice this topic
+                            <Play /> {t("tree.practiceTopic")}
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => actions.onReview(node)}>
-                            <RotateCcw /> Review mistakes in topic
+                            <RotateCcw /> {t("tree.reviewMistakes")}
                         </DropdownMenuItem>
                         {(actions.onAddChild || actions.onRename || actions.onDelete) && <DropdownMenuSeparator />}
                         {actions.onAddChild && depth === 0 && (
                             <DropdownMenuItem onClick={() => actions.onAddChild!(node)}>
-                                <Plus /> Add subtopic
+                                <Plus /> {t("tree.addSubtopic")}
                             </DropdownMenuItem>
                         )}
                         {actions.onRename && (
                             <DropdownMenuItem onClick={() => actions.onRename!(node)}>
-                                <Pencil /> Rename
+                                <Pencil /> {t("common:actions.rename")}
                             </DropdownMenuItem>
                         )}
                         {actions.onDelete && (
                             <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => actions.onDelete!(node)}>
-                                <Trash2 /> Delete
+                                <Trash2 /> {t("common:actions.delete")}
                             </DropdownMenuItem>
                         )}
                     </DropdownMenuContent>

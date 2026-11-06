@@ -1,0 +1,105 @@
+{
+    "pageTitle": "Today's study",
+    "celebration": {
+        "title": "Daily session complete",
+        "description": "Consistency is what makes knowledge stick."
+    },
+    "header": {
+        "eyebrow": "Study mode",
+        "title": "Today's recommended session",
+        "description": "Picked for you from your exam dates, knowledge gaps, spaced-repetition schedule and recent activity.",
+        "chooseProject": "Choose project",
+        "allProjects": "All projects"
+    },
+    "review": {
+        "title": "Flashcard review",
+        "back": "Back to session"
+    },
+    "loadError": "Couldn't build today's session",
+    "progress": {
+        "aria": "Progress today",
+        "goalLabel": "Daily goal progress",
+        "ofGoal_one": "of {{count}} min",
+        "ofGoal_other": "of {{count}} min",
+        "planned": "min planned",
+        "questions": "questions today",
+        "cards": "cards today",
+        "complete": "Session complete",
+        "completeAction": "Complete session"
+    },
+    "steps": "Session steps",
+    "empty": {
+        "title": "Nothing to study yet",
+        "description": "Create a project and upload your material to get a personalised daily session.",
+        "cta": "Go to projects"
+    },
+    "block": {
+        "step": "Step {{number}}"
+    },
+    "activityTypes": {
+        "FLASHCARDS": "Flashcards",
+        "QUIZ": "Quiz",
+        "EXAM": "Exam simulation",
+        "RECALL": "Active recall",
+        "TEACH_BACK": "Teach it back",
+        "TUTOR": "AI tutor",
+        "READING": "Reading",
+        "DAILY_SESSION": "Daily session",
+        "ROOM": "Study room"
+    },
+    "blocks": {
+        "flashcards": {
+            "label": "Flashcard review",
+            "action": "Review cards"
+        },
+        "weak_topics": {
+            "label": "Weak topics",
+            "action": "Practise weak spots"
+        },
+        "adaptive_quiz": {
+            "label": "Adaptive quiz",
+            "action": "Start quiz"
+        },
+        "recall": {
+            "label": "Explain concepts",
+            "action": "Start recall"
+        },
+        "exam": {
+            "label": "Exam simulation",
+            "action": "Set up exam"
+        },
+        "upload": {
+            "label": "Upload material",
+            "action": "Upload"
+        }
+    },
+    "reasons": {
+        "upload": "Everything starts with your own sources.",
+        "cardsDue_one": "You have {{count}} card due for review today.",
+        "cardsDue_other": "You have {{count}} cards due for review today.",
+        "newCards": "Learn some new cards.",
+        "missedConcepts": "Fresh questions on concepts you keep missing: {{concepts}}.",
+        "weakTopics": "Target your weakest topics.",
+        "adaptive": "Questions tuned to your level (difficulty ~{{level}}/5).",
+        "recall": "Active recall builds durable memory.",
+        "exam_one": "Exam in {{count}} day — practise under exam conditions.",
+        "exam_other": "Exam in {{count}} days — practise under exam conditions."
+    },
+    "toasts": {
+        "complete": {
+            "title": "Session complete",
+            "description": "Great work, the daily session is done."
+        },
+        "notYet": "Not quite yet",
+        "preparing": {
+            "title": "Preparing your questions",
+            "description": "Hang tight, this takes a few seconds."
+        },
+        "quizFailed": "Couldn't start the quiz"
+    },
+    "errors": {
+        "session": "Couldn't load today's session",
+        "complete": "Couldn't complete the session",
+        "activity": "Couldn't record study activity"
+    }
+}

@@ -2,8 +2,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import type { ShareResourceType } from "../interfaces/shares.interfaces";
 import { copyShared, createShare, getShareableResources, getShares, getSharedView, getSharedWithMe, joinSharedProject, revokeShare } from "../services/shares.services";
+import { tr } from "@/lib/i18n-options";
 
-const onError = (title: string) => (error: Error) => toast({ title, description: error.message, variant: "error" });
+const onError = (titleKey: string) => (error: Error) => toast({ title: tr(titleKey), description: error.message, variant: "error" });
 
 export const useShares = (projectId: string, enabled = true) =>
     useQuery({ queryKey: ["shares", projectId], queryFn: () => getShares(projectId), enabled: !!projectId && enabled });
@@ -18,9 +19,9 @@ export const useCreateShare = () => {
         onSuccess: (res) => {
             qc.invalidateQueries({ queryKey: ["shares"] });
             qc.invalidateQueries({ queryKey: ["project-members"] });
-            toast({ title: res.url ? "Share link created" : res.email ? "Invitation sent" : "Shared", duration: 2500 });
+            toast({ title: tr(res.url ? "members:share.toasts.linkCreated" : res.email ? "members:toasts.inviteSent.title" : "members:share.toasts.shared"), duration: 2500 });
         },
-        onError: onError("Could not share"),
+        onError: onError("members:share.toasts.shareFailed"),
     });
 };
 
@@ -30,9 +31,9 @@ export const useRevokeShare = () => {
         mutationFn: revokeShare,
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: ["shares"] });
-            toast({ title: "Share revoked", duration: 2000 });
+            toast({ title: tr("members:share.toasts.revoked"), duration: 2000 });
         },
-        onError: onError("Could not revoke share"),
+        onError: onError("members:share.toasts.revokeFailed"),
     });
 };
 
@@ -47,9 +48,9 @@ export const useJoinSharedProject = () => {
         mutationFn: joinSharedProject,
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: ["projects"] });
-            toast({ title: "You joined the project", duration: 2500 });
+            toast({ title: tr("shared:toasts.joined"), duration: 2500 });
         },
-        onError: onError("Could not join project"),
+        onError: onError("shared:toasts.joinFailed"),
     });
 };
 
@@ -59,8 +60,8 @@ export const useCopyShared = () => {
         mutationFn: copyShared,
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: ["projects"] });
-            toast({ title: "Copied to your project", duration: 2500 });
+            toast({ title: tr("shared:toasts.copied"), duration: 2500 });
         },
-        onError: onError("Could not copy"),
+        onError: onError("shared:toasts.copyFailed"),
     });
 };

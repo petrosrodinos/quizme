@@ -4,6 +4,7 @@ import { UserAvatar } from "@/components/ui/user-avatar";
 import { AnimatedCounter } from "@/components/ui/animated-counter";
 import { cn } from "@/lib/utils";
 import type { GamePlayer, GameReveal } from "@/features/games/interfaces/games.interfaces";
+import { useTranslation } from "react-i18next";
 
 interface GameLeaderboardProps {
     players: GamePlayer[];
@@ -14,8 +15,10 @@ interface GameLeaderboardProps {
 }
 
 /** Live rankings; rows animate into their new positions after each question. */
-export const GameLeaderboard = ({ players, myId, reveal, showAnswered, reduceMotion }: GameLeaderboardProps) => (
-    <ol className="space-y-2" aria-label="Rankings">
+export const GameLeaderboard = ({ players, myId, reveal, showAnswered, reduceMotion }: GameLeaderboardProps) => {
+    const { t } = useTranslation("games");
+    return (
+    <ol className="space-y-2" aria-label={t("rankings.title")}>
         {players.map((p) => {
             const result = reveal?.results.find((r) => r.user_id === p.user_id);
             return (
@@ -29,11 +32,11 @@ export const GameLeaderboard = ({ players, myId, reveal, showAnswered, reduceMot
                     <UserAvatar name={p.name} src={p.avatar_url} className="h-8 w-8" />
                     <span className="min-w-0 flex-1 truncate text-sm font-medium">
                         {p.name}
-                        {p.user_id === myId ? <span className="text-muted-foreground"> (you)</span> : null}
+                        {p.user_id === myId ? <span className="text-muted-foreground"> {t("rankings.you")}</span> : null}
                     </span>
                     {showAnswered && p.answered_current ? (
                         <span className="flex items-center gap-1 text-xs text-success">
-                            <Check className="h-3 w-3" /> answered
+                            <Check className="h-3 w-3" /> {t("rankings.answered")}
                         </span>
                     ) : null}
                     {result ? (
@@ -46,4 +49,5 @@ export const GameLeaderboard = ({ players, myId, reveal, showAnswered, reduceMot
             );
         })}
     </ol>
-);
+    );
+};

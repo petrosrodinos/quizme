@@ -9,6 +9,7 @@ import { recordStudySession } from '@/shared/utils/study-session.utils';
 import { localDateKey, safeZone } from '@/shared/utils/date.utils';
 import { FlashcardsService } from '../flashcards/flashcards.service';
 import { GamificationService } from '../gamification/gamification.service';
+import { I18nService } from '@/shared/i18n/i18n.service';
 import { LearnerProfileService } from '../quizzes/learner-profile.service';
 import { TopicsService } from '../topics/topics.service';
 
@@ -48,6 +49,7 @@ export class StudyService {
         private readonly topics: TopicsService,
         private readonly flashcards: FlashcardsService,
         private readonly gamification: GamificationService,
+        private readonly i18n: I18nService,
     ) { }
 
     private async tz(userId: string) {
@@ -69,6 +71,7 @@ export class StudyService {
     // ── Exam readiness ──
 
     async readiness(userId: string, projectId: string): Promise<Readiness> {
+        const { t } = await this.i18n.forUser(userId);
         const project = await this.prisma.project.findUniqueOrThrow({ where: { id: projectId }, select: { target_score: true, exam_date: true } });
         const [profile, attempts, topicList, cardCounts, retentionLogs, lastExam] = await Promise.all([
             this.profiles.build(userId, projectId),
@@ -108,12 +111,12 @@ export class StudyService {
         const examScore = lastExam?.percentage ?? null;
 
         const factors: ReadinessFactor[] = [
-            { key: 'quiz_performance', label: 'Quiz performance', value: quizPerf, weight: 0.25 },
-            { key: 'recent_performance', label: 'Recent performance', value: recent, weight: 0.15 },
-            { key: 'difficulty', label: 'Harder questions', value: hardAcc, weight: 0.15 },
-            { key: 'retention', label: 'Flashcard retention', value: retention, weight: 0.1 },
-            { key: 'topic_mastery', label: 'Topic mastery', value: masteryAvg, weight: 0.25 },
-            { key: 'exam_simulation', label: 'Exam simulations', value: examScore, weight: 0.1 },
+            { key: 'quiz_performance', label: t('readiness.factor.quiz_performance'), value: quizPerf, weight: 0.25 },
+            { key: 'recent_performance', label: t('readiness.factor.recent_performance'), value: recent, weight: 0.15 },
+            { key: 'difficulty', label: t('readiness.factor.difficulty'), value: hardAcc, weight: 0.15 },
+            { key: 'retention', label: t('readiness.factor.retention'), value: retention, weight: 0.1 },
+            { key: 'topic_mastery', label: t('readiness.factor.topic_mastery'), value: masteryAvg, weight: 0.25 },
+            { key: 'exam_simulation', label: t('readiness.factor.exam_simulation'), value: examScore, weight: 0.1 },
         ].map((f) => ({ ...f, value: f.value === null ? null : Math.round(f.value) }));
         const present = factors.filter((f) => f.value !== null);
         const totalW = present.reduce((s, f) => s + f.weight, 0);
@@ -130,17 +133,17 @@ export class StudyService {
         if (weakest && weakest.mastery < 60) {
             blockers.push(
                 score >= 70
-                    ? `Your overall score is strong, but your knowledge of ${weakest.name} is significantly weaker (${weakest.mastery}%).`
-                    : `${weakest.name} is your weakest topic (${weakest.mastery}% mastery).`,
+                    ? t('readiness.blocker.weakTopicStrong', { topic: weakest.name, mastery: weakest.mastery })
+                    : t('readiness.blocker.weakTopic', { topic: weakest.name, mastery: weakest.mastery }),
             );
         }
-        if (leaves.length && coverage < 0.8) blockers.push(`${leaves.length - practiced} of ${leaves.length} topics haven't been practised yet.`);
-        if (hardAcc !== null && quizPerf !== null && hardAcc < quizPerf - 15) blockers.push('You do well on basic questions but struggle with harder application questions.');
-        if (cardCounts.due > 20) blockers.push(`${cardCounts.due} flashcards are overdue — retention drops when reviews pile up.`);
-        if (examScore === null && project.exam_date) blockers.push('Take an exam simulation to measure performance under exam conditions.');
-        if (examScore !== null && examScore < project.target_score) blockers.push(`Your last exam simulation (${Math.round(examScore)}%) is below your target of ${project.target_score}%.`);
-        if (profile.weakConcepts.length) blockers.push(`Repeatedly missed: ${profile.weakConcepts.slice(0, 3).map((c) => c.concept).join(', ')}.`);
-        if (!profile.answered) blockers.push('Answer some quiz questions so your readiness can be estimated.');
+        if (leaves.length && coverage < 0.8) blockers.push(t('readiness.blocker.untested', { untested: leaves.length - practiced, total: leaves.length }));
+        if (hardAcc !== null && quizPerf !== null && hardAcc < quizPerf - 15) blockers.push(t('readiness.blocker.hardQuestions'));
+        if (cardCounts.due > 20) blockers.push(t('readiness.blocker.overdue', { count: cardCounts.due }));
+        if (examScore === null && project.exam_date) blockers.push(t('readiness.blocker.noExam'));
+        if (examScore !== null && examScore < project.target_score) blockers.push(t('readiness.blocker.examBelowTarget', { score: Math.round(examScore), target: project.target_score }));
+        if (profile.weakConcepts.length) blockers.push(t('readiness.blocker.missedConcepts', { concepts: profile.weakConcepts.slice(0, 3).map((c) => c.concept).join(', ') }));
+        if (!profile.answered) blockers.push(t('readiness.blocker.noAnswers'));
 
         if (score >= 90) void this.gamification.markExamReady(userId).catch(() => undefined);
         return { score, factors, blockers: blockers.slice(0, 5), confidence: profile.answered >= 60 ? 'high' : profile.answered >= 15 ? 'medium' : 'low' };
@@ -150,6 +153,7 @@ export class StudyService {
 
     async plan(userId: string, projectId: string) {
         await this.access.assert(userId, projectId, 'VIEW');
+        const { t } = await this.i18n.forUser(userId);
         const { tz } = await this.tz(userId);
         const project = await this.prisma.project.findUniqueOrThrow({ where: { id: projectId } });
         const [readiness, topicList, cardCounts, g, week] = await Promise.all([
@@ -206,9 +210,9 @@ export class StudyService {
             schedule,
             progress: { actual_week_minutes: actualWeekMin, planned_week_minutes: plannedWeekMin, on_track: onTrack },
             advice: [
-                !onTrack ? `You studied ${actualWeekMin} min this week vs ${plannedWeekMin} planned — the plan was increased to catch up.` : 'You are on track with your weekly plan.',
-                daysRemaining !== null && daysRemaining <= 14 ? 'Exam is close: include an exam simulation every few days.' : 'Build long-term retention with daily flashcard reviews.',
-                gap > 0 ? `Close a ${gap}-point gap to reach your ${project.target_score}% target.` : 'You are at or above your target — keep it fresh.',
+                !onTrack ? t('plan.advice.behind', { actual: actualWeekMin, planned: plannedWeekMin }) : t('plan.advice.onTrack'),
+                daysRemaining !== null && daysRemaining <= 14 ? t('plan.advice.examClose') : t('plan.advice.retention'),
+                gap > 0 ? t('plan.advice.gap', { gap, target: project.target_score }) : t('plan.advice.atTarget'),
             ],
             generated_at: new Date(),
         };
@@ -224,6 +228,7 @@ export class StudyService {
     // ── Daily recommended session ──
 
     async dailySession(userId: string, projectId?: string) {
+        const { t } = await this.i18n.forUser(userId);
         const projectIds = projectId ? [projectId] : await this.access.projectIdsForUser(userId);
         if (projectId) await this.access.assert(userId, projectId, 'STUDY');
         const projects = await this.prisma.project.findMany({ where: { id: { in: projectIds }, archived_at: null }, select: { id: true, title: true, exam_date: true } });
@@ -248,18 +253,18 @@ export class StudyService {
         const blocks: SessionBlock[] = [];
         const docCount = await this.prisma.studyDocument.count({ where: { project_id: focus.p.id, status: 'READY' } });
         if (!docCount) {
-            blocks.push({ type: 'upload', title: 'Upload your study material', minutes: 5, project_id: focus.p.id, project_title: focus.p.title, reason: 'Everything starts with your own sources.', link: `/projects/${focus.p.id}/documents` });
+            blocks.push({ type: 'upload', title: t('session.upload.title'), minutes: 5, project_id: focus.p.id, project_title: focus.p.title, reason: t('session.upload.reason'), link: `/projects/${focus.p.id}/documents` });
         }
         const reviewable = counts.due + Math.min(counts.new, 15);
         if (reviewable > 0) {
             blocks.push({
                 type: 'flashcards',
-                title: 'Flashcard review',
+                title: t('session.flashcards.title'),
                 minutes: Math.min(20, Math.max(5, Math.ceil(reviewable * 0.4))),
                 project_id: projectId ?? null,
                 project_title: projectId ? focus.p.title : null,
                 count: counts.due,
-                reason: counts.due ? `You have ${counts.due} card${counts.due === 1 ? '' : 's'} due for review today.` : 'Learn some new cards.',
+                reason: counts.due ? t('session.flashcards.reasonDue', { count: counts.due }) : t('session.flashcards.reasonNew'),
                 link: projectId ? `/projects/${projectId}/flashcards/review` : '/study?mode=review',
             });
         }
@@ -267,12 +272,12 @@ export class StudyService {
             const names = focus.profile.weakConcepts.slice(0, 3).map((c) => c.concept);
             blocks.push({
                 type: 'weak_topics',
-                title: 'Weak topics',
+                title: t('session.weak.title'),
                 minutes: 15,
                 project_id: focus.p.id,
                 project_title: focus.p.title,
                 count: focus.profile.weakConcepts.length,
-                reason: names.length ? `Fresh questions on concepts you keep missing: ${names.join(', ')}.` : 'Target your weakest topics.',
+                reason: names.length ? t('session.weak.reasonConcepts', { concepts: names.join(', ') }) : t('session.weak.reason'),
                 link: `/projects/${focus.p.id}/quizzes?review=all_incorrect`,
                 topic_ids: focus.profile.weakTopicIds,
             });
@@ -280,19 +285,19 @@ export class StudyService {
         if (docCount) {
             blocks.push({
                 type: 'adaptive_quiz',
-                title: 'Adaptive quiz',
+                title: t('session.adaptive.title'),
                 minutes: 20,
                 project_id: focus.p.id,
                 project_title: focus.p.title,
-                reason: `Questions tuned to your level (difficulty ~${focus.profile.targetDifficulty.toFixed(1)}/5).`,
+                reason: t('session.adaptive.reason', { level: focus.profile.targetDifficulty.toFixed(1) }),
                 link: `/projects/${focus.p.id}/quizzes?start=adaptive`,
             });
-            blocks.push({ type: 'recall', title: 'Explain concepts', minutes: 10, project_id: focus.p.id, project_title: focus.p.title, reason: 'Active recall builds durable memory.', link: `/projects/${focus.p.id}/recall` });
+            blocks.push({ type: 'recall', title: t('session.recall.title'), minutes: 10, project_id: focus.p.id, project_title: focus.p.title, reason: t('session.recall.reason'), link: `/projects/${focus.p.id}/recall` });
         }
         if (focus.days > 0 && focus.days <= 14 && docCount) {
             const lastExam = await this.prisma.quizAttempt.findFirst({ where: { user_id: userId, project_id: focus.p.id, quiz: { mode: QuizMode.EXAM }, completed_at: { gte: new Date(Date.now() - 4 * 86_400_000) } } });
             if (!lastExam)
-                blocks.push({ type: 'exam', title: 'Exam simulation', minutes: 30, project_id: focus.p.id, project_title: focus.p.title, reason: `Exam in ${Math.ceil(focus.days)} days — practise under exam conditions.`, link: `/projects/${focus.p.id}/exam` });
+                blocks.push({ type: 'exam', title: t('session.exam.title'), minutes: 30, project_id: focus.p.id, project_title: focus.p.title, reason: t('session.exam.reason', { days: Math.ceil(focus.days) }), link: `/projects/${focus.p.id}/exam` });
         }
         const goal = g?.daily_goal_minutes ?? 20;
         // Trim the plan to roughly the daily goal (keeping order of priority), never below the first block.
@@ -373,7 +378,7 @@ export class StudyService {
             study_time_week_min: Math.round((week._sum.duration_sec ?? 0) / 60),
             exam: { date: project.exam_date, days_remaining: examDays },
             recommendation: {
-                title: "Today's recommended session",
+                title: this.i18n.t(await this.i18n.languageOf(userId), 'session.recommendationTitle'),
                 items: session.blocks.map((b) => ({ type: b.type, label: b.title, minutes: b.minutes, reason: b.reason, link: b.link })),
             },
         };
@@ -485,7 +490,7 @@ export class StudyService {
         const focus = perProject.find((p) => p.id === session.focus_project?.id) ?? perProject[0];
         const hour = DateTime.now().setZone(tz).hour;
         return {
-            greeting: `${hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening'}, ${name.split(' ')[0]}`,
+            greeting: this.i18n.t(await this.i18n.languageOf(userId), hour < 12 ? 'greeting.morning' : hour < 18 ? 'greeting.afternoon' : 'greeting.evening', { name: name.split(' ')[0] }),
             today: {
                 session,
                 goal_progress: Math.min(100, Math.round(((todayAct?.minutes_studied ?? 0) / Math.max(1, profile.daily_goal.minutes)) * 100)),

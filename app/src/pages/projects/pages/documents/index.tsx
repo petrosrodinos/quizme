@@ -12,10 +12,12 @@ import type { StudyDocument } from "@/features/documents/interfaces/documents.in
 import { useProjectContext } from "../../hooks/use-project-context";
 import { UploadPanel } from "./components/upload-panel";
 import { DocumentRow } from "./components/document-row";
+import { useTranslation } from "react-i18next";
 
 export default function ProjectDocumentsPage() {
+    const { t } = useTranslation("documents");
     const { project, projectId, can } = useProjectContext();
-    usePageMetadata({ title: `${project.title} · Documents` });
+    usePageMetadata({ title: t("page.metaTitle", { title: project.title }) });
     const { data: docs, isPending, isError, error, refetch } = useDocuments(projectId);
     const download = useDownloadDocument();
     const reprocess = useReprocessDocument();
@@ -27,11 +29,15 @@ export default function ProjectDocumentsPage() {
     return (
         <Main>
             <PageHeader
-                title="Documents"
+                title={t("page.title")}
                 description={
                     docs?.length
-                        ? `${docs.length} document${docs.length === 1 ? "" : "s"}${processing ? ` · ${processing} processing` : ""}. Select text in the reader for instant AI explanations, quizzes and flashcards.`
-                        : "Your study sources. Everything the tutor and generators use comes from here."
+                        ? t("page.description", {
+                            summary: processing
+                                ? t("page.summaryProcessing", { summary: t("page.summary", { count: docs.length }), count: processing })
+                                : t("page.summary", { count: docs.length }),
+                        })
+                        : t("page.descriptionEmpty")
                 }
             />
             <div className="space-y-6">
@@ -40,11 +46,11 @@ export default function ProjectDocumentsPage() {
                 {isPending ? (
                     <ListSkeleton rows={4} />
                 ) : isError ? (
-                    <EmptyState title="Couldn't load documents" description={error.message} action={<Button variant="outline" onClick={() => refetch()}>Try again</Button>} />
+                    <EmptyState title={t("page.loadError")} description={error.message} action={<Button variant="outline" onClick={() => refetch()}>{t("common:actions.tryAgain")}</Button>} />
                 ) : !docs.length ? (
-                    <EmptyState icon={FileText} title="No documents yet" description="Upload your textbooks, lecture notes or study guides to get started." compact />
+                    <EmptyState icon={FileText} title={t("page.empty.title")} description={t("page.empty.description")} compact />
                 ) : (
-                    <ul className="divide-y divide-border rounded-xl border border-border bg-card" aria-label="Documents">
+                    <ul className="divide-y divide-border rounded-xl border border-border bg-card" aria-label={t("page.listLabel")}>
                         {docs.map((doc) => (
                             <DocumentRow
                                 key={doc.id}
@@ -64,9 +70,9 @@ export default function ProjectDocumentsPage() {
                 isOpen={!!deleting}
                 onClose={() => setDeleting(null)}
                 onConfirm={() => deleting && remove.mutate(deleting.id, { onSuccess: () => setDeleting(null) })}
-                title={`Delete "${deleting?.filename ?? ""}"?`}
-                description="The file and its processed content will be removed. Questions and flashcards generated from it stay in your project."
-                confirmText="Delete document"
+                title={t("delete.title", { name: deleting?.filename ?? "" })}
+                description={t("delete.description")}
+                confirmText={t("delete.confirm")}
                 variant="destructive"
                 isLoading={remove.isPending}
             />

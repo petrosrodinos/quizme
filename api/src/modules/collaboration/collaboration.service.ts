@@ -9,6 +9,7 @@ import { DomainEvents } from '@/shared/events/domain-events';
 import { DomainEventsService } from '@/shared/events/domain-events.service';
 import { randomToken, sha256 } from '@/shared/utils/hash.utils';
 import { MailService } from '@/integrations/notifications/mail/mail.service';
+import { I18nService, msg, translate } from '@/shared/i18n/i18n.service';
 import { NotificationsService, NotificationTypes } from '../notifications/notifications.service';
 import { ProjectsService } from '../projects/projects.service';
 import { questionHash } from '../questions/questions.utils';
@@ -28,6 +29,7 @@ export class CollaborationService {
         private readonly mail: MailService,
         private readonly projects: ProjectsService,
         private readonly files: FileTokenService,
+        private readonly i18n: I18nService,
     ) { }
 
     // ── Members ──
@@ -71,20 +73,25 @@ export class CollaborationService {
             await this.notifications.notify({
                 userId: existingUser.id,
                 type: NotificationTypes.INVITATION,
-                title: `${inviterName} invited you to "${project.title}"`,
-                body: `Role: ${dto.role.toLowerCase()}`,
+                title: msg('notif.invitation.title', { inviter: inviterName, project: project.title }),
+                body: msg('notif.invitation.body', { role: `@:role.${dto.role}` }),
                 link: AppPaths.invitations,
                 data: { invitation_id: invitation.id, project_id: projectId },
             });
         }
         setImmediate(async () => {
             try {
+                // Invitee's language if they already have an account, otherwise the inviter's language.
+                const lang = await this.i18n.languageOf(existingUser?.id ?? userId);
+                const t = (key: string, params?: Record<string, string | number>) => translate(lang, key, params);
+                const params = { inviter: inviterName, project: project.title, role: t(`role.${dto.role}`), days: INVITE_TTL_DAYS };
                 await this.mail.send({
                     to: dto.email,
-                    subject: `${inviterName} invited you to study "${project.title}" on QuizMe`,
-                    heading: `Join "${project.title}"`,
-                    body: `${inviterName} invited you to collaborate as ${dto.role.toLowerCase()}. The invitation expires in ${INVITE_TTL_DAYS} days.`,
-                    cta: { label: 'Accept invitation', url: AppUrls.acceptInvitation(token) },
+                    subject: t('email.invite.subject', params),
+                    heading: t('email.invite.heading', params),
+                    body: t('email.invite.body', params),
+                    footer: t('email.footer'),
+                    cta: { label: t('email.invite.cta'), url: AppUrls.acceptInvitation(token) },
                 });
             } catch {
                 /* email failures must not break the request */
@@ -148,7 +155,7 @@ export class CollaborationService {
         await this.notifications.notify({
             userId: inv.invited_by,
             type: NotificationTypes.COLLABORATION,
-            title: `${user.full_name || user.email} joined "${inv.project.title}"`,
+            title: msg('notif.memberJoined.title', { name: user.full_name || user.email, project: inv.project.title }),
             link: AppPaths.project(inv.project_id),
         });
         return { project_id: inv.project_id };
@@ -255,7 +262,7 @@ export class CollaborationService {
             await this.notifications.notify({
                 userId: targetUserId,
                 type: NotificationTypes.COLLABORATION,
-                title: `${sharer.full_name || sharer.email} shared a ${dto.resource_type.toLowerCase().replace('_', ' ')} with you`,
+                title: msg('notif.shared.title', { name: sharer.full_name || sharer.email, resource: translate(await this.i18n.languageOf(targetUserId), `resource.${dto.resource_type}`) }),
                 link: `/shared/id/${share.id}`,
                 data: { share_id: share.id },
             });
@@ -426,7 +433,7 @@ export class CollaborationService {
         switch (share.resource_type) {
             case ShareResourceType.DECK: {
                 const deck = await this.prisma.flashcardDeck.findUniqueOrThrow({ where: { id: share.resource_id }, include: { cards: true } });
-                const newDeck = await this.prisma.flashcardDeck.create({ data: { project_id: dto.target_project_id, name: `${deck.name} (shared)`, description: deck.description, created_by: userId } });
+                const newDeck = await this.prisma.flashcardDeck.create({ data: { project_id: dto.target_project_id, name: translate(await this.i18n.languageOf(userId), 'deck.sharedCopy', { name: deck.name }), description: deck.description, created_by: userId } });
                 await this.prisma.flashcard.createMany({
                     data: deck.cards.map((c) => ({
                         project_id: dto.target_project_id!,
@@ -474,7 +481,7 @@ export class CollaborationService {
                     data: {
                         project_id: dto.target_project_id,
                         created_by: userId,
-                        title: `${quiz.title} (shared)`,
+                        title: translate(await this.i18n.languageOf(userId), 'quiz.title.sharedCopy', { title: quiz.title }),
                         mode: quiz.mode === 'EXAM' ? 'EXAM' : 'PRACTICE',
                         status: 'READY',
                         config: quiz.config as Prisma.InputJsonValue,

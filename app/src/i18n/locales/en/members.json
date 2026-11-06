@@ -1,0 +1,192 @@
+{
+  "fallbackName": "Learner",
+  "roles": {
+    "OWNER": { "label": "Owner", "description": "Full control, including deleting the project" },
+    "ADMIN": { "label": "Admin", "description": "Manage members, sharing and all content" },
+    "EDITOR": { "label": "Editor", "description": "Edit all study material" },
+    "CONTRIBUTOR": { "label": "Contributor", "description": "Add documents, notes and questions" },
+    "VIEWER": { "label": "Viewer", "description": "Study and view only" }
+  },
+  "orgRoles": {
+    "OWNER": "Owner",
+    "ADMIN": "Admin",
+    "MEMBER": "Member"
+  },
+  "page": {
+    "metaTitle": "{{project}} · Members",
+    "title": "Members & sharing",
+    "description": "Study together: invite collaborators, control what they can do, and share material.",
+    "groups": "Groups",
+    "share": "Share",
+    "invite": "Invite",
+    "people": "People",
+    "peopleCount": "People ({{count}})",
+    "loadError": "Couldn't load members",
+    "activeShares": "Active shares"
+  },
+  "invite": {
+    "title": "Invite to project",
+    "description_one": "They'll get an email with a link to join. Invitations expire after {{count}} day.",
+    "description_other": "They'll get an email with a link to join. Invitations expire after {{count}} days.",
+    "email": "Email",
+    "emailPlaceholder": "classmate@example.com",
+    "role": "Role",
+    "submit": "Send invitation"
+  },
+  "list": {
+    "you": "(you)",
+    "emailJoined": "{{email}} · joined {{date}}",
+    "allowCopyAria": "Allow {{name}} to copy content",
+    "allowReshareAria": "Allow {{name}} to reshare content",
+    "copy": "Copy",
+    "reshare": "Reshare",
+    "actionsAria": "Actions for {{name}}",
+    "changeRole": "Change role",
+    "removeAccess": "Remove access",
+    "leaveProject": "Leave project",
+    "leaveConfirm": {
+      "title": "Leave this project?",
+      "description": "You'll lose access to its material. Your own progress history is kept if you are invited back.",
+      "confirm": "Leave"
+    },
+    "removeConfirm": {
+      "title": "Remove {{name}}?",
+      "description": "They will immediately lose access to this project and anything shared with them from it.",
+      "confirm": "Remove"
+    }
+  },
+  "pending": {
+    "title": "Pending invitations",
+    "expires": "Expires {{date}}",
+    "revokeAria": "Revoke invitation for {{email}}",
+    "confirm": {
+      "title": "Revoke invitation?",
+      "description": "The link sent to {{email}} will stop working.",
+      "confirm": "Revoke"
+    }
+  },
+  "share": {
+    "resourceTypes": {
+      "PROJECT": { "label": "Whole project", "description": "Overview, topics and all study material" },
+      "DOCUMENT": { "label": "Document", "description": "An uploaded source with its summary" },
+      "DECK": { "label": "Flashcard deck", "description": "All cards in a deck" },
+      "QUIZ": { "label": "Quiz", "description": "Questions (answers stay hidden)" },
+      "NOTE": { "label": "Note", "description": "One of your notes" },
+      "STUDY_PLAN": { "label": "Study plan", "description": "Your recommended plan" }
+    },
+    "targetTypes": {
+      "USER": { "label": "Specific person", "description": "Share with a QuizMe user by email" },
+      "LINK": { "label": "Link", "description": "Anyone signed in with the link can open it" },
+      "ORGANIZATION": { "label": "Organization", "description": "Everyone in one of your groups" }
+    },
+    "permissions": {
+      "VIEW": "Can view",
+      "EDIT": "Can edit"
+    },
+    "dialog": {
+      "title": "Share content",
+      "description": "Choose what to share, with whom, and what they can do with it.",
+      "linkReady": "Your link is ready. Anyone signed in with this link can open it.",
+      "linkAria": "Share link",
+      "copyLink": "Copy link",
+      "what": "What",
+      "contentType": "Content type",
+      "with": "With",
+      "shareWith": "Share with",
+      "item": "Item",
+      "itemAria": "Item to share",
+      "choose": "Choose…",
+      "nothingToShare": "Nothing to share yet",
+      "emailPlaceholder": "friend@example.com",
+      "organization": "Organization",
+      "createOrgFirst": "Create an organization first",
+      "permission": "Permission",
+      "expiresAfter": "Expires after (days)",
+      "never": "Never",
+      "allowCopy": "Allow copying",
+      "allowReshare": "Allow resharing",
+      "submit": "Share"
+    },
+    "validation": {
+      "chooseItem": "Choose what to share",
+      "chooseOrganization": "Choose an organization",
+      "wholeDays": "Use a whole number of days"
+    },
+    "toasts": {
+      "linkCreated": "Share link created",
+      "shared": "Shared",
+      "shareFailed": "Could not share",
+      "revoked": "Share revoked",
+      "revokeFailed": "Could not revoke share"
+    }
+  },
+  "sharesList": {
+    "empty": {
+      "title": "Nothing shared yet",
+      "description": "Share links, decks, quizzes and notes from here."
+    },
+    "anyoneWithLink": "Anyone with the link",
+    "organization": "Organization",
+    "user": "User",
+    "resourceToTarget": "{{resource}} → {{target}}",
+    "expires": "expires {{date}}",
+    "copyAllowed": "copy allowed",
+    "reshareAllowed": "reshare allowed",
+    "revokeAria": "Revoke share",
+    "confirm": {
+      "title": "Revoke this share?",
+      "description": "People using it will lose access immediately.",
+      "confirm": "Revoke"
+    }
+  },
+  "orgs": {
+    "title": "Organizations & groups",
+    "description": "Create study groups or classes, then share content with everyone in them at once.",
+    "namePlaceholder": "New group name, e.g. Biology study group",
+    "nameAria": "New organization name",
+    "yourOrganizations": "Your organizations",
+    "none": "You're not in any organization yet.",
+    "memberEmailPlaceholder": "member@example.com",
+    "memberEmailAria": "Member email",
+    "removeAria": "Remove {{name}}",
+    "toasts": {
+      "created": "Organization created",
+      "createFailed": "Could not create organization",
+      "memberAdded": "Member added",
+      "addFailed": "Could not add member",
+      "memberRemoved": "Member removed",
+      "removeFailed": "Could not remove member"
+    },
+    "errors": {
+      "load": "Failed to load organizations.",
+      "create": "Failed to create organization.",
+      "loadMembers": "Failed to load organization members.",
+      "addMember": "Failed to add member.",
+      "removeMember": "Failed to remove member."
+    }
+  },
+  "toasts": {
+    "inviteSent": {
+      "title": "Invitation sent",
+      "description": "{{email}} will receive an email to join."
+    },
+    "inviteFailed": "Could not send invitation",
+    "invitationRevoked": "Invitation revoked",
+    "revokeInvitationFailed": "Could not revoke invitation",
+    "memberUpdated": "Member updated",
+    "updateMemberFailed": "Could not update member",
+    "accessRemoved": "Access removed",
+    "removeMemberFailed": "Could not remove member"
+  },
+  "errors": {
+    "loadMembers": "Failed to load members.",
+    "sendInvitation": "Failed to send invitation.",
+    "revokeInvitation": "Failed to revoke invitation.",
+    "updateMember": "Failed to update member.",
+    "removeMember": "Failed to remove member.",
+    "loadShares": "Failed to load shares.",
+    "share": "Failed to share.",
+    "revokeShare": "Failed to revoke share.",
+    "loadShareable": "Failed to load items to share."
+  }
+}

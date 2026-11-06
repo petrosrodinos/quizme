@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BadgeCheck, MailWarning } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,7 +20,9 @@ import { SettingsSection } from "../../components/settings-section";
 import { changePasswordSchema, profileSchema, type ChangePasswordFormValues, type ProfileFormValues } from "../../validation-schemas/settings.schema";
 
 export default function SettingsProfilePage() {
-    usePageMetadata({ title: "Profile" });
+    const { t } = useTranslation("settings");
+    usePageMetadata({ title: t("profile.pageTitle") });
+    const confirmWord = t("profile.delete.confirmWord");
     const user = useAuthStore((s) => s.user);
     const updateProfile = useUpdateProfile();
     const resend = useResendVerification();
@@ -48,7 +51,7 @@ export default function SettingsProfilePage() {
 
     return (
         <div className="space-y-6">
-            <SettingsSection title="Profile" description="How you appear to collaborators.">
+            <SettingsSection title={t("profile.title")} description={t("profile.description")}>
                 <Form {...profileForm}>
                     <form onSubmit={profileForm.handleSubmit((v) => updateProfile.mutate(v))} className="space-y-4">
                         <FormField
@@ -56,7 +59,7 @@ export default function SettingsProfilePage() {
                             name="full_name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Full name</FormLabel>
+                                    <FormLabel>{t("auth:fields.fullName")}</FormLabel>
                                     <FormControl>
                                         <Input autoComplete="name" {...field} />
                                     </FormControl>
@@ -69,11 +72,11 @@ export default function SettingsProfilePage() {
                             name="timezone"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Timezone</FormLabel>
+                                    <FormLabel>{t("profile.timezone")}</FormLabel>
                                     <Select value={field.value} onValueChange={field.onChange}>
                                         <FormControl>
                                             <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Select timezone" />
+                                                <SelectValue placeholder={t("profile.timezonePlaceholder")} />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent className="max-h-72">
@@ -84,39 +87,39 @@ export default function SettingsProfilePage() {
                                             ))}
                                         </SelectContent>
                                     </Select>
-                                    <p className="text-xs text-muted-foreground">Streaks and daily goals reset at midnight in this timezone.</p>
+                                    <p className="text-xs text-muted-foreground">{t("profile.timezoneHint")}</p>
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
                         <Button type="submit" loading={updateProfile.isPending}>
-                            Save profile
+                            {t("profile.save")}
                         </Button>
                     </form>
                 </Form>
             </SettingsSection>
 
-            <SettingsSection title="Email">
+            <SettingsSection title={t("profile.email.title")}>
                 <div className="flex flex-wrap items-center gap-3">
                     <span className="text-sm font-medium">{user?.email}</span>
                     {user?.email_verified ? (
                         <span className="inline-flex items-center gap-1 rounded-full bg-success/12 px-2.5 py-0.5 text-xs text-success">
-                            <BadgeCheck className="h-3.5 w-3.5" aria-hidden /> Verified
+                            <BadgeCheck className="h-3.5 w-3.5" aria-hidden /> {t("profile.email.verified")}
                         </span>
                     ) : (
                         <>
                             <span className="inline-flex items-center gap-1 rounded-full bg-warning/15 px-2.5 py-0.5 text-xs text-warning">
-                                <MailWarning className="h-3.5 w-3.5" aria-hidden /> Not verified
+                                <MailWarning className="h-3.5 w-3.5" aria-hidden /> {t("profile.email.notVerified")}
                             </span>
                             <Button size="sm" variant="outline" onClick={() => resend.mutate()} loading={resend.isPending}>
-                                Resend verification email
+                                {t("profile.email.resend")}
                             </Button>
                         </>
                     )}
                 </div>
             </SettingsSection>
 
-            <SettingsSection title="Change password" description="Changing your password signs you out of all other devices.">
+            <SettingsSection title={t("profile.password.title")} description={t("profile.password.description")}>
                 <Form {...passwordForm}>
                     <form onSubmit={passwordForm.handleSubmit(({ current_password, new_password }) => changePassword.mutate({ current_password, new_password }, { onSuccess: () => passwordForm.reset() }))} className="space-y-4">
                         {(["current_password", "new_password", "confirm_password"] as const).map((name) => (
@@ -126,7 +129,7 @@ export default function SettingsProfilePage() {
                                 name={name}
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{name === "current_password" ? "Current password" : name === "new_password" ? "New password" : "Confirm new password"}</FormLabel>
+                                        <FormLabel>{name === "current_password" ? t("profile.password.current") : name === "new_password" ? t("auth:fields.newPassword") : t("auth:fields.confirmNewPassword")}</FormLabel>
                                         <FormControl>
                                             <PasswordInput autoComplete={name === "current_password" ? "current-password" : "new-password"} {...field} />
                                         </FormControl>
@@ -136,15 +139,15 @@ export default function SettingsProfilePage() {
                             />
                         ))}
                         <Button type="submit" loading={changePassword.isPending}>
-                            Update password
+                            {t("auth:reset.submit")}
                         </Button>
                     </form>
                 </Form>
             </SettingsSection>
 
-            <SettingsSection title="Danger zone" tone="danger" description="Deleting your account permanently removes your projects, documents, progress and notes. This cannot be undone.">
+            <SettingsSection title={t("profile.danger.title")} tone="danger" description={t("profile.danger.description")}>
                 <Button variant="destructive" onClick={() => setDeleteOpen(true)}>
-                    Delete account
+                    {t("profile.danger.action")}
                 </Button>
             </SettingsSection>
 
@@ -159,19 +162,19 @@ export default function SettingsProfilePage() {
             >
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                        <DialogTitle>Delete your account?</DialogTitle>
-                        <DialogDescription>All projects you own and everything in them will be deleted. Type DELETE to confirm.</DialogDescription>
+                        <DialogTitle>{t("profile.delete.title")}</DialogTitle>
+                        <DialogDescription>{t("profile.delete.description", { word: confirmWord })}</DialogDescription>
                     </DialogHeader>
                     <div className="space-y-2">
-                        <Label htmlFor="confirm-delete">Confirmation</Label>
-                        <Input id="confirm-delete" value={confirmText} onChange={(e) => setConfirmText(e.target.value)} placeholder="DELETE" autoComplete="off" />
+                        <Label htmlFor="confirm-delete">{t("profile.delete.confirmation")}</Label>
+                        <Input id="confirm-delete" value={confirmText} onChange={(e) => setConfirmText(e.target.value)} placeholder={confirmWord} autoComplete="off" />
                     </div>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setDeleteOpen(false)} disabled={deleteAccount.isPending}>
-                            Cancel
+                            {t("common:actions.cancel")}
                         </Button>
-                        <Button variant="destructive" disabled={confirmText !== "DELETE"} loading={deleteAccount.isPending} onClick={() => deleteAccount.mutate()}>
-                            Delete permanently
+                        <Button variant="destructive" disabled={confirmText.trim().toLocaleUpperCase() !== confirmWord.toLocaleUpperCase()} loading={deleteAccount.isPending} onClick={() => deleteAccount.mutate()}>
+                            {t("profile.delete.submit")}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

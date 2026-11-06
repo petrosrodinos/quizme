@@ -1,0 +1,188 @@
+{
+  "page": {
+    "title": "Flashcards",
+    "description": "Spaced repetition schedules each card just before you would forget it."
+  },
+  "actions": {
+    "generateWithAi": "Generate with AI",
+    "newCard": "New card",
+    "reviewNow": "Review now",
+    "reviewNowCount_one": "Review now ({{count}})",
+    "reviewNowCount_other": "Review now ({{count}})"
+  },
+  "status": {
+    "all": "All statuses",
+    "NEW": "New",
+    "LEARNING": "Learning",
+    "NEEDS_REVIEW": "Needs review",
+    "KNOWN": "Known"
+  },
+  "rating": {
+    "AGAIN": { "label": "Again", "description": "Forgot it — show again soon" },
+    "HARD": { "label": "Hard", "description": "Recalled with serious effort" },
+    "GOOD": { "label": "Good", "description": "Recalled after a moment" },
+    "EASY": { "label": "Easy", "description": "Instant recall" }
+  },
+  "intervals": {
+    "m_one": "{{count}} min",
+    "m_other": "{{count}} min",
+    "h_one": "{{count}} h",
+    "h_other": "{{count}} h",
+    "d_one": "{{count}} day",
+    "d_other": "{{count}} days"
+  },
+  "card": {
+    "front": "Front",
+    "back": "Back"
+  },
+  "decks": {
+    "title": "Decks",
+    "allCards": "All cards",
+    "newTitle": "New deck",
+    "renameTitle": "Rename deck",
+    "create": "Create deck",
+    "dueCount_one": "{{count}} due",
+    "dueCount_other": "{{count}} due",
+    "actionsFor": "Deck actions for {{name}}",
+    "fields": {
+      "name": "Name",
+      "namePlaceholder": "Chapter 4 — Cell energy",
+      "description": "Description"
+    }
+  },
+  "stats": {
+    "ariaLabel": "Flashcard statistics",
+    "dueNow": "Due now",
+    "retention": "Retention (30d)",
+    "forecastTitle": "Reviews due — next 7 days",
+    "forecastAria": "Forecast: {{list}}"
+  },
+  "list": {
+    "ariaLabel": "Cards",
+    "searchPlaceholder": "Search cards…",
+    "searchAria": "Search cards",
+    "filterStatus": "Filter by status",
+    "filterTopic": "Filter by topic",
+    "allTopics": "All topics",
+    "tagPlaceholder": "#tag",
+    "filterTag": "Filter by tag",
+    "showAnswer": "Click to show answer",
+    "cardActions": "Card actions",
+    "aiBadge": "AI",
+    "dueOn": "Due {{date}}",
+    "pagination_one": "Page {{page}} of {{pages}} · {{count}} card",
+    "pagination_other": "Page {{page}} of {{pages}} · {{count}} cards"
+  },
+  "empty": {
+    "title": "No flashcards yet",
+    "filteredTitle": "No cards match these filters",
+    "description": "Generate cards from your documents, or write your own."
+  },
+  "editor": {
+    "newTitle": "New flashcard",
+    "editTitle": "Edit flashcard",
+    "description": "Markdown and math ($E = mc^2$) are supported. Keep each card to one idea.",
+    "write": "Write",
+    "preview": "Preview",
+    "empty": "Empty",
+    "addCard": "Add card",
+    "fields": {
+      "front": "Front — question, term or concept",
+      "frontPlaceholder": "What does the mitochondrion produce?",
+      "back": "Back — answer or explanation",
+      "backPlaceholder": "ATP, through cellular respiration.",
+      "deck": "Deck",
+      "topic": "Topic",
+      "noTopic": "No topic",
+      "category": "Category",
+      "categoryPlaceholder": "Definitions",
+      "tags": "Tags"
+    }
+  },
+  "generate": {
+    "title": "Generate flashcards",
+    "description": "Cards are created from your processed material in the background, each linked to its source.",
+    "fields": {
+      "count": "Number of cards",
+      "deck": "Add to deck",
+      "defaultDeck": "Default deck",
+      "documents": "From documents (optional — all by default)",
+      "documentsEmpty": "No processed documents yet.",
+      "topics": "Focus topics (optional)",
+      "topicsEmpty": "Topics appear once your knowledge map is built.",
+      "instructions": "Instructions (optional)",
+      "instructionsPlaceholder": "Focus on definitions and formulas"
+    }
+  },
+  "review": {
+    "pageTitle": "Flashcard review",
+    "progressAria": "Session progress",
+    "progress": "{{done}} done · {{left}} left",
+    "question": "Question",
+    "answer": "Answer",
+    "showAnswer": "Show answer",
+    "showQuestion": "Show question",
+    "spaceHint": "Press Space to reveal",
+    "source": "Source: {{title}}",
+    "sourceWithPage": "Source: {{title}}, page {{page}}",
+    "ratingGroup": "How well did you remember?",
+    "empty": {
+      "title": "All caught up",
+      "description": "No cards are due right now. New reviews will appear as your schedule comes around."
+    },
+    "summary": {
+      "ariaLabel": "Session summary",
+      "title": "Session complete",
+      "description": "Nice work — your next reviews are scheduled automatically.",
+      "reviewed": "Cards reviewed",
+      "remembered": "Remembered",
+      "xp": "XP earned",
+      "minutes": "Minutes",
+      "checkMore": "Check for more"
+    }
+  },
+  "confirm": {
+    "deleteCardTitle": "Delete this flashcard?",
+    "deleteCardDescription": "Its review history will be removed too. This cannot be undone.",
+    "deleteDeckTitle": "Delete deck “{{name}}”?",
+    "deleteDeckDescription": "All cards in this deck and their review history will be deleted. This cannot be undone.",
+    "deleteDeckConfirm": "Delete deck"
+  },
+  "validation": {
+    "frontRequired": "Front is required",
+    "backRequired": "Back is required",
+    "deckNameRequired": "Name is required"
+  },
+  "toasts": {
+    "deckCreated": "Deck created",
+    "deckCreateFailed": "Could not create deck",
+    "deckUpdated": "Deck updated",
+    "deckUpdateFailed": "Could not update deck",
+    "deckDeleted": "Deck deleted",
+    "deckDeleteFailed": "Could not delete deck",
+    "cardAdded": "Card added",
+    "cardAddFailed": "Could not add card",
+    "cardUpdated": "Card updated",
+    "cardUpdateFailed": "Could not update card",
+    "cardDeleted": "Card deleted",
+    "cardDeleteFailed": "Could not delete card",
+    "ratingFailed": "Could not save rating",
+    "generationReady": "Flashcards ready",
+    "generationReadyDescription_one": "{{count}} new card added.",
+    "generationReadyDescription_other": "{{count}} new cards added.",
+    "generationFailed": "Flashcard generation failed"
+  },
+  "errors": {
+    "loadDecks": "Failed to load decks.",
+    "createDeck": "Failed to create deck.",
+    "updateDeck": "Failed to update deck.",
+    "deleteDeck": "Failed to delete deck.",
+    "loadCards": "Failed to load flashcards.",
+    "createCard": "Failed to create flashcard.",
+    "updateCard": "Failed to update flashcard.",
+    "deleteCard": "Failed to delete flashcard.",
+    "loadStats": "Failed to load flashcard stats.",
+    "loadReview": "Failed to load your review session.",
+    "saveRating": "Failed to save your rating."
+  }
+}

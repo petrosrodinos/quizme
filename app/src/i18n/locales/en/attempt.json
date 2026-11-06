@@ -1,0 +1,59 @@
+{
+  "page": {
+    "title": "Results",
+    "notFound": "Results not found",
+    "inProgress": "This attempt is still in progress",
+    "continue": "Continue quiz",
+    "backExams": "Exam simulations",
+    "backQuizzes": "Quizzes"
+  },
+  "hero": {
+    "perfect": "Perfect score!",
+    "perfectDescription": "Every single answer correct. Outstanding.",
+    "scoreLabel": "Score {{value}}%",
+    "score": "score",
+    "attempt": "Attempt #{{number}}",
+    "targetReached": "Target reached",
+    "belowTarget": "Below target",
+    "great": "Great work.",
+    "keepGoing": "Keep going — every miss is a lesson.",
+    "completed": "{{title}} · completed {{date}}",
+    "delta_one": "{{count}} pt vs previous simulation",
+    "delta_other": "{{count}} pts vs previous simulation"
+  },
+  "actions": {
+    "retryTitle": "Retry mistakes · {{title}}",
+    "retryIncorrect": "Retry incorrect",
+    "newQuestions": "New questions on missed concepts",
+    "retake": "Retake quiz"
+  },
+  "stats": {
+    "correct": "Correct",
+    "time": "Time",
+    "xp": "XP earned",
+    "updating": "updating…",
+    "bestCombo": "Best combo",
+    "avgDifficulty": "Avg difficulty"
+  },
+  "sections": {
+    "byTopic": "By topic",
+    "noTopicData": "No topic data.",
+    "next": "What to study next",
+    "missed": "Missed concepts",
+    "examsOverTime": "Exam simulations over time",
+    "attemptsOnQuiz": "Attempts on this quiz"
+  },
+  "chart": {
+    "sim": "Sim {{number}}",
+    "thisOne": "This one"
+  },
+  "review": {
+    "title": "Review answers",
+    "incorrect": "Incorrect",
+    "correct": "Correct",
+    "unanswered": "Unanswered",
+    "emptyFilter": "No questions in this filter.",
+    "q": "Q{{number}}",
+    "notAnswered": "You didn't answer this question."
+  }
+}

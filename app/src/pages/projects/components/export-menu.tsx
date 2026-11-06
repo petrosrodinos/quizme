@@ -4,6 +4,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { ExportFormatOptions } from "@/config/constants/dropdowns/exports/export-format.options";
 import { useExport } from "@/features/exports/hooks/use-exports";
 import type { ExportFormat, ExportType } from "@/features/exports/interfaces/exports.interfaces";
+import { useTranslation } from "react-i18next";
 
 interface ExportMenuProps {
     projectId: string;
@@ -14,18 +15,19 @@ interface ExportMenuProps {
 }
 
 /** Download menu for project exports (CSV, JSON, Markdown, TXT, print-to-PDF). */
-export const ExportMenu = ({ projectId, type, deckId, formats, label = "Export" }: ExportMenuProps) => {
+export const ExportMenu = ({ projectId, type, deckId, formats, label }: ExportMenuProps) => {
+    const { t } = useTranslation("exports");
     const exporter = useExport();
     const options = formats ? ExportFormatOptions.filter((o) => formats.includes(o.id)) : ExportFormatOptions;
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="outline" loading={exporter.isPending}>
-                    <Download /> {label}
+                    <Download /> {label ?? t("menu.button")}
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Download as</DropdownMenuLabel>
+                <DropdownMenuLabel>{t("menu.downloadAs")}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {options.map((o) => (
                     <DropdownMenuItem key={o.id} onSelect={() => exporter.mutate({ projectId, type, format: o.id, deck_id: deckId })}>

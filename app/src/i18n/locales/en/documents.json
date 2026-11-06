@@ -1,0 +1,112 @@
+{
+  "fileType": {
+    "PDF": "PDF",
+    "DOCX": "Word",
+    "TXT": "Text",
+    "MARKDOWN": "Markdown"
+  },
+  "status": {
+    "UPLOADED": {
+      "label": "Uploaded",
+      "description": "Waiting to be processed"
+    },
+    "PROCESSING": {
+      "label": "Processing",
+      "description": "Preparing the file"
+    },
+    "EXTRACTING": {
+      "label": "Extracting",
+      "description": "Reading text and structure"
+    },
+    "CHUNKING": {
+      "label": "Chunking",
+      "description": "Splitting into study sections"
+    },
+    "INDEXING": {
+      "label": "Indexing",
+      "description": "Building the searchable knowledge layer"
+    },
+    "READY": {
+      "label": "Ready",
+      "description": "Available to the tutor and generators"
+    },
+    "FAILED": {
+      "label": "Failed",
+      "description": "Processing failed"
+    }
+  },
+  "toasts": {
+    "uploaded_one": "{{count}} file uploaded",
+    "uploaded_other": "{{count}} files uploaded",
+    "nothingUploaded": "Nothing new uploaded",
+    "processingStarted": "Processing has started.",
+    "processingStartedSkipped_one": "Processing has started. {{count}} skipped.",
+    "processingStartedSkipped_other": "Processing has started. {{count}} skipped.",
+    "allSkipped": "All files were duplicates or rejected.",
+    "uploadFailed": "Upload failed",
+    "downloadStarted": "Download started",
+    "downloadFailed": "Could not download",
+    "reprocessStarted": "Reprocessing started",
+    "reprocessFailed": "Could not reprocess",
+    "deleted": "Document deleted",
+    "deleteFailed": "Could not delete document",
+    "openFailed": "Could not open document"
+  },
+  "errors": {
+    "loadList": "Failed to load documents.",
+    "load": "Failed to load document.",
+    "content": "Failed to load document content.",
+    "upload": "Failed to upload documents.",
+    "download": "Failed to prepare download.",
+    "reprocess": "Failed to reprocess document.",
+    "delete": "Failed to delete document."
+  },
+  "page": {
+    "metaTitle": "{{title}} · Documents",
+    "title": "Documents",
+    "summary_one": "{{count}} document",
+    "summary_other": "{{count}} documents",
+    "summaryProcessing": "{{summary}} · {{count}} processing",
+    "description": "{{summary}}. Select text in the reader for instant AI explanations, quizzes and flashcards.",
+    "descriptionEmpty": "Your study sources. Everything the tutor and generators use comes from here.",
+    "loadError": "Couldn't load documents",
+    "empty": {
+      "title": "No documents yet",
+      "description": "Upload your textbooks, lecture notes or study guides to get started."
+    },
+    "listLabel": "Documents"
+  },
+  "delete": {
+    "title": "Delete \"{{name}}\"?",
+    "description": "The file and its processed content will be removed. Questions and flashcards generated from it stay in your project.",
+    "confirm": "Delete document"
+  },
+  "row": {
+    "pages": "{{count}} pages",
+    "pages_one": "{{count}} page",
+    "pages_other": "{{count}} pages",
+    "words_one": "{{count}} word",
+    "words_other": "{{count}} words",
+    "uploaded": "Uploaded {{date}}",
+    "read": "Read",
+    "actions": "Actions for {{name}}",
+    "download": "Download original",
+    "reprocess": "Reprocess",
+    "delete": "Delete"
+  },
+  "stepper": {
+    "progressLabel": "{{status}}: {{progress}}%"
+  },
+  "upload": {
+    "title": "Upload study material",
+    "description": "PDF, Word (.docx), text or Markdown — up to 10 files at once, 50 MB each. Large documents are processed in the background.",
+    "skipped": "Some files were skipped",
+    "uploading": "Uploading…",
+    "progressLabel": "Upload progress",
+    "button_one": "Upload {{count}} file",
+    "button_other": "Upload {{count}} files",
+    "resultsLabel": "Upload results",
+    "processingStarted": "processing started",
+    "duplicate": "already uploaded to this project"
+  }
+}

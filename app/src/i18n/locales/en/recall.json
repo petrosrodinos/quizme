@@ -1,0 +1,79 @@
+{
+  "page": {
+    "title": "Active recall",
+    "description": "Explain ideas from memory — the most effective way to make them stick. Your answer is graded against your sources.",
+    "modeGroup": "Mode"
+  },
+  "modes": {
+    "ACTIVE_RECALL": { "label": "Active recall", "description": "Explain a concept from memory, then get graded feedback." },
+    "TEACH_BACK": { "label": "Teach it back", "description": "Explain it in your own words as if teaching someone else." }
+  },
+  "verdict": {
+    "correct": "Correct",
+    "partially_correct": "Partially correct",
+    "incorrect": "Needs work"
+  },
+  "source": {
+    "generated": "Prompts from my material",
+    "free": "Explain any concept",
+    "topic": "Topic",
+    "anyTopic": "Any topic",
+    "getPrompts": "Get prompts",
+    "newPrompts": "New prompts",
+    "freeLabel": "What do you want to explain?",
+    "freePlaceholder": "e.g. Explain the process of photosynthesis"
+  },
+  "empty": {
+    "generatedTitle": "Get a prompt to start",
+    "freeTitle": "Type a concept to explain",
+    "description": "Write (or say) your explanation without looking at your notes."
+  },
+  "answer": {
+    "ariaLabel": "Your explanation",
+    "label": "Your answer",
+    "promptCounter": "Prompt {{current}} of {{total}}",
+    "fromSource": "From {{title}}",
+    "fromSourcePage": "From {{title}}, p.{{page}}",
+    "placeholder": "Explain from memory…",
+    "teachBackPlaceholder": "Explain it as if you were teaching a friend who has never heard of it…",
+    "submitHint": "Ctrl+Enter to submit",
+    "evaluate": "Evaluate",
+    "nextPrompt": "Next prompt",
+    "another": "Explain another concept"
+  },
+  "speech": {
+    "start": "Speak your answer",
+    "stop": "Stop dictation",
+    "unsupported": "Voice input is not supported in this browser — type your answer.",
+    "permissionDenied": "Microphone permission was denied.",
+    "stopped": "Speech recognition stopped."
+  },
+  "evaluation": {
+    "accuracy": "Accuracy",
+    "completeness": "Completeness",
+    "clarity": "Clarity",
+    "covered": "You covered",
+    "missing": "Missing",
+    "nothingMissing": "Nothing important missing",
+    "incorrect": "Incorrect or misleading statements",
+    "improve": "How to improve",
+    "showExpected": "Show expected answer",
+    "pageShort": "p.{{page}}"
+  },
+  "history": {
+    "title": "Recent explanations",
+    "empty": "Your graded explanations will appear here."
+  },
+  "toasts": {
+    "promptsReady_one": "{{count}} prompt ready",
+    "promptsReady_other": "{{count}} prompts ready",
+    "promptsFailed": "Could not generate prompts",
+    "scored": "Scored {{score}}/100",
+    "evaluateFailed": "Could not evaluate"
+  },
+  "errors": {
+    "prompts": "Failed to generate prompts.",
+    "evaluate": "Failed to evaluate your answer.",
+    "history": "Failed to load history."
+  }
+}

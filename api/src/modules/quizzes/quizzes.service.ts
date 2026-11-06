@@ -12,6 +12,8 @@ import { TopicsService } from '../topics/topics.service';
 import { KnowledgeService } from '../knowledge/knowledge.service';
 import { Passage } from '../ai/ai.types';
 import { LearnerProfileService } from './learner-profile.service';
+import { I18nService } from '@/shared/i18n/i18n.service';
+
 import { AttemptQueryType, CreateQuizDto, SubmitAnswerDto } from './dto/quizzes.dto';
 
 const DEFAULT_TYPES: QuestionType[] = ['MCQ', 'TRUE_FALSE', 'FILL_BLANK', 'MATCHING'];
@@ -47,6 +49,7 @@ export class QuizzesService implements OnModuleInit {
         private readonly topics: TopicsService,
         private readonly knowledge: KnowledgeService,
         private readonly profiles: LearnerProfileService,
+        private readonly i18n: I18nService,
     ) { }
 
     onModuleInit() {
@@ -74,7 +77,7 @@ export class QuizzesService implements OnModuleInit {
             selection_document_id: dto.selection_document_id,
             instructions: dto.instructions,
         };
-        const title = dto.title?.trim() || this.defaultTitle(mode);
+        const title = dto.title?.trim() || (await this.defaultTitle(userId, mode));
         const quiz = await this.prisma.quiz.create({
             data: {
                 project_id: projectId,
@@ -92,16 +95,9 @@ export class QuizzesService implements OnModuleInit {
         return { ...quiz, job_id: job.id };
     }
 
-    private defaultTitle(mode: QuizMode) {
-        const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-        return {
-            PRACTICE: `Practice quiz · ${date}`,
-            ADAPTIVE: `Adaptive quiz · ${date}`,
-            REVIEW: `Mistake review · ${date}`,
-            EXAM: `Exam simulation · ${date}`,
-            SELECTION: `Quiz from selection · ${date}`,
-            SHARED: `Shared quiz · ${date}`,
-        }[mode];
+    private async defaultTitle(userId: string, mode: QuizMode) {
+        const lang = await this.i18n.languageOf(userId);
+        return this.i18n.t(lang, `quiz.title.${mode}`, { date: this.i18n.formatDate(lang, new Date()) });
     }
 
     private async setQuizStatus(quiz: Quiz, status: GenerationStatus, error?: string) {
@@ -632,6 +628,7 @@ export class QuizzesService implements OnModuleInit {
         percentage: number,
         targetScore: number | null,
     ) {
+        const { t } = await this.i18n.forUser(userId);
         const byQ = new Map(responses.map((r) => [r.question_id, r]));
         const topicStats = new Map<string, { correct: number; total: number }>();
         const missedConcepts = new Map<string, number>();
@@ -648,14 +645,14 @@ export class QuizzesService implements OnModuleInit {
         const topics = topicIds.length ? await this.prisma.topic.findMany({ where: { id: { in: topicIds } }, select: { id: true, name: true } }) : [];
         const names = new Map(topics.map((t) => [t.id, t.name]));
         const by_topic = [...topicStats.entries()]
-            .map(([id, s]) => ({ topic_id: id === 'unassigned' ? null : id, topic: names.get(id) ?? 'General', correct: Math.round(s.correct * 10) / 10, total: s.total, percentage: Math.round((s.correct / s.total) * 100) }))
+            .map(([id, s]) => ({ topic_id: id === 'unassigned' ? null : id, topic: names.get(id) ?? t('analysis.general'), correct: Math.round(s.correct * 10) / 10, total: s.total, percentage: Math.round((s.correct / s.total) * 100) }))
             .sort((a, b) => a.percentage - b.percentage);
         const weak = by_topic.filter((t) => t.percentage < 70);
         const recommendations: string[] = [];
-        if (weak.length) recommendations.push(`Review ${weak.slice(0, 3).map((w) => w.topic).join(', ')} — your weakest areas in this attempt.`);
-        if (missedConcepts.size) recommendations.push('Run a mistake-review quiz to practise the concepts you missed with fresh questions.');
-        if (percentage >= 90) recommendations.push('Excellent! Increase the difficulty or try an exam simulation.');
-        else if (percentage < 60) recommendations.push('Revisit the source material and flashcards before your next attempt.');
+        if (weak.length) recommendations.push(t('analysis.reviewWeak', { topics: weak.slice(0, 3).map((w) => w.topic).join(', ') }));
+        if (missedConcepts.size) recommendations.push(t('analysis.mistakeReview'));
+        if (percentage >= 90) recommendations.push(t('analysis.excellent'));
+        else if (percentage < 60) recommendations.push(t('analysis.revisit'));
         let previous_best: number | null = null;
         let previous_exams: { id: string; percentage: number; completed_at: Date | null }[] = [];
         if (isExam) {
@@ -733,10 +730,11 @@ export class QuizzesService implements OnModuleInit {
                 select: { id: true, prompt: true, type: true, concept: true, topic_id: true, topic: { select: { name: true } } },
             })
             : [];
+        const general = this.i18n.t(await this.i18n.languageOf(userId), 'analysis.general');
         const byTopic = new Map<string, { topic_id: string | null; topic: string; count: number }>();
         for (const q of missed) {
             const key = q.topic_id ?? 'none';
-            const e = byTopic.get(key) ?? { topic_id: q.topic_id, topic: q.topic?.name ?? 'General', count: 0 };
+            const e = byTopic.get(key) ?? { topic_id: q.topic_id, topic: q.topic?.name ?? general, count: 0 };
             e.count++;
             byTopic.set(key, e);
         }
@@ -765,6 +763,7 @@ export class QuizzesService implements OnModuleInit {
         const best = new Map<string, (typeof attempts)[number]>();
         for (const a of attempts) if (!best.has(a.user_id) || best.get(a.user_id)!.percentage < a.percentage) best.set(a.user_id, a);
         const rows = [...best.values()].sort((a, b) => b.percentage - a.percentage || a.time_spent_sec - b.time_spent_sec);
+        const anonymous = this.i18n.t(await this.i18n.languageOf(userId), 'anonymous');
         const responses = await this.prisma.questionResponse.groupBy({ by: ['question_id'], where: { attempt: { quiz_id: quizId, status: AttemptStatus.COMPLETED } }, _avg: { score: true }, _count: { _all: true } });
         const qs = await this.prisma.question.findMany({ where: { id: { in: responses.map((r) => r.question_id) } }, select: { id: true, prompt: true } });
         const prompts = new Map(qs.map((q) => [q.id, q.prompt]));
@@ -777,7 +776,7 @@ export class QuizzesService implements OnModuleInit {
                 return {
                     rank: i + 1,
                     user_id: visible ? r.user_id : null,
-                    name: visible ? r.user.full_name || r.user.email.split('@')[0] : 'Anonymous learner',
+                    name: visible ? r.user.full_name || r.user.email.split('@')[0] : anonymous,
                     is_me: r.user_id === userId,
                     percentage: r.percentage,
                     time_spent_sec: r.time_spent_sec,

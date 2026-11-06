@@ -10,10 +10,12 @@ import { RealtimeProvider } from "@/components/providers/realtime-provider";
 import { GamificationEventsProvider } from "@/components/providers/gamification-events-provider";
 import { EmailVerificationBanner } from "@/components/layout/email-verification-banner";
 import { useMe } from "@/features/auth/hooks/use-auth";
+import { useTranslation } from "react-i18next";
 
 /** Authenticated application shell: sidebar + header + realtime/gamification providers. */
 export default function AppLayout() {
     useMe();
+    useTranslation(); // re-render the shell when the UI language changes
     return (
         <PreferencesProvider>
             <RealtimeProvider>

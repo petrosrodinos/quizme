@@ -1,0 +1,179 @@
+{
+    "levels": {
+        "novice": "Novice",
+        "apprentice": "Apprentice",
+        "scholar": "Scholar",
+        "expert": "Expert",
+        "master": "Master",
+        "sage": "Sage"
+    },
+    "rarity": {
+        "COMMON": "Common",
+        "UNCOMMON": "Uncommon",
+        "RARE": "Rare",
+        "EPIC": "Epic",
+        "LEGENDARY": "Legendary"
+    },
+    "dailyGoal": {
+        "CASUAL": {
+            "label": "Casual",
+            "description": "10 minutes a day — keep things ticking over"
+        },
+        "REGULAR": {
+            "label": "Regular",
+            "description": "20 minutes a day — steady, sustainable progress"
+        },
+        "SERIOUS": {
+            "label": "Serious",
+            "description": "40 minutes a day — exam season"
+        },
+        "INTENSE": {
+            "label": "Intense",
+            "description": "60 minutes a day — final push"
+        },
+        "CUSTOM": {
+            "label": "Custom",
+            "description": "Set your own minutes target"
+        }
+    },
+    "categories": {
+        "consistency": "Consistency",
+        "volume": "Volume",
+        "accuracy": "Accuracy",
+        "mastery": "Mastery",
+        "exam": "Exam",
+        "learning_modes": "Learning modes",
+        "social": "Social"
+    },
+    "achievements": {
+        "streak_3": {
+            "title": "Warming up",
+            "description": "Reach a 3-day study streak"
+        },
+        "streak_7": {
+            "title": "7-day streak",
+            "description": "Study every day for a week"
+        },
+        "streak_14": {
+            "title": "Two strong weeks",
+            "description": "Reach a 14-day streak"
+        },
+        "streak_30": {
+            "title": "30-day streak",
+            "description": "A full month of consistent study"
+        },
+        "streak_60": {
+            "title": "Unstoppable",
+            "description": "Reach a 60-day streak"
+        },
+        "streak_100": {
+            "title": "Century",
+            "description": "Reach a 100-day streak"
+        },
+        "streak_365": {
+            "title": "A year of learning",
+            "description": "Reach a 365-day streak"
+        },
+        "early_bird": {
+            "title": "Early bird",
+            "description": "Study before 8am"
+        },
+        "weekend_warrior": {
+            "title": "Weekend warrior",
+            "description": "Study on both Saturday and Sunday"
+        },
+        "questions_100": {
+            "title": "Century of questions",
+            "description": "Answer 100 questions"
+        },
+        "questions_1000": {
+            "title": "Question machine",
+            "description": "Answer 1,000 questions"
+        },
+        "cards_100": {
+            "title": "Card shark",
+            "description": "Review 100 flashcards"
+        },
+        "cards_1000": {
+            "title": "1,000 flashcards reviewed",
+            "description": "Review 1,000 flashcards"
+        },
+        "perfect_quiz": {
+            "title": "Perfect quiz",
+            "description": "Score 100% on a quiz"
+        },
+        "combo_10": {
+            "title": "10 in a row",
+            "description": "Get 10 correct answers in a row"
+        },
+        "comeback_20": {
+            "title": "Comeback",
+            "description": "Fix 20 previously-wrong answers"
+        },
+        "mastery_1": {
+            "title": "First mastery",
+            "description": "Master your first topic"
+        },
+        "mastery_5": {
+            "title": "Five-topic master",
+            "description": "Master 5 topics"
+        },
+        "project_mastered": {
+            "title": "Project mastered",
+            "description": "Master every topic in a project"
+        },
+        "exam_first": {
+            "title": "First exam simulation",
+            "description": "Complete an exam simulation"
+        },
+        "exam_improved": {
+            "title": "Personal best",
+            "description": "Beat your previous exam simulation score"
+        },
+        "exam_ready": {
+            "title": "Exam ready",
+            "description": "Reach an exam readiness of 90% or more"
+        },
+        "teach_back_1": {
+            "title": "Taught it back",
+            "description": "Complete a teach-it-back exercise"
+        },
+        "socratic_1": {
+            "title": "Socratic thinker",
+            "description": "Learn through a Socratic dialogue"
+        },
+        "recall_10": {
+            "title": "Explained 10 concepts",
+            "description": "Explain 10 concepts in active recall"
+        },
+        "room_joined": {
+            "title": "Study buddy",
+            "description": "Join a study room"
+        },
+        "game_won": {
+            "title": "Quiz champion",
+            "description": "Win a multiplayer quiz"
+        },
+        "shared": {
+            "title": "Sharing is caring",
+            "description": "Share a deck, quiz or project"
+        },
+        "secret": {
+            "title": "Secret achievement",
+            "description": "Keep studying to discover this one."
+        }
+    },
+    "toasts": {
+        "goalUpdated": "Daily goal updated",
+        "goalMinutes_one": "{{count}} minute a day",
+        "goalMinutes_other": "{{count}} minutes a day",
+        "goalFailed": "Couldn't update your daily goal"
+    },
+    "errors": {
+        "profile": "Couldn't load your progress",
+        "achievements": "Couldn't load achievements",
+        "activity": "Couldn't load study activity",
+        "dailyGoal": "Couldn't update your daily goal",
+        "leaderboard": "Couldn't load the leaderboard"
+    }
+}

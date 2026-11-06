@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Database, MoreHorizontal, Pencil, Plus, Search, Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Main } from "@/components/layout/main";
 import { PageHeader } from "@/components/ui/page-header";
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,8 @@ import { QuestionPreviewSheet } from "./components/question-preview-sheet";
 const ALL = "all";
 
 export default function ProjectQuestionsPage() {
-    usePageMetadata({ title: "Question bank" });
+    const { t } = useTranslation("questions");
+    usePageMetadata({ title: t("page.title") });
     const { projectId, can } = useProjectContext();
     const { flat: topics } = useFlatTopics(projectId);
     const [search, setSearch] = useState("");
@@ -42,11 +44,11 @@ export default function ProjectQuestionsPage() {
     const [toDelete, setToDelete] = useState<Question | null>(null);
 
     useEffect(() => {
-        const t = setTimeout(() => {
+        const timer = setTimeout(() => {
             setDebounced(search.trim());
             setQuery((q) => ({ ...q, page: 1 }));
         }, 300);
-        return () => clearTimeout(t);
+        return () => clearTimeout(timer);
     }, [search]);
 
     const setFilter = <K extends keyof QuestionQuery>(key: K, value: QuestionQuery[K] | undefined) => setQuery((q) => ({ ...q, [key]: value, page: 1 }));
@@ -62,12 +64,12 @@ export default function ProjectQuestionsPage() {
     return (
         <Main width="wide">
             <PageHeader
-                title="Question bank"
-                description="Every generated or hand-written question, with its source, topic and your stats. Edits are versioned."
+                title={t("page.title")}
+                description={t("page.description")}
                 actions={
                     can.contribute && (
                         <Button onClick={() => openEditor(null)}>
-                            <Plus /> Add question
+                            <Plus /> {t("page.add")}
                         </Button>
                     )
                 }
@@ -76,11 +78,11 @@ export default function ProjectQuestionsPage() {
             <div className="mb-4 flex flex-col gap-3 rounded-xl border border-border bg-card p-3 lg:flex-row lg:items-center">
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-                    <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search questions or concepts…" className="pl-9" aria-label="Search questions" />
+                    <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t("filters.searchPlaceholder")} className="pl-9" aria-label={t("filters.search")} />
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                     <Select value={query.type ?? ALL} onValueChange={(v) => setFilter("type", v === ALL ? undefined : (v as QuestionType))}>
-                        <SelectTrigger className="w-40" aria-label="Filter by type">
+                        <SelectTrigger className="w-auto min-w-36 max-w-full" aria-label={t("filters.type")}>
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -92,7 +94,7 @@ export default function ProjectQuestionsPage() {
                         </SelectContent>
                     </Select>
                     <Select value={query.difficulty ? String(query.difficulty) : ALL} onValueChange={(v) => setFilter("difficulty", v === ALL ? undefined : Number(v))}>
-                        <SelectTrigger className="w-36" aria-label="Filter by difficulty">
+                        <SelectTrigger className="w-auto min-w-36 max-w-full" aria-label={t("filters.difficulty")}>
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -104,21 +106,21 @@ export default function ProjectQuestionsPage() {
                         </SelectContent>
                     </Select>
                     <Select value={query.topic_id ?? ALL} onValueChange={(v) => setFilter("topic_id", v === ALL ? undefined : v)}>
-                        <SelectTrigger className="w-44" aria-label="Filter by topic">
+                        <SelectTrigger className="w-auto min-w-40 max-w-64" aria-label={t("filters.topic")}>
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value={ALL}>All topics</SelectItem>
-                            {topics.map((t) => (
-                                <SelectItem key={t.id} value={t.id}>
-                                    {t.depth ? "↳ " : ""}
-                                    {t.name}
+                            <SelectItem value={ALL}>{t("filters.allTopics")}</SelectItem>
+                            {topics.map((topic) => (
+                                <SelectItem key={topic.id} value={topic.id}>
+                                    {topic.depth ? "↳ " : ""}
+                                    {topic.name}
                                 </SelectItem>
                             ))}
                         </SelectContent>
                     </Select>
                     <Select value={query.origin ?? ALL} onValueChange={(v) => setFilter("origin", v === ALL ? undefined : (v as ContentOrigin))}>
-                        <SelectTrigger className="w-36" aria-label="Filter by source">
+                        <SelectTrigger className="w-auto min-w-36 max-w-full" aria-label={t("filters.source")}>
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -131,15 +133,15 @@ export default function ProjectQuestionsPage() {
                     </Select>
                     <Input
                         className="w-28"
-                        placeholder="#tag"
-                        aria-label="Filter by tag"
+                        placeholder={t("filters.tagPlaceholder")}
+                        aria-label={t("filters.tag")}
                         value={query.tag ?? ""}
                         onChange={(e) => setFilter("tag", e.target.value.replace(/^#/, "").trim().toLowerCase() || undefined)}
                     />
                     <div className="flex items-center gap-2 px-1">
                         <Switch id="missed-only" checked={!!query.missed} onCheckedChange={(v) => setFilter("missed", v || undefined)} />
                         <Label htmlFor="missed-only" className="text-sm">
-                            Missed by me
+                            {t("filters.missed")}
                         </Label>
                     </div>
                 </div>
@@ -150,12 +152,12 @@ export default function ProjectQuestionsPage() {
             ) : !data?.data.length ? (
                 <EmptyState
                     icon={Database}
-                    title="No questions found"
-                    description="Questions appear here as you generate quizzes, or add your own."
+                    title={t("empty.title")}
+                    description={t("empty.description")}
                     action={
                         can.contribute && (
                             <Button onClick={() => openEditor(null)}>
-                                <Plus /> Add question
+                                <Plus /> {t("page.add")}
                             </Button>
                         )
                     }
@@ -173,30 +175,30 @@ export default function ProjectQuestionsPage() {
                                             <Badge variant="secondary" className="font-normal">
                                                 {getQuestionTypeLabel(q.type)}
                                             </Badge>
-                                            <span>{q.topic?.name ?? "No topic"}</span>
+                                            <span>{q.topic?.name ?? t("list.noTopic")}</span>
                                             {q.concept && <span>· {q.concept}</span>}
                                             <span>· {getQuestionOriginLabel(q.origin)}</span>
                                             {q.version > 1 && <span>· v{q.version}</span>}
-                                            {q.tags.map((t) => (
-                                                <span key={t} className="text-primary">
-                                                    #{t}
+                                            {q.tags.map((tag) => (
+                                                <span key={tag} className="text-primary">
+                                                    #{tag}
                                                 </span>
                                             ))}
                                         </div>
                                     </button>
                                     <div className="flex items-center gap-3">
-                                        <div className="text-right text-xs text-muted-foreground" title="Your results on this question">
+                                        <div className="text-right text-xs text-muted-foreground" title={t("list.yourResults")}>
                                             {total ? (
                                                 <>
                                                     <span className="text-success">{q.my_stats?.correct}</span> / <span className="text-destructive">{q.my_stats?.incorrect}</span>
                                                 </>
                                             ) : (
-                                                "unseen"
+                                                t("list.unseen")
                                             )}
                                         </div>
                                         {can.edit ? (
                                             <Select value={String(q.difficulty)} onValueChange={(v) => update.mutate({ id: q.id, dto: { difficulty: Number(v) } })}>
-                                                <SelectTrigger className="h-8 w-32 text-xs" aria-label="Change difficulty">
+                                                <SelectTrigger className="h-8 w-32 text-xs" aria-label={t("list.changeDifficulty")}>
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -213,18 +215,18 @@ export default function ProjectQuestionsPage() {
                                         {can.edit && (
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8" aria-label="Question actions">
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t("list.actions")}>
                                                         <MoreHorizontal />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
-                                                    <DropdownMenuItem onClick={() => setPreviewId(q.id)}>View details</DropdownMenuItem>
+                                                    <DropdownMenuItem onClick={() => setPreviewId(q.id)}>{t("list.viewDetails")}</DropdownMenuItem>
                                                     <DropdownMenuItem onClick={() => openEditor(q)}>
-                                                        <Pencil /> Edit
+                                                        <Pencil /> {t("common:actions.edit")}
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => setToDelete(q)}>
-                                                        <Trash2 /> Delete
+                                                        <Trash2 /> {t("common:actions.delete")}
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
@@ -237,14 +239,14 @@ export default function ProjectQuestionsPage() {
                     {pagination && pagination.total_pages > 1 && (
                         <div className="mt-4 flex items-center justify-between text-sm">
                             <span className="text-muted-foreground">
-                                {pagination.total} questions · page {pagination.page} of {pagination.total_pages}
+                                {t("list.pagination", { count: pagination.total, page: pagination.page, pages: pagination.total_pages })}
                             </span>
                             <div className="flex gap-2">
                                 <Button variant="outline" size="sm" disabled={!pagination.has_prev} onClick={() => setQuery((q) => ({ ...q, page: (q.page ?? 1) - 1 }))}>
-                                    Previous
+                                    {t("common:actions.previous")}
                                 </Button>
                                 <Button variant="outline" size="sm" disabled={!pagination.has_next} onClick={() => setQuery((q) => ({ ...q, page: (q.page ?? 1) + 1 }))}>
-                                    Next
+                                    {t("common:actions.next")}
                                 </Button>
                             </div>
                         </div>
@@ -258,9 +260,9 @@ export default function ProjectQuestionsPage() {
                 isOpen={!!toDelete}
                 onClose={() => setToDelete(null)}
                 onConfirm={() => toDelete && remove.mutate(toDelete.id, { onSuccess: () => setToDelete(null) })}
-                title="Delete this question?"
-                description="Questions with existing answers are archived so your history stays intact."
-                confirmText="Delete"
+                title={t("delete.title")}
+                description={t("delete.description")}
+                confirmText={t("common:actions.delete")}
                 variant="destructive"
                 isLoading={remove.isPending}
             />

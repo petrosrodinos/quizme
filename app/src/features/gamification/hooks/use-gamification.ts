@@ -3,6 +3,7 @@ import { useAuthStore } from "@/stores/auth";
 import { toast } from "@/hooks/use-toast";
 import { getAchievements, getActivity, getGamificationProfile, getLeaderboard, updateDailyGoal } from "../services/gamification.services";
 import type { UpdateDailyGoalDto } from "../interfaces/gamification.interfaces";
+import { tr } from "@/lib/i18n-options";
 
 export const useGamificationProfile = () => {
     const isLoggedIn = useAuthStore((s) => s.isLoggedIn);
@@ -30,8 +31,8 @@ export const useUpdateDailyGoal = () => {
             queryClient.setQueryData(["gamification-profile"], profile);
             queryClient.invalidateQueries({ queryKey: ["gamification-profile"] });
             queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-            toast({ title: "Daily goal updated", description: `${profile.daily_goal.minutes} minutes a day`, duration: 2000 });
+            toast({ title: tr("gamification:toasts.goalUpdated"), description: tr("gamification:toasts.goalMinutes", { count: profile.daily_goal.minutes }), duration: 2000 });
         },
-        onError: (error: Error) => toast({ title: "Could not update goal", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("gamification:toasts.goalFailed"), description: error.message, variant: "error" }),
     });
 };

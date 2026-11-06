@@ -1,4 +1,5 @@
 import { Trophy } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ListSkeleton } from "@/components/ui/card-skeletons";
 import { Progress } from "@/components/ui/progress";
@@ -13,14 +14,15 @@ interface GroupResultsDialogProps {
 
 /** Shared quiz: individual scores, group average, leaderboard and per-question difficulty. */
 export const GroupResultsDialog = ({ quizId, onClose }: GroupResultsDialogProps) => {
+    const { t } = useTranslation("quizzes");
     const { data, isPending } = useQuizResults(quizId ?? undefined);
     return (
         <Dialog open={!!quizId} onOpenChange={(o) => !o && onClose()}>
             <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
                 <DialogHeader>
-                    <DialogTitle className="font-display text-2xl font-normal">{data?.quiz.title ?? "Group results"}</DialogTitle>
+                    <DialogTitle className="font-display text-2xl font-normal">{data?.quiz.title ?? t("group.title")}</DialogTitle>
                     <DialogDescription>
-                        {data ? `${data.participants} participant${data.participants === 1 ? "" : "s"} · group average ${data.group_average ?? "—"}%` : "Loading results"}
+                        {data ? t("group.summary", { count: data.participants, average: data.group_average ?? "—" }) : t("group.loading")}
                     </DialogDescription>
                 </DialogHeader>
                 {isPending || !data ? (
@@ -28,7 +30,7 @@ export const GroupResultsDialog = ({ quizId, onClose }: GroupResultsDialogProps)
                 ) : (
                     <div className="space-y-6">
                         <section>
-                            <h3 className="mb-2 text-sm font-medium">Leaderboard</h3>
+                            <h3 className="mb-2 text-sm font-medium">{t("group.leaderboard")}</h3>
                             {data.leaderboard.length ? (
                                 <ol className="space-y-1.5">
                                     {data.leaderboard.map((row) => (
@@ -39,7 +41,7 @@ export const GroupResultsDialog = ({ quizId, onClose }: GroupResultsDialogProps)
                                             <span className="w-6 text-center font-semibold tabular-nums">{row.rank <= 3 ? <Trophy className={cn("mx-auto h-4 w-4", row.rank === 1 ? "text-amber" : "text-muted-foreground")} /> : row.rank}</span>
                                             <span className="flex-1 truncate">
                                                 {row.name}
-                                                {row.is_me && " (you)"}
+                                                {row.is_me && ` (${t("common:status.you")})`}
                                             </span>
                                             <span className="text-xs text-muted-foreground">{formatDuration(row.time_spent_sec)}</span>
                                             <span className="w-12 text-right font-medium tabular-nums">{Math.round(row.percentage)}%</span>
@@ -47,18 +49,18 @@ export const GroupResultsDialog = ({ quizId, onClose }: GroupResultsDialogProps)
                                     ))}
                                 </ol>
                             ) : (
-                                <p className="text-sm text-muted-foreground">Nobody has completed this quiz yet.</p>
+                                <p className="text-sm text-muted-foreground">{t("group.nobody")}</p>
                             )}
-                            <p className="mt-2 text-xs text-muted-foreground">Names are shown only for members who opted into leaderboards.</p>
+                            <p className="mt-2 text-xs text-muted-foreground">{t("group.privacy")}</p>
                         </section>
                         <section>
-                            <h3 className="mb-2 text-sm font-medium">Question difficulty (hardest first)</h3>
+                            <h3 className="mb-2 text-sm font-medium">{t("group.questionDifficulty")}</h3>
                             <ul className="space-y-3">
                                 {data.question_difficulty.map((q) => (
                                     <li key={q.question_id} className="text-sm">
                                         <div className="mb-1 flex gap-2">
                                             <span className="line-clamp-2 flex-1">{q.prompt}</span>
-                                            <span className="shrink-0 tabular-nums text-muted-foreground">{q.percent_correct}% correct</span>
+                                            <span className="shrink-0 tabular-nums text-muted-foreground">{t("group.percentCorrect", { value: q.percent_correct })}</span>
                                         </div>
                                         <Progress value={q.percent_correct} className="h-1.5" />
                                     </li>

@@ -8,7 +8,6 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePageMetadata } from "@/hooks/use-page-metadata";
 import { Routes } from "@/routes/routes";
-import { formatNumber } from "@/lib/format";
 import { getDocumentStatusLabel } from "@/config/constants/dropdowns/documents/document-status.options";
 import { useDocument, useDocumentContent } from "@/features/documents/hooks/use-documents";
 import { useCreateReaderNote, useDocumentNotes } from "@/features/notes/hooks/use-reader-notes";
@@ -25,15 +24,18 @@ import { WordPopover } from "./components/word-popover";
 import { AiActionPanel, type ActionRequest } from "./components/ai-action-panel";
 import { NoteDialog } from "./components/note-dialog";
 import type { HighlightSpan } from "./utils/highlight.utils";
+import { useTranslation } from "react-i18next";
+import { translateServerMessage } from "@/lib/api-error";
 
 export default function ProjectDocumentReaderPage() {
+    const { t } = useTranslation("reader");
     const { projectId } = useProjectContext();
     const { docId } = useParams<{ docId: string }>();
     const navigate = useNavigate();
     const { data: doc, isPending: docPending, isError: docError, error } = useDocument(docId);
     const content = useDocumentContent(doc?.status === "READY" ? docId : undefined);
     const { data: notes } = useDocumentNotes(projectId, docId);
-    usePageMetadata({ title: doc?.filename ?? "Reader" });
+    usePageMetadata({ title: doc?.filename ?? t("page.metaTitle") });
 
     const containerRef = useRef<HTMLElement>(null);
     const floatingRef = useRef<HTMLDivElement>(null);
@@ -113,7 +115,7 @@ export default function ProjectDocumentReaderPage() {
     if (docError || !doc)
         return (
             <Main width="narrow">
-                <EmptyState icon={FileWarning} title="Document unavailable" description={error?.message ?? "This document could not be found."} action={<Button asChild variant="outline"><Link to={Routes.projects.documents(projectId)}>Back to documents</Link></Button>} />
+                <EmptyState icon={FileWarning} title={t("page.unavailable.title")} description={error?.message ?? t("page.unavailable.description")} action={<Button asChild variant="outline"><Link to={Routes.projects.documents(projectId)}>{t("page.backToDocuments")}</Link></Button>} />
             </Main>
         );
 
@@ -122,19 +124,19 @@ export default function ProjectDocumentReaderPage() {
             <div className="mb-8 flex flex-col gap-3 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
                 <div className="min-w-0">
                     <Link to={Routes.projects.documents(projectId)} className="mb-2 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
-                        <ArrowLeft className="h-3.5 w-3.5" /> Documents
+                        <ArrowLeft className="h-3.5 w-3.5" /> {t("page.documents")}
                     </Link>
                     <h1 className="break-words font-display text-3xl leading-tight">{doc.filename.replace(/\.[^.]+$/, "")}</h1>
                     <div className="mt-1 flex flex-wrap gap-x-3 text-xs text-muted-foreground">
-                        {doc.page_count != null && <span>{formatNumber(doc.page_count)} pages</span>}
-                        {doc.word_count != null && <span>{formatNumber(doc.word_count)} words</span>}
-                        <span>{formatNumber(doc.chunk_count)} sections</span>
+                        {doc.page_count != null && <span>{t("common:count.page", { count: doc.page_count })}</span>}
+                        {doc.word_count != null && <span>{t("common:count.word", { count: doc.word_count })}</span>}
+                        <span>{t("page.sections", { count: doc.chunk_count })}</span>
                     </div>
                 </div>
                 {doc.view_url && (
                     <Button asChild variant="outline" size="sm">
                         <a href={doc.view_url} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink /> Open original
+                            <ExternalLink /> {t("page.openOriginal")}
                         </a>
                     </Button>
                 )}
@@ -143,17 +145,17 @@ export default function ProjectDocumentReaderPage() {
             {doc.status !== "READY" ? (
                 <EmptyState
                     icon={doc.status === "FAILED" ? FileWarning : Loader2}
-                    title={doc.status === "FAILED" ? "Processing failed" : `${getDocumentStatusLabel(doc.status)}…`}
-                    description={doc.error_message ?? "This document is still being processed. The reader will be available once it's ready."}
-                    action={<Button asChild variant="outline"><Link to={Routes.projects.documents(projectId)}>Back to documents</Link></Button>}
+                    title={doc.status === "FAILED" ? t("page.processingFailed") : t("page.processingStatus", { status: getDocumentStatusLabel(doc.status) })}
+                    description={doc.error_message ? translateServerMessage(doc.error_message) : t("page.stillProcessing")}
+                    action={<Button asChild variant="outline"><Link to={Routes.projects.documents(projectId)}>{t("page.backToDocuments")}</Link></Button>}
                 />
             ) : (
                 <>
                     <p className="mb-6 flex items-center gap-2 rounded-lg bg-surface-card px-3 py-2 text-xs text-muted-foreground">
                         <Info className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                        Select any text for AI explanations, quizzes, flashcards and notes. Select a single word for an instant definition. Press Alt+A to reach the toolbar with the keyboard.
+                        {t("page.hint")}
                     </p>
-                    <article ref={containerRef} className="relative select-text" aria-label="Document text" tabIndex={-1}>
+                    <article ref={containerRef} className="relative select-text" aria-label={t("page.textLabel")} tabIndex={-1}>
                         {content.isPending ? (
                             <div className="space-y-3">
                                 {Array.from({ length: 10 }).map((_, i) => (
@@ -161,13 +163,13 @@ export default function ProjectDocumentReaderPage() {
                                 ))}
                             </div>
                         ) : content.isError ? (
-                            <EmptyState title="Couldn't load the text" description={content.error.message} action={<Button variant="outline" onClick={() => content.refetch()}>Try again</Button>} compact />
+                            <EmptyState title={t("page.loadError")} description={content.error.message} action={<Button variant="outline" onClick={() => content.refetch()}>{t("common:actions.tryAgain")}</Button>} compact />
                         ) : (
                             <ReaderContent chunks={chunks} highlights={highlights} />
                         )}
                     </article>
                     <div ref={sentinelRef} className="py-8 text-center text-xs text-muted-foreground">
-                        {isFetchingNextPage ? <Loader2 className="mx-auto h-4 w-4 animate-spin" aria-label="Loading more" /> : !hasNextPage && chunks.length > 0 ? `End of document · ${total} sections` : null}
+                        {isFetchingNextPage ? <Loader2 className="mx-auto h-4 w-4 animate-spin" aria-label={t("page.loadingMore")} /> : !hasNextPage && chunks.length > 0 ? t("page.end", { count: total }) : null}
                     </div>
                 </>
             )}

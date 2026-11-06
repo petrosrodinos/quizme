@@ -2,6 +2,7 @@ import axiosInstance from "@/config/api/axios";
 import { ApiRoutes } from "@/config/api/routes";
 import { withApiError } from "@/lib/api-error";
 import type { ExportRequest } from "../interfaces/exports.interfaces";
+import { tr } from "@/lib/i18n-options";
 
 const filenameFrom = (disposition: string | undefined, fallback: string) => {
     const m = /filename\*?=(?:UTF-8'')?"?([^";]+)"?/i.exec(disposition ?? "");
@@ -26,4 +27,4 @@ export const downloadExport = ({ projectId, type, format, deck_id }: ExportReque
         }
         setTimeout(() => URL.revokeObjectURL(url), 60_000);
         return { filename };
-    }, "Export failed.");
+    }, tr("exports:errors.failed"));

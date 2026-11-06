@@ -6,9 +6,11 @@ import { usePageMetadata } from "@/hooks/use-page-metadata";
 import { useProjectContext } from "@/pages/projects/hooks/use-project-context";
 import { Routes } from "@/routes/routes";
 import { ReviewSession } from "./components/review-session";
+import { useTranslation } from "react-i18next";
 
 export default function ProjectFlashcardsReviewPage() {
-    usePageMetadata({ title: "Flashcard review" });
+    const { t } = useTranslation("flashcards");
+    usePageMetadata({ title: t("review.pageTitle") });
     const { projectId, project } = useProjectContext();
     const navigate = useNavigate();
     const back = () => navigate(Routes.projects.flashcards(projectId));
@@ -16,7 +18,7 @@ export default function ProjectFlashcardsReviewPage() {
         <Main width="narrow">
             <div className="mb-6 flex items-center justify-between">
                 <Button variant="ghost" onClick={back}>
-                    <ArrowLeft /> Flashcards
+                    <ArrowLeft /> {t("page.title")}
                 </Button>
                 <p className="text-sm text-muted-foreground">{project.title}</p>
             </div>

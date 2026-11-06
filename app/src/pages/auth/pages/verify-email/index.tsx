@@ -1,5 +1,6 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { CheckCircle2, Loader2, XCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { useVerifyEmail } from "@/features/auth/hooks/use-auth";
 import { usePageMetadata } from "@/hooks/use-page-metadata";
@@ -9,7 +10,8 @@ import { AuthHeading } from "../../components/auth-heading";
 
 /** Auto-submits the token from the email link once. Works whether or not the user is signed in. */
 export default function VerifyEmailPage() {
-    usePageMetadata({ title: "Verify email" });
+    const { t } = useTranslation("auth");
+    usePageMetadata({ title: t("verify.pageTitle") });
     const [params] = useSearchParams();
     const token = params.get("token") ?? "";
     const verify = useVerifyEmail(token);
@@ -21,9 +23,9 @@ export default function VerifyEmailPage() {
         return (
             <div className="text-center">
                 <XCircle className="mx-auto mb-4 h-12 w-12 text-destructive" aria-hidden />
-                <AuthHeading title="Verification failed" description={verify.error?.message ?? "This verification link is missing or invalid."} />
+                <AuthHeading title={t("verify.failedTitle")} description={verify.error?.message ?? t("verify.invalidLink")} />
                 <Button asChild className="w-full">
-                    <Link to={next}>{isLoggedIn ? "Go to dashboard" : "Sign in"}</Link>
+                    <Link to={next}>{isLoggedIn ? t("common:actions.goToDashboard") : t("signUp.signIn")}</Link>
                 </Button>
             </div>
         );
@@ -33,9 +35,9 @@ export default function VerifyEmailPage() {
         return (
             <div className="text-center">
                 <CheckCircle2 className="mx-auto mb-4 h-12 w-12 text-success" aria-hidden />
-                <AuthHeading title="Email verified" description="Thanks for confirming your email address." />
+                <AuthHeading title={t("verify.successTitle")} description={t("verify.successDescription")} />
                 <Button asChild className="w-full">
-                    <Link to={next}>{isLoggedIn ? "Continue to dashboard" : "Sign in"}</Link>
+                    <Link to={next}>{isLoggedIn ? t("verify.continue") : t("signUp.signIn")}</Link>
                 </Button>
             </div>
         );
@@ -44,7 +46,7 @@ export default function VerifyEmailPage() {
     return (
         <div className="text-center" aria-busy="true">
             <Loader2 className="mx-auto mb-4 h-10 w-10 animate-spin text-primary" aria-hidden />
-            <AuthHeading title="Verifying your email" description="This only takes a moment." />
+            <AuthHeading title={t("verify.pendingTitle")} description={t("verify.pendingDescription")} />
         </div>
     );
 }

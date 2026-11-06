@@ -15,6 +15,7 @@ import { HighlightColorOptions } from "@/config/constants/dropdowns/notes/highli
 import { TextActions, type TextAction } from "@/features/ai-actions/interfaces/ai-actions.interfaces";
 import { HighlightColorClass } from "../utils/highlight.utils";
 import type { ReaderSelection } from "../hooks/use-text-selection";
+import { useTranslation } from "react-i18next";
 
 interface SelectionToolbarProps {
     selection: ReaderSelection;
@@ -38,6 +39,7 @@ const labelFor = (a: TextAction) => TextActionOptions.find((o) => o.id === a)?.l
 /** Floating contextual toolbar shown above a text selection. Keyboard: Tab into it, Escape to dismiss. */
 export const SelectionToolbar = forwardRef<HTMLDivElement, SelectionToolbarProps>(
     ({ selection, onAction, onCreateQuiz, onCreateFlashcards, onHighlight, onAddNote, busy }, ref) => {
+        const { t } = useTranslation("reader");
         const firstRef = useRef<HTMLButtonElement>(null);
         const width = 470;
         const top = Math.max(8, selection.rect.top - 52);
@@ -59,7 +61,7 @@ export const SelectionToolbar = forwardRef<HTMLDivElement, SelectionToolbarProps
             <div
                 ref={ref}
                 role="toolbar"
-                aria-label="AI actions for selected text (Alt+A to focus)"
+                aria-label={t("toolbar.label")}
                 className="fixed z-50 flex max-w-[calc(100vw-16px)] items-center gap-0.5 overflow-x-auto rounded-lg border border-border bg-popover p-1 shadow-lg animate-in fade-in-0 zoom-in-95"
                 style={{ top, left: Math.max(8, left) }}
                 onMouseDown={(e) => e.preventDefault()}
@@ -72,33 +74,33 @@ export const SelectionToolbar = forwardRef<HTMLDivElement, SelectionToolbarProps
                 <span className="mx-0.5 h-5 w-px shrink-0 bg-border" aria-hidden />
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={onCreateQuiz} aria-label="Create quiz from selection" disabled={busy}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={onCreateQuiz} aria-label={t("toolbar.createQuizLabel")} disabled={busy}>
                             <ListChecks />
                         </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Create quiz</TooltipContent>
+                    <TooltipContent>{t("toolbar.createQuiz")}</TooltipContent>
                 </Tooltip>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={onCreateFlashcards} aria-label="Create flashcards from selection" disabled={busy}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={onCreateFlashcards} aria-label={t("toolbar.createFlashcardsLabel")} disabled={busy}>
                             <Layers />
                         </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Create flashcards</TooltipContent>
+                    <TooltipContent>{t("toolbar.createFlashcards")}</TooltipContent>
                 </Tooltip>
                 <DropdownMenu>
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label="Highlight selection">
+                                <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label={t("toolbar.highlightLabel")}>
                                     <Highlighter />
                                 </Button>
                             </DropdownMenuTrigger>
                         </TooltipTrigger>
-                        <TooltipContent>Highlight</TooltipContent>
+                        <TooltipContent>{t("toolbar.highlight")}</TooltipContent>
                     </Tooltip>
                     <DropdownMenuContent align="center" onMouseDown={(e) => e.preventDefault()}>
-                        <DropdownMenuLabel className="text-xs">Highlight colour</DropdownMenuLabel>
+                        <DropdownMenuLabel className="text-xs">{t("toolbar.highlightColour")}</DropdownMenuLabel>
                         {HighlightColorOptions.map((c) => (
                             <DropdownMenuItem key={c.id} onClick={() => onHighlight(c.id)}>
                                 <span className={`mr-2 h-3 w-3 rounded-full ${HighlightColorClass[c.id]}`} aria-hidden /> {c.label}
@@ -108,21 +110,21 @@ export const SelectionToolbar = forwardRef<HTMLDivElement, SelectionToolbarProps
                 </DropdownMenu>
                 <Tooltip>
                     <TooltipTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={onAddNote} aria-label="Add note to selection">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" onClick={onAddNote} aria-label={t("toolbar.addNoteLabel")}>
                             <StickyNote />
                         </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Add note</TooltipContent>
+                    <TooltipContent>{t("toolbar.addNote")}</TooltipContent>
                 </Tooltip>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label="More AI actions" disabled={busy}>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0" aria-label={t("toolbar.moreLabel")} disabled={busy}>
                             <MoreHorizontal />
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" onMouseDown={(e) => e.preventDefault()}>
                         <DropdownMenuLabel className="flex items-center gap-1.5 text-xs">
-                            <Brain className="h-3.5 w-3.5" /> More AI actions
+                            <Brain className="h-3.5 w-3.5" /> {t("toolbar.moreLabel")}
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         {secondary.map((o) => (

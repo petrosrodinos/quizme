@@ -1,0 +1,56 @@
+{
+    "nav": {
+        "groups": {
+            "learn": "Learn",
+            "explore": "Explore",
+            "account": "Account"
+        },
+        "dashboard": "Dashboard",
+        "todaysStudy": "Today's study",
+        "projects": "Projects",
+        "studyRooms": "Study rooms",
+        "search": "Search",
+        "achievements": "Achievements",
+        "notifications": "Notifications",
+        "settings": "Settings",
+        "home": "{{app}} home"
+    },
+    "userMenu": {
+        "aria": "Account menu",
+        "fallbackName": "Student",
+        "accountSettings": "Account settings",
+        "preferences": "Preferences",
+        "achievements": "Achievements",
+        "toggleTheme": "Toggle theme"
+    },
+    "header": {
+        "toggleSidebar": "Toggle sidebar",
+        "search": "Search"
+    },
+    "verifyBanner": {
+        "message": "Please verify your email address ({{email}}) to secure your account.",
+        "resend": "Resend email",
+        "dismiss": "Dismiss"
+    },
+    "bell": {
+        "title": "Notifications",
+        "ariaUnread_one": "Notifications ({{count}} unread)",
+        "ariaUnread_other": "Notifications ({{count}} unread)",
+        "markAllRead": "Mark all read",
+        "empty": "You're all caught up."
+    },
+    "strip": {
+        "levelAria": "Level {{level}}, {{title}}",
+        "freezes_one": "{{count}} streak freeze",
+        "freezes_other": "{{count}} streak freezes",
+        "streakTooltip_one": "{{count}}-day streak · best {{best}}",
+        "streakTooltip_other": "{{count}}-day streak · best {{best}}",
+        "goalLabel": "Daily goal progress",
+        "goalTooltip": "Daily goal: {{minutes}}/{{goalMinutes}} min · {{xp}}/{{goalXp}} XP",
+        "goalComplete": "complete!"
+    },
+    "realtime": {
+        "unavailable": "Realtime connection is not available",
+        "timeout": "Realtime request timed out"
+    }
+}

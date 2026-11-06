@@ -1,33 +1,49 @@
+import { tOption, tr } from "@/lib/i18n-options";
 import type { SoundName } from "@/lib/sound";
 
 export const ThemeOptions: { id: "light" | "dark" | "system"; label: string }[] = [
-    { id: "system", label: "Match system" },
-    { id: "light", label: "Light" },
-    { id: "dark", label: "Dark" },
+    tOption("system", "settings:theme.system"),
+    tOption("light", "settings:theme.light"),
+    tOption("dark", "settings:theme.dark"),
 ];
 
 export const SoundPreviewOptions: { id: SoundName; label: string }[] = [
-    { id: "correct", label: "Correct" },
-    { id: "wrong", label: "Wrong" },
-    { id: "flip", label: "Card flip" },
-    { id: "levelUp", label: "Level up" },
-    { id: "achievement", label: "Achievement" },
-    { id: "timerTick", label: "Timer" },
+    tOption("correct", "settings:sounds.correct"),
+    tOption("wrong", "settings:sounds.wrong"),
+    tOption("flip", "settings:sounds.flip"),
+    tOption("levelUp", "settings:sounds.levelUp"),
+    tOption("achievement", "settings:sounds.achievement"),
+    tOption("timerTick", "settings:sounds.timerTick"),
 ];
 
-export const PreferenceToggleOptions = {
-    sound_feedback: { label: "Answer feedback", description: "Correct / wrong sounds, card flips, XP ticks" },
-    sound_celebrations: { label: "Celebrations", description: "Level up, achievements, daily goal" },
-    sound_timers: { label: "Timers", description: "Exam countdown ticks and study-room timers" },
-    animations_enabled: { label: "Animations", description: "Motion for feedback and celebrations (always reduced if your OS asks)" },
-    haptics_enabled: { label: "Haptic feedback", description: "Vibration on supported mobile devices" },
-    focus_mode: { label: "Focus mode", description: "Hide celebrations, sounds, combos and XP popups. Progress is still tracked." },
-    achievement_popups: { label: "Achievement popups", description: "Show a toast or modal when you unlock an achievement" },
-    leaderboard_opt_in: { label: "Appear on leaderboards", description: "Let collaborators see your weekly XP in shared projects" },
-} as const;
+const toggle = (key: string) => ({
+    get label(): string {
+        return tr(`settings:toggles.${key}.label`);
+    },
+    get description(): string {
+        return tr(`settings:toggles.${key}.description`);
+    },
+});
 
-export const getAiTaskLabel = (task: string) =>
-    task
+export const PreferenceToggleOptions = {
+    sound_feedback: toggle("sound_feedback"),
+    sound_celebrations: toggle("sound_celebrations"),
+    sound_timers: toggle("sound_timers"),
+    animations_enabled: toggle("animations_enabled"),
+    haptics_enabled: toggle("haptics_enabled"),
+    focus_mode: toggle("focus_mode"),
+    achievement_popups: toggle("achievement_popups"),
+    leaderboard_opt_in: toggle("leaderboard_opt_in"),
+};
+
+/** AI usage task labels; unknown tasks fall back to a humanised identifier. */
+export const getAiTaskLabel = (task: string) => {
+    const exact = task.split(":")[0];
+    const family = /^(summary|text|notes)_/.exec(exact)?.[1];
+    const base = family ? `${family}_` : exact;
+    const humanised = task
         .replace(/[_:]+/g, " ")
         .replace(/\b\w/g, (m) => m.toUpperCase())
         .trim();
+    return tr(`settings:aiTasks.${base.replace(/_$/, "_any")}`, { defaultValue: humanised });
+};

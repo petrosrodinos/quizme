@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
+import { tr } from "@/lib/i18n-options";
 
 interface XpProgressBarProps {
     current: number;
@@ -19,7 +20,7 @@ export const XpProgressBar = ({ current, target, className, showLabel = true }: 
                 aria-valuemin={0}
                 aria-valuemax={target}
                 aria-valuenow={current}
-                aria-label="Experience toward next level"
+                aria-label={tr("ui:xpBar.aria")}
             >
                 <motion.div
                     className="h-full rounded-full bg-gradient-to-r from-[#e8a55a] to-[#cc785c]"
@@ -30,7 +31,7 @@ export const XpProgressBar = ({ current, target, className, showLabel = true }: 
             </div>
             {showLabel && (
                 <div className="mt-1 text-[11px] tabular-nums text-muted-foreground">
-                    {current} / {target} XP
+                    {tr("ui:xpBar.label", { current, target })}
                 </div>
             )}
         </div>

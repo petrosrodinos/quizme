@@ -31,6 +31,8 @@ import {
     WordLookupSchema,
 } from './ai.schemas';
 import { AiCallContext, Passage, SummaryLevelName, TextAction } from './ai.types';
+import { I18nService } from '@/shared/i18n/i18n.service';
+import { Lang } from '@/shared/i18n/messages';
 
 export interface TutorReply {
     answer: string;
@@ -53,9 +55,22 @@ export class AiService {
     constructor(
         private readonly llm: LlmProviderService,
         private readonly prisma: PrismaService,
+        private readonly i18n: I18nService,
         config: ConfigService,
     ) {
         this.dailyTokenLimit = Number(config.get('AI_DAILY_TOKEN_LIMIT') ?? 2_000_000);
+    }
+
+    /** The student's interface language, used for explanations/feedback (generated study content keeps the source language). */
+    private async uiLanguage(ctx: AiCallContext): Promise<Lang> {
+        return this.i18n.languageOf(ctx.userId);
+    }
+
+    private languageInstruction(lang: Lang, kind: 'reply' | 'feedback' | 'content'): string {
+        const name = lang === 'el' ? 'Greek (Ελληνικά)' : 'English';
+        if (kind === 'reply') return `\n\nLanguage: reply in the language the student writes in; if unclear, use ${name} (their interface language). Keep technical terms from the sources where helpful.`;
+        if (kind === 'feedback') return `\n\nLanguage: write every human-readable field (explanation, expected_answer, concepts, statements, suggestions) in ${name}, the student's interface language.`;
+        return `\n\nLanguage: write the response in ${name}, the student's interface language (quote source wording verbatim where needed).`;
     }
 
     get providerInfo() {
@@ -270,14 +285,16 @@ export class AiService {
     }
 
     async tutorReply(ctx: AiCallContext, mode: 'TUTOR' | 'SOCRATIC', passages: Passage[], history: ChatTurn[], question: string): Promise<TutorReply> {
-        if (!this.llm.isLlmAvailable) return this.localTutorReply(question, passages);
+        const lang = await this.uiLanguage(ctx);
+        if (!this.llm.isLlmAvailable) return this.localTutorReply(question, passages, lang);
         await this.assertBudget(ctx.userId);
+        const langRule = this.languageInstruction(lang, 'reply');
         const sources = passages.length ? `Source passages:\n${P.formatPassages(passages, 1800)}` : 'Source passages: (none found for this question)';
         if (mode === 'SOCRATIC') {
             const res = await this.text(
                 ctx,
                 'smart',
-                `${P.SOCRATIC_SYSTEM}\n\n${sources}`,
+                `${P.SOCRATIC_SYSTEM}${langRule}\n\n${sources}`,
                 { messages: [...history.slice(-12), { role: 'user', content: question }] },
                 700,
                 0.5,
@@ -292,7 +309,7 @@ export class AiService {
         const res = await this.object(
             ctx,
             'smart',
-            P.TUTOR_SYSTEM,
+            `${P.TUTOR_SYSTEM}${langRule}`,
             `${sources}\n\n${convo ? `Conversation so far:\n${convo}\n\n` : ''}Student: ${question}`,
             TutorAnswerSchema,
             { temperature: 0.3, maxTokens: 2500 },
@@ -300,10 +317,10 @@ export class AiService {
         return { answer: res.answer, citedIndices: res.cited_sources, grounded: res.grounded, model: this.llm.modelFor('smart') };
     }
 
-    private localTutorReply(question: string, passages: Passage[]): TutorReply {
+    private localTutorReply(question: string, passages: Passage[], lang: Lang): TutorReply {
         const sentences = extractiveAnswer(question, passages.map((p) => p.content));
         if (!sentences.length) {
-            return { answer: "I couldn't find information about this in your uploaded sources.", citedIndices: [], grounded: false, model: 'local' };
+            return { answer: this.i18n.t(lang, 'tutor.noSources'), citedIndices: [], grounded: false, model: 'local' };
         }
         const cited: number[] = [];
         const lines = sentences.map((s) => {
@@ -311,7 +328,7 @@ export class AiService {
             if (idx >= 0) cited.push(idx + 1);
             return `- ${s}${idx >= 0 ? ` [${idx + 1}]` : ''}`;
         });
-        return { answer: `Here is what your sources say:\n\n${lines.join('\n')}`, citedIndices: [...new Set(cited)], grounded: true, model: 'local' };
+        return { answer: `${this.i18n.t(lang, 'tutor.extractiveIntro')}\n\n${lines.join('\n')}`, citedIndices: [...new Set(cited)], grounded: true, model: 'local' };
     }
 
     /** Grades free-text / recall / teach-back answers against the source material. */
@@ -323,7 +340,8 @@ export class AiService {
         if (!this.llm.isLlmAvailable) return this.localEvaluation(opts);
         try {
             await this.assertBudget(ctx.userId);
-            return await this.object(ctx, 'fast', P.EVALUATION_SYSTEM, P.evaluationPrompt(opts), EvaluationSchema, { temperature: 0.1, maxTokens: 1500 });
+            const lang = await this.uiLanguage(ctx);
+            return await this.object(ctx, 'fast', `${P.EVALUATION_SYSTEM}${this.languageInstruction(lang, 'feedback')}`, P.evaluationPrompt(opts), EvaluationSchema, { temperature: 0.1, maxTokens: 1500 });
         } catch (error) {
             if (error instanceof HttpException && error.getStatus() === HttpStatus.TOO_MANY_REQUESTS) throw error;
             this.logger.warn(`Falling back to local evaluation: ${error?.message}`);
@@ -358,9 +376,12 @@ export class AiService {
             return { content: sentences.length ? sentences.map((s) => `- ${s}`).join('\n') : 'AI provider not configured.', model: 'local', cached: false };
         }
         await this.assertBudget(ctx.userId);
-        const key = sha256(stableStringify({ t: 'text_action', action, text: text.trim(), extra, m: this.llm.modelFor('fast') }));
+        const lang = await this.uiLanguage(ctx);
+        const key = sha256(stableStringify({ t: 'text_action', action, text: text.trim(), extra, lang, m: this.llm.modelFor('fast') }));
+        // "translate" targets the requested language; every other action answers in the interface language.
+        const system = action === 'translate' ? P.TEXT_ACTION_SYSTEM : `${P.TEXT_ACTION_SYSTEM}${this.languageInstruction(lang, 'content')}`;
         const { value, hit } = await this.cached(key, 'text_action', 30, async () => {
-            const res = await this.text(ctx, 'fast', P.TEXT_ACTION_SYSTEM, { prompt: P.textActionPrompt(action, text, passages, extra) }, 1500);
+            const res = await this.text(ctx, 'fast', system, { prompt: P.textActionPrompt(action, text, passages, extra) }, 1500);
             return { content: res.text, model: res.usage.model };
         });
         if (hit) await this.track(ctx, null, true);
@@ -370,9 +391,10 @@ export class AiService {
     async wordLookup(ctx: AiCallContext, word: string, context: string, language?: string): Promise<WordLookup & { cached: boolean }> {
         this.requireLlm();
         await this.assertBudget(ctx.userId);
-        const key = sha256(stableStringify({ t: 'word', word: word.toLowerCase().trim(), context: context.trim().slice(0, 300), language: language || null }));
+        const lang = await this.uiLanguage(ctx);
+        const key = sha256(stableStringify({ t: 'word', word: word.toLowerCase().trim(), context: context.trim().slice(0, 300), language: language || null, lang }));
         const { value, hit } = await this.cached(key, 'word_lookup', 90, () =>
-            this.object(ctx, 'fast', P.WORD_SYSTEM, P.wordPrompt(word, context, language), WordLookupSchema, { temperature: 0.1, maxTokens: 600 }),
+            this.object(ctx, 'fast', `${P.WORD_SYSTEM}${this.languageInstruction(lang, 'content')} The "word" field stays as given.`, P.wordPrompt(word, context, language), WordLookupSchema, { temperature: 0.1, maxTokens: 600 }),
         );
         if (hit) await this.track(ctx, null, true);
         return { ...(value as WordLookup), cached: hit };

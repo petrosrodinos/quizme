@@ -1,13 +1,14 @@
+import { tOption } from "@/lib/i18n-options";
 import { StudyActivityTypes, type StudyActivityType } from "@/features/study/interfaces/study.interfaces";
 
 export const StudyActivityTypeOptions: { id: StudyActivityType; label: string }[] = [
-    { id: StudyActivityTypes.FLASHCARDS, label: "Flashcards" },
-    { id: StudyActivityTypes.QUIZ, label: "Quiz" },
-    { id: StudyActivityTypes.EXAM, label: "Exam simulation" },
-    { id: StudyActivityTypes.RECALL, label: "Active recall" },
-    { id: StudyActivityTypes.TEACH_BACK, label: "Teach it back" },
-    { id: StudyActivityTypes.TUTOR, label: "AI tutor" },
-    { id: StudyActivityTypes.READING, label: "Reading" },
-    { id: StudyActivityTypes.DAILY_SESSION, label: "Daily session" },
-    { id: StudyActivityTypes.ROOM, label: "Study room" },
+    tOption(StudyActivityTypes.FLASHCARDS, "study:activityTypes.FLASHCARDS"),
+    tOption(StudyActivityTypes.QUIZ, "study:activityTypes.QUIZ"),
+    tOption(StudyActivityTypes.EXAM, "study:activityTypes.EXAM"),
+    tOption(StudyActivityTypes.RECALL, "study:activityTypes.RECALL"),
+    tOption(StudyActivityTypes.TEACH_BACK, "study:activityTypes.TEACH_BACK"),
+    tOption(StudyActivityTypes.TUTOR, "study:activityTypes.TUTOR"),
+    tOption(StudyActivityTypes.READING, "study:activityTypes.READING"),
+    tOption(StudyActivityTypes.DAILY_SESSION, "study:activityTypes.DAILY_SESSION"),
+    tOption(StudyActivityTypes.ROOM, "study:activityTypes.ROOM"),
 ];

@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link } from "react-router-dom";
 import { MailCheck } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,8 @@ import { forgotPasswordSchema, type ForgotPasswordFormValues } from "../../valid
 import { AuthHeading } from "../../components/auth-heading";
 
 export default function ForgotPasswordPage() {
-    usePageMetadata({ title: "Forgot password" });
+    const { t } = useTranslation("auth");
+    usePageMetadata({ title: t("forgot.pageTitle") });
     const forgot = useForgotPassword();
     const form = useForm<ForgotPasswordFormValues>({ resolver: zodResolver(forgotPasswordSchema), defaultValues: { email: "" } });
 
@@ -22,9 +24,9 @@ export default function ForgotPasswordPage() {
                 <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-primary/12 text-primary">
                     <MailCheck className="h-7 w-7" aria-hidden />
                 </div>
-                <AuthHeading title="Check your inbox" description={forgot.data.message} />
+                <AuthHeading title={t("forgot.sentTitle")} description={t("forgot.sentDescription")} />
                 <Button asChild variant="outline" className="w-full">
-                    <Link to={Routes.auth.sign_in}>Back to sign in</Link>
+                    <Link to={Routes.auth.sign_in}>{t("forgot.backToSignIn")}</Link>
                 </Button>
             </div>
         );
@@ -32,7 +34,7 @@ export default function ForgotPasswordPage() {
 
     return (
         <>
-            <AuthHeading title="Reset your password" description="Enter your email and we'll send you a secure link to choose a new password." />
+            <AuthHeading title={t("forgot.title")} description={t("forgot.description")} />
             <Form {...form}>
                 <form onSubmit={form.handleSubmit((v) => forgot.mutate(v.email))} className="space-y-4" noValidate>
                     <FormField
@@ -40,23 +42,23 @@ export default function ForgotPasswordPage() {
                         name="email"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Email</FormLabel>
+                                <FormLabel>{t("fields.email")}</FormLabel>
                                 <FormControl>
-                                    <Input type="email" autoComplete="email" placeholder="you@example.com" className="h-10" {...field} />
+                                    <Input type="email" autoComplete="email" placeholder={t("fields.emailPlaceholder")} className="h-10" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
                     <Button type="submit" className="h-10 w-full" loading={forgot.isPending}>
-                        Send reset link
+                        {t("forgot.submit")}
                     </Button>
                 </form>
             </Form>
             <p className="mt-6 text-center text-sm text-muted-foreground">
-                Remembered it?{" "}
+                {t("forgot.remembered")}{" "}
                 <Link to={Routes.auth.sign_in} className="font-medium text-primary hover:underline">
-                    Sign in
+                    {t("signUp.signIn")}
                 </Link>
             </p>
         </>

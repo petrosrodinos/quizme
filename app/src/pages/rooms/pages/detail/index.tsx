@@ -22,8 +22,11 @@ import { RoomChat } from "./components/room-chat";
 import { RoomTimer } from "./components/room-timer";
 import { RoomNotes } from "./components/room-notes";
 import { StartGameDialog } from "./components/start-game-dialog";
+import { translateRoomError } from "@/features/rooms/utils/room-errors.utils";
+import { useTranslation } from "react-i18next";
 
 export default function RoomDetailPage() {
+    const { t } = useTranslation("rooms");
     const { roomId } = useParams<{ roomId: string }>();
     const navigate = useNavigate();
     const me = useAuthStore((s) => s.user);
@@ -39,7 +42,7 @@ export default function RoomDetailPage() {
     const [soundsOn, setSoundsOn] = useState(false);
     const [gameOpen, setGameOpen] = useState(false);
     const [closeOpen, setCloseOpen] = useState(false);
-    usePageMetadata({ title: room?.name ?? "Study room" });
+    usePageMetadata({ title: room?.name ?? t("detail.metaTitle") });
 
     // Join (and re-join after reconnects); leave on unmount.
     useEffect(() => {
@@ -53,7 +56,7 @@ export default function RoomDetailPage() {
                 setOnline(state.online);
                 setError(null);
             })
-            .catch((e: Error) => active && setError(e.message));
+            .catch((e: Error) => active && setError(translateRoomError(e.message)));
         return () => {
             active = false;
             leaveRoomSocket(roomId).catch(() => undefined);
@@ -84,25 +87,25 @@ export default function RoomDetailPage() {
                 }
                 : r,
         );
-        if (patch.active_game && patch.active_game.status === "LOBBY") toast({ title: "A multiplayer quiz is starting", description: "Join the lobby from the banner.", duration: 4000 });
+        if (patch.active_game && patch.active_game.status === "LOBBY") toast({ title: t("detail.toasts.gameStarting.title"), description: t("detail.toasts.gameStarting.description"), duration: 4000 });
     });
 
     const onTimerFinished = useCallback(() => {
         if (soundsOn) play("goal");
-        toast({ title: "Timer finished", description: "Time for a break — or the next focus block.", duration: 4000 });
-    }, [soundsOn, play]);
+        toast({ title: t("detail.toasts.timerFinished.title"), description: t("detail.toasts.timerFinished.description"), duration: 4000 });
+    }, [soundsOn, play, t]);
 
     if (closed)
         return (
             <Main width="narrow">
-                <EmptyState icon={DoorClosed} title="This room was closed" action={<Button onClick={() => navigate(Routes.rooms.root)}>Back to rooms</Button>} />
+                <EmptyState icon={DoorClosed} title={t("detail.closed")} action={<Button onClick={() => navigate(Routes.rooms.root)}>{t("detail.backToRooms")}</Button>} />
             </Main>
         );
 
     if (error)
         return (
             <Main width="narrow">
-                <EmptyState icon={DoorClosed} title="Can't open this room" description={error} action={<Button onClick={() => navigate(Routes.rooms.root)}>Back to rooms</Button>} />
+                <EmptyState icon={DoorClosed} title={t("detail.cantOpen")} description={error} action={<Button onClick={() => navigate(Routes.rooms.root)}>{t("detail.backToRooms")}</Button>} />
             </Main>
         );
 
@@ -111,7 +114,7 @@ export default function RoomDetailPage() {
             <Main>
                 {!connected ? (
                     <p className="mb-4 flex items-center gap-2 text-sm text-muted-foreground" role="status">
-                        <WifiOff className="h-4 w-4" /> Connecting to the live room…
+                        <WifiOff className="h-4 w-4" /> {t("detail.connecting")}
                     </p>
                 ) : null}
                 <DetailSkeleton />
@@ -124,22 +127,22 @@ export default function RoomDetailPage() {
     return (
         <Main width="wide">
             <Link to={Routes.rooms.root} className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-                <ArrowLeft className="h-4 w-4" /> All rooms
+                <ArrowLeft className="h-4 w-4" /> {t("detail.allRooms")}
             </Link>
             <PageHeader
                 eyebrow={room.project?.title}
                 title={room.name}
                 actions={
                     <div className="flex flex-wrap items-center gap-2">
-                        <Button variant="ghost" size="icon" onClick={() => setSoundsOn((v) => !v)} aria-pressed={soundsOn} aria-label={soundsOn ? "Mute room sounds" : "Enable room sounds"}>
+                        <Button variant="ghost" size="icon" onClick={() => setSoundsOn((v) => !v)} aria-pressed={soundsOn} aria-label={soundsOn ? t("detail.muteSounds") : t("detail.enableSounds")}>
                             {soundsOn ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
                         </Button>
                         <Button variant="outline" onClick={() => setGameOpen(true)}>
-                            <Gamepad2 className="mr-2 h-4 w-4" /> Multiplayer quiz
+                            <Gamepad2 className="mr-2 h-4 w-4" /> {t("detail.multiplayer")}
                         </Button>
                         {isCreator ? (
                             <Button variant="ghost" onClick={() => setCloseOpen(true)}>
-                                Close room
+                                {t("detail.closeRoom")}
                             </Button>
                         ) : null}
                     </div>
@@ -147,20 +150,20 @@ export default function RoomDetailPage() {
             />
             {!connected ? (
                 <p className="mb-4 flex items-center gap-2 rounded-lg bg-warning/10 p-3 text-sm" role="status">
-                    <WifiOff className="h-4 w-4" /> Reconnecting… changes will sync when you're back online.
+                    <WifiOff className="h-4 w-4" /> {t("detail.reconnecting")}
                 </p>
             ) : null}
             {activeGame ? (
                 <div className="mb-6 flex flex-wrap items-center gap-3 rounded-xl border border-primary/40 bg-primary/5 p-4">
                     <Gamepad2 className="h-5 w-5 text-primary" aria-hidden />
-                    <p className="flex-1 text-sm font-medium">{activeGame.status === "LOBBY" ? "A multiplayer quiz lobby is open." : "A multiplayer quiz is in progress."}</p>
+                    <p className="flex-1 text-sm font-medium">{activeGame.status === "LOBBY" ? t("detail.banner.lobbyOpen") : t("detail.banner.inProgress")}</p>
                     <Button size="sm" onClick={() => navigate(Routes.game(activeGame.id))}>
-                        {activeGame.status === "LOBBY" ? "Join lobby" : "Watch / join"}
+                        {activeGame.status === "LOBBY" ? t("detail.banner.joinLobby") : t("detail.banner.watchJoin")}
                     </Button>
                 </div>
             ) : null}
-            <div className="mb-6 flex flex-wrap items-center gap-2" aria-label="People in the room">
-                <span className="mr-1 text-sm text-muted-foreground">{online.length} here now</span>
+            <div className="mb-6 flex flex-wrap items-center gap-2" aria-label={t("detail.peopleAria")}>
+                <span className="mr-1 text-sm text-muted-foreground">{t("detail.hereNow", { count: online.length })}</span>
                 {online.map((u) => (
                     <span key={u.id} title={u.name}>
                         <UserAvatar name={u.name} src={u.avatar_url} online className="h-8 w-8" />
@@ -181,9 +184,9 @@ export default function RoomDetailPage() {
                 onConfirm={() => close.mutate(room.id, { onSuccess: () => navigate(Routes.rooms.root) })}
                 isLoading={close.isPending}
                 variant="destructive"
-                title="Close this room?"
-                description="Everyone will be disconnected. Chat history is kept with the project."
-                confirmText="Close room"
+                title={t("detail.closeConfirm.title")}
+                description={t("detail.closeConfirm.description")}
+                confirmText={t("detail.closeRoom")}
             />
         </Main>
     );

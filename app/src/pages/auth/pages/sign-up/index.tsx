@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
@@ -13,7 +14,8 @@ import { AuthHeading } from "../../components/auth-heading";
 import { GoogleSignInButton } from "../../components/google-sign-in-button";
 
 export default function SignUpPage() {
-    usePageMetadata({ title: "Create account" });
+    const { t } = useTranslation("auth");
+    usePageMetadata({ title: t("signUp.pageTitle") });
     const signUp = useSignup();
     const [params] = useSearchParams();
     const form = useForm<SignUpFormValues>({
@@ -23,7 +25,7 @@ export default function SignUpPage() {
 
     return (
         <>
-            <AuthHeading title="Create your account" description="Start building your personal learning system in minutes." />
+            <AuthHeading title={t("signUp.title")} description={t("signUp.description")} />
             <Form {...form}>
                 <form
                     onSubmit={form.handleSubmit((v) => signUp.mutate({ email: v.email, password: v.password, full_name: v.full_name || undefined }))}
@@ -35,9 +37,9 @@ export default function SignUpPage() {
                         name="full_name"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Full name</FormLabel>
+                                <FormLabel>{t("fields.fullName")}</FormLabel>
                                 <FormControl>
-                                    <Input autoComplete="name" placeholder="Ada Lovelace" className="h-10" {...field} />
+                                    <Input autoComplete="name" placeholder={t("fields.fullNamePlaceholder")} className="h-10" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -48,9 +50,9 @@ export default function SignUpPage() {
                         name="email"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Email</FormLabel>
+                                <FormLabel>{t("fields.email")}</FormLabel>
                                 <FormControl>
-                                    <Input type="email" autoComplete="email" placeholder="you@example.com" className="h-10" {...field} />
+                                    <Input type="email" autoComplete="email" placeholder={t("fields.emailPlaceholder")} className="h-10" {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -61,9 +63,9 @@ export default function SignUpPage() {
                         name="password"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Password</FormLabel>
+                                <FormLabel>{t("fields.password")}</FormLabel>
                                 <FormControl>
-                                    <PasswordInput autoComplete="new-password" placeholder="At least 8 characters" {...field} />
+                                    <PasswordInput autoComplete="new-password" placeholder={t("fields.passwordPlaceholder", { count: 8 })} {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
@@ -74,24 +76,24 @@ export default function SignUpPage() {
                         name="confirm_password"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Confirm password</FormLabel>
+                                <FormLabel>{t("fields.confirmPassword")}</FormLabel>
                                 <FormControl>
-                                    <PasswordInput autoComplete="new-password" placeholder="Repeat password" {...field} />
+                                    <PasswordInput autoComplete="new-password" placeholder={t("fields.repeatPassword")} {...field} />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>
                         )}
                     />
                     <Button type="submit" className="h-10 w-full" loading={signUp.isPending}>
-                        Create account
+                        {t("signUp.submit")}
                     </Button>
                 </form>
             </Form>
             <GoogleSignInButton />
             <p className="mt-6 text-center text-sm text-muted-foreground">
-                Already have an account?{" "}
+                {t("signUp.haveAccount")}{" "}
                 <Link to={`${Routes.auth.sign_in}${params.get("next") ? `?next=${encodeURIComponent(params.get("next")!)}` : ""}`} className="font-medium text-primary hover:underline">
-                    Sign in
+                    {t("signUp.signIn")}
                 </Link>
             </p>
         </>

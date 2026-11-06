@@ -1,0 +1,167 @@
+{
+  "actions": {
+    "explain": {
+      "label": "Explain",
+      "description": "Explain the selection clearly"
+    },
+    "simplify": {
+      "label": "Simplify",
+      "description": "Rewrite in simpler language"
+    },
+    "summarize": {
+      "label": "Summarize",
+      "description": "Key points as bullets"
+    },
+    "translate": {
+      "label": "Translate",
+      "description": "Translate into another language"
+    },
+    "example": {
+      "label": "Give an example",
+      "description": "Concrete illustrative examples"
+    },
+    "beginner": {
+      "label": "Explain like I'm a beginner",
+      "description": "Everyday analogy, no jargon"
+    },
+    "technical": {
+      "label": "More technical depth",
+      "description": "Mechanisms and precise terms"
+    },
+    "compare": {
+      "label": "Compare with…",
+      "description": "Compare with another concept"
+    },
+    "key_terms": {
+      "label": "Find important terms",
+      "description": "Terms with short definitions"
+    },
+    "formula": {
+      "label": "Explain formula",
+      "description": "Step-by-step formula breakdown"
+    },
+    "ask": {
+      "label": "Ask AI",
+      "description": "Ask your own question"
+    }
+  },
+  "languages": {
+    "english": "English",
+    "spanish": "Spanish",
+    "french": "French",
+    "german": "German",
+    "italian": "Italian",
+    "portuguese": "Portuguese",
+    "greek": "Greek",
+    "dutch": "Dutch",
+    "polish": "Polish",
+    "turkish": "Turkish",
+    "arabic": "Arabic",
+    "chineseSimplified": "Chinese (Simplified)",
+    "japanese": "Japanese",
+    "korean": "Korean",
+    "hindi": "Hindi",
+    "russian": "Russian",
+    "ukrainian": "Ukrainian"
+  },
+  "toasts": {
+    "cached": "Loaded from cache",
+    "actionFailed": "AI action failed",
+    "quizGenerating": {
+      "title": "Quiz is being generated",
+      "description": "You'll find it on the Quizzes tab."
+    },
+    "quizFailed": "Could not create quiz",
+    "highlightSaved": "Highlight saved",
+    "noteSaved": "Note saved",
+    "noteFailed": "Could not save note",
+    "flashcardsGenerating": {
+      "title": "Generating flashcards",
+      "description": "They'll appear in your deck in a moment."
+    },
+    "flashcardsFailed": "Could not generate flashcards"
+  },
+  "errors": {
+    "action": "The AI could not complete this action.",
+    "word": "Could not look up this word.",
+    "quiz": "Failed to create quiz."
+  },
+  "page": {
+    "metaTitle": "Reader",
+    "unavailable": {
+      "title": "Document unavailable",
+      "description": "This document could not be found."
+    },
+    "backToDocuments": "Back to documents",
+    "documents": "Documents",
+    "sections_one": "{{count}} section",
+    "sections_other": "{{count}} sections",
+    "openOriginal": "Open original",
+    "processingFailed": "Processing failed",
+    "processingStatus": "{{status}}…",
+    "stillProcessing": "This document is still being processed. The reader will be available once it's ready.",
+    "hint": "Select any text for AI explanations, quizzes, flashcards and notes. Select a single word for an instant definition. Press Alt+A to reach the toolbar with the keyboard.",
+    "textLabel": "Document text",
+    "loadError": "Couldn't load the text",
+    "loadingMore": "Loading more",
+    "end_one": "End of document · {{count}} section",
+    "end_other": "End of document · {{count}} sections"
+  },
+  "toolbar": {
+    "label": "AI actions for selected text (Alt+A to focus)",
+    "createQuizLabel": "Create quiz from selection",
+    "createQuiz": "Create quiz",
+    "createFlashcardsLabel": "Create flashcards from selection",
+    "createFlashcards": "Create flashcards",
+    "highlightLabel": "Highlight selection",
+    "highlight": "Highlight",
+    "highlightColour": "Highlight colour",
+    "addNoteLabel": "Add note to selection",
+    "addNote": "Add note",
+    "moreLabel": "More AI actions"
+  },
+  "noteDialog": {
+    "title": "Add to your notes",
+    "types": {
+      "annotation": "Annotation",
+      "question": "Question",
+      "bookmark": "Bookmark"
+    },
+    "yourQuestion": "Your question",
+    "yourNote": "Your note",
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "panel": {
+    "translateInto": "Translate into",
+    "targetLanguage": "Target language",
+    "compareWith": "Compare with",
+    "comparePlaceholder": "e.g. Chloroplasts",
+    "yourQuestion": "Your question",
+    "questionPlaceholder": "What would you like to know about this passage?",
+    "run": "Run",
+    "generating": "Generating",
+    "retry": "Retry",
+    "cached": "Cached result",
+    "copied": "Copied",
+    "copy": "Copy",
+    "saveAsNote": "Save as note",
+    "noteTitle": "{{action}}: {{excerpt}}"
+  },
+  "word": {
+    "label": "Definition of {{word}}",
+    "pronounce": "Pronounce",
+    "close": "Close",
+    "retry": "Retry",
+    "inContext": "In this context",
+    "define": "Define",
+    "translateTo": "Translate to",
+    "translate": "Translate",
+    "explain": "Explain",
+    "example": "Example",
+    "askAi": "Ask AI"
+  },
+  "content": {
+    "page": "Page {{page}}"
+  }
+}

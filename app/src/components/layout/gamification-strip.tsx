@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Snowflake } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { getLevelTitleLabel } from "@/config/constants/dropdowns/gamification/level-title.options";
 import { useGamificationProfile } from "@/features/gamification/hooks/use-gamification";
 import { LevelBadge } from "@/components/ui/level-badge";
 import { XpProgressBar } from "@/components/ui/xp-progress-bar";
@@ -13,6 +15,7 @@ import { Routes } from "@/routes/routes";
 
 /** Header strip: level + XP bar, streak flame, daily-goal ring. Hidden gracefully when unavailable. */
 export const GamificationStrip = () => {
+    const { t } = useTranslation("layout");
     const { data, isPending, isError } = useGamificationProfile();
     const ringRef = useRef<HTMLDivElement>(null);
     const prevMet = useRef<boolean | null>(null);
@@ -39,10 +42,10 @@ export const GamificationStrip = () => {
 
     return (
         <div className="flex items-center gap-3 sm:gap-5">
-            <Link to={Routes.achievements} className="flex items-center gap-2.5 rounded-lg px-1 py-0.5 hover:bg-accent" aria-label={`Level ${data.level} ${data.level_title}`}>
+            <Link to={Routes.achievements} className="flex items-center gap-2.5 rounded-lg px-1 py-0.5 hover:bg-accent" aria-label={t("strip.levelAria", { level: data.level, title: getLevelTitleLabel(data.level_title) })}>
                 <LevelBadge level={data.level} size="sm" />
                 <div className="hidden w-32 md:block">
-                    <div className="mb-0.5 text-[11px] font-medium text-muted-foreground">{data.level_title}</div>
+                    <div className="mb-0.5 text-[11px] font-medium text-muted-foreground">{getLevelTitleLabel(data.level_title)}</div>
                     <XpProgressBar current={data.xp_into_level} target={data.xp_for_next_level} showLabel={false} />
                 </div>
             </Link>
@@ -51,7 +54,7 @@ export const GamificationStrip = () => {
                     <div className="flex items-center gap-1">
                         <StreakFlame days={data.current_streak} size="sm" />
                         {data.streak_freezes > 0 && (
-                            <span className="flex items-center text-[11px] text-teal" aria-label={`${data.streak_freezes} streak freezes`}>
+                            <span className="flex items-center text-[11px] text-teal" aria-label={t("strip.freezes", { count: data.streak_freezes })}>
                                 <Snowflake className="h-3 w-3" />
                                 {data.streak_freezes}
                             </span>
@@ -59,8 +62,8 @@ export const GamificationStrip = () => {
                     </div>
                 </TooltipTrigger>
                 <TooltipContent>
-                    {data.current_streak}-day streak · best {data.longest_streak}
-                    {data.streak_freezes ? ` · ${data.streak_freezes} freeze(s)` : ""}
+                    {t("strip.streakTooltip", { count: data.current_streak, best: data.longest_streak })}
+                    {data.streak_freezes ? ` · ${t("strip.freezes", { count: data.streak_freezes })}` : ""}
                 </TooltipContent>
             </Tooltip>
             <Tooltip>
@@ -70,7 +73,7 @@ export const GamificationStrip = () => {
                             value={goal.met ? 100 : goalPct}
                             size={32}
                             strokeWidth={4}
-                            label="Daily goal progress"
+                            label={t("strip.goalLabel")}
                             indicatorClassName={goal.met ? "stroke-success" : undefined}
                         >
                             <span className="text-[9px] font-semibold">{Math.round(goal.met ? 100 : goalPct)}</span>
@@ -78,7 +81,8 @@ export const GamificationStrip = () => {
                     </div>
                 </TooltipTrigger>
                 <TooltipContent>
-                    Daily goal: {Math.round(goal.progress_minutes)}/{goal.minutes} min · {goal.progress_xp}/{goal.xp} XP{goal.met ? " · complete!" : ""}
+                    {t("strip.goalTooltip", { minutes: Math.round(goal.progress_minutes), goalMinutes: goal.minutes, xp: goal.progress_xp, goalXp: goal.xp })}
+                    {goal.met ? ` · ${t("strip.goalComplete")}` : ""}
                 </TooltipContent>
             </Tooltip>
         </div>

@@ -5,6 +5,7 @@ import { useAuthStore } from "@/stores/auth";
 import { usePreferencesStore } from "@/stores/preferences";
 import { Routes } from "@/routes/routes";
 import { deleteAccount, updateProfile } from "../services/account.services";
+import { tr } from "@/lib/i18n-options";
 
 export const useUpdateProfile = () => {
     const queryClient = useQueryClient();
@@ -15,9 +16,9 @@ export const useUpdateProfile = () => {
             updateUser(user);
             queryClient.invalidateQueries({ queryKey: ["me"] });
             queryClient.invalidateQueries({ queryKey: ["dashboard"] });
-            toast({ title: "Profile saved", duration: 1500 });
+            toast({ title: tr("settings:toasts.profileSaved"), duration: 1500 });
         },
-        onError: (error: Error) => toast({ title: "Could not save profile", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("settings:toasts.profileFailed"), description: error.message, variant: "error" }),
     });
 };
 
@@ -34,8 +35,8 @@ export const useDeleteAccount = () => {
             resetPrefs();
             queryClient.clear();
             navigate(Routes.auth.sign_up, { replace: true });
-            toast({ title: "Account deleted", description: "Your account and data have been removed.", duration: 4000 });
+            toast({ title: tr("settings:toasts.accountDeleted.title"), description: tr("settings:toasts.accountDeleted.description"), duration: 4000 });
         },
-        onError: (error: Error) => toast({ title: "Could not delete account", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("settings:toasts.deleteFailed"), description: error.message, variant: "error" }),
     });
 };

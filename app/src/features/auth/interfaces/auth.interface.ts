@@ -27,6 +27,7 @@ export interface SignUpDto {
     password: string;
     full_name?: string;
     timezone?: string;
+    language?: "en" | "el";
 }
 
 export interface ResetPasswordDto {

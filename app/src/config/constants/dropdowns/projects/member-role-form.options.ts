@@ -1,10 +1,10 @@
-export const MemberRoleFormOptions: { id: string; label: string; description: string }[] = [
-    { id: "OWNER", label: "Owner", description: "Full control, including deleting the project" },
-    { id: "ADMIN", label: "Admin", description: "Manage members, sharing and all content" },
-    { id: "EDITOR", label: "Editor", description: "Edit all study material" },
-    { id: "CONTRIBUTOR", label: "Contributor", description: "Add documents, notes and questions" },
-    { id: "VIEWER", label: "Viewer", description: "Study and view only" },
-];
+import { tOption } from "@/lib/i18n-options";
+
+type RoleOption = { id: string; label: string; description: string };
+
+export const MemberRoleFormOptions: RoleOption[] = ["OWNER", "ADMIN", "EDITOR", "CONTRIBUTOR", "VIEWER"].map(
+    (id) => tOption(id, `members:roles.${id}.label`, `members:roles.${id}.description`) as RoleOption,
+);
 
 export const getMemberRoleLabel = (role: string): string => MemberRoleFormOptions.find((o) => o.id === role)?.label ?? role;
 

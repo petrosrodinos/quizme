@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MemberRoleRank } from "@/config/constants/dropdowns/projects/member-role-form.options";
 import { useProjects } from "@/features/projects/hooks/use-projects";
+import { useTranslation } from "react-i18next";
 
 interface CopyToProjectDialogProps {
     open: boolean;
@@ -14,6 +15,7 @@ interface CopyToProjectDialogProps {
 
 /** Picks a destination project where the user can contribute. */
 export const CopyToProjectDialog = ({ open, onOpenChange, isPending, onConfirm }: CopyToProjectDialogProps) => {
+    const { t } = useTranslation("shared");
     const projects = useProjects({ view: "active" });
     const options = (projects.data ?? []).filter((p) => (MemberRoleRank[p.my_role] ?? 0) >= MemberRoleRank.CONTRIBUTOR);
     const [target, setTarget] = useState<string>("");
@@ -26,12 +28,12 @@ export const CopyToProjectDialog = ({ open, onOpenChange, isPending, onConfirm }
         <Dialog open={open} onOpenChange={(o) => !isPending && onOpenChange(o)}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Copy to one of your projects</DialogTitle>
-                    <DialogDescription>The copy is yours to edit and study; the original stays unchanged.</DialogDescription>
+                    <DialogTitle>{t("copyDialog.title")}</DialogTitle>
+                    <DialogDescription>{t("copyDialog.description")}</DialogDescription>
                 </DialogHeader>
                 <Select value={target || undefined} onValueChange={setTarget} disabled={projects.isPending}>
-                    <SelectTrigger aria-label="Destination project">
-                        <SelectValue placeholder={projects.isPending ? "Loading projects…" : options.length ? "Choose a project" : "Create a project first"} />
+                    <SelectTrigger aria-label={t("copyDialog.destination")}>
+                        <SelectValue placeholder={projects.isPending ? t("copyDialog.loadingProjects") : options.length ? t("copyDialog.choose") : t("copyDialog.createFirst")} />
                     </SelectTrigger>
                     <SelectContent>
                         {options.map((p) => (
@@ -43,10 +45,10 @@ export const CopyToProjectDialog = ({ open, onOpenChange, isPending, onConfirm }
                 </Select>
                 <DialogFooter>
                     <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={isPending}>
-                        Cancel
+                        {t("common:actions.cancel")}
                     </Button>
                     <Button disabled={!target} loading={isPending} onClick={() => onConfirm(target)}>
-                        Copy
+                        {t("common:actions.copy")}
                     </Button>
                 </DialogFooter>
             </DialogContent>

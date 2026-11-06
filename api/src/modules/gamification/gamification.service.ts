@@ -17,6 +17,9 @@ import { DomainEventsService } from '@/shared/events/domain-events.service';
 import { AppPaths } from '@/shared/config/app-urls';
 import { addDaysKey, localDateKey, safeZone } from '@/shared/utils/date.utils';
 import { NotificationsService, NotificationTypes } from '../notifications/notifications.service';
+import { I18nService, msg } from '@/shared/i18n/i18n.service';
+import { Lang } from '@/shared/i18n/messages';
+import { ACHIEVEMENTS_EL } from '@/shared/i18n/achievements.el';
 import {
     ACHIEVEMENTS,
     AchievementMetric,
@@ -46,7 +49,16 @@ export class GamificationService implements OnModuleInit {
         private readonly events: DomainEventsService,
         private readonly realtime: RealtimeService,
         private readonly notifications: NotificationsService,
+        private readonly i18n: I18nService,
     ) { }
+
+    private achievementText(lang: Lang, def: { key: string; title: string; description: string }) {
+        return lang === 'el' && ACHIEVEMENTS_EL[def.key] ? ACHIEVEMENTS_EL[def.key] : { title: def.title, description: def.description };
+    }
+
+    private levelName(lang: Lang, level: number) {
+        return this.i18n.t(lang, `level.${levelTitle(level)}`);
+    }
 
     async onModuleInit() {
         await this.seedAchievements().catch((e) => this.logger.error(`Achievement seed failed: ${e?.message}`));
@@ -110,7 +122,10 @@ export class GamificationService implements OnModuleInit {
         this.realtime.toUser(userId, RealtimeEvents.XP_GAINED, { amount, total_xp: total, source_type: sourceType, source_id: sourceId, multiplier });
         if (level > updated.level) {
             const claimed = await this.prisma.userGamification.updateMany({ where: { user_id: userId, level: { lt: level } }, data: { level } });
-            if (claimed.count === 1 && level > before.level) this.realtime.toUser(userId, RealtimeEvents.LEVEL_UP, { level, level_title: levelTitle(level) });
+            if (claimed.count === 1 && level > before.level) {
+                const lang = await this.i18n.languageOf(userId);
+                this.realtime.toUser(userId, RealtimeEvents.LEVEL_UP, { level, level_title: this.levelName(lang, level), level_key: levelTitle(level) });
+            }
         }
         await this.checkDailyGoal(userId, tz, date);
         return amount;
@@ -162,8 +177,8 @@ export class GamificationService implements OnModuleInit {
         await this.notifications.notify({
             userId: e.userId,
             type: NotificationTypes.QUIZ_COMPLETED,
-            title: `${e.isExam ? 'Exam simulation' : 'Quiz'} completed: ${Math.round(e.percentage)}%`,
-            body: `${e.correct}/${e.total} correct in ${project?.title ?? 'your project'}.`,
+            title: msg(e.isExam ? 'notif.examCompleted.title' : 'notif.quizCompleted.title', { percent: Math.round(e.percentage) }),
+            body: msg('notif.quizCompleted.body', { correct: e.correct, total: e.total, project: project?.title ?? '' }),
             link: AppPaths.attempt(e.projectId, e.attemptId),
         });
         await this.evaluate(e.userId, ['perfect_quizzes', 'exams_completed']);
@@ -266,7 +281,7 @@ export class GamificationService implements OnModuleInit {
         });
         this.realtime.toUser(userId, RealtimeEvents.DAILY_GOAL_MET, { date, minutes: activity.minutes_studied, xp: activity.xp_earned });
         this.realtime.toUser(userId, RealtimeEvents.STREAK_UPDATED, { current_streak: streak, streak_freezes: freezes });
-        await this.notifications.notify({ userId, type: NotificationTypes.GOAL, title: 'Daily goal complete!', body: `Your streak is now ${streak} day${streak === 1 ? '' : 's'}.`, link: AppPaths.dashboard });
+        await this.notifications.notify({ userId, type: NotificationTypes.GOAL, title: msg('notif.goal.title'), body: msg('notif.goal.body', { count: streak }), link: AppPaths.dashboard });
         await this.evaluate(userId, ['streak']);
     }
 
@@ -302,7 +317,8 @@ export class GamificationService implements OnModuleInit {
         return {
             total_xp: g.total_xp,
             level: lv.level,
-            level_title: levelTitle(lv.level),
+            level_title: this.levelName(await this.i18n.languageOf(userId), lv.level),
+            level_key: levelTitle(lv.level),
             xp_into_level: lv.xpIntoLevel,
             xp_for_next_level: lv.xpForNext,
             current_streak: this.effectiveStreak(g, today),
@@ -431,12 +447,15 @@ export class GamificationService implements OnModuleInit {
             data: { unlocked_at: new Date() },
         });
         if (claimed.count === 1) {
-            this.realtime.toUser(userId, RealtimeEvents.ACHIEVEMENT_UNLOCKED, { key: def.key, title: def.title, description: def.description, icon: def.icon, rarity: def.rarity });
-            await this.notifications.notify({ userId, type: NotificationTypes.ACHIEVEMENT, title: `Achievement unlocked: ${def.title}`, body: def.description, link: AppPaths.achievements });
+            const lang = await this.i18n.languageOf(userId);
+            const text = this.achievementText(lang, def);
+            this.realtime.toUser(userId, RealtimeEvents.ACHIEVEMENT_UNLOCKED, { key: def.key, title: text.title, description: text.description, icon: def.icon, rarity: def.rarity });
+            await this.notifications.notify({ userId, type: NotificationTypes.ACHIEVEMENT, title: msg('notif.achievement.title', { title: text.title }), body: text.description, link: AppPaths.achievements });
         }
     }
 
     async achievements(userId: string) {
+        const lang = await this.i18n.languageOf(userId);
         const [defs, mine] = await Promise.all([
             this.prisma.achievement.findMany({ orderBy: { order_index: 'asc' } }),
             this.prisma.userAchievement.findMany({ where: { user_id: userId } }),
@@ -449,8 +468,8 @@ export class GamificationService implements OnModuleInit {
             const secret = d.hidden && !unlocked;
             return {
                 key: d.key,
-                title: secret ? 'Secret achievement' : d.title,
-                description: secret ? 'Keep studying to discover this one.' : d.description,
+                title: secret ? this.i18n.t(lang, 'achievement.secret.title') : this.achievementText(lang, d).title,
+                description: secret ? this.i18n.t(lang, 'achievement.secret.description') : this.achievementText(lang, d).description,
                 icon: secret ? 'lock' : d.icon,
                 category: d.category,
                 rarity: d.rarity,

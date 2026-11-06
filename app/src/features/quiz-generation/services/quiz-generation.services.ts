@@ -1,6 +1,7 @@
 import axiosInstance from "@/config/api/axios";
 import { ApiRoutes } from "@/config/api/routes";
 import { withApiError } from "@/lib/api-error";
+import { tr } from "@/lib/i18n-options";
 
 export const QuickQuizModes = {
     SELECTION: "SELECTION",
@@ -18,5 +19,5 @@ export interface QuickQuizDto {
 export const createQuickQuiz = ({ projectId, dto }: { projectId: string; dto: QuickQuizDto }) =>
     withApiError(
         async () => (await axiosInstance.post<{ id: string; status: string }>(ApiRoutes.quiz_creation.create(projectId), dto)).data,
-        "Failed to create quiz.",
+        tr("reader:errors.quiz"),
     );

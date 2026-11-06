@@ -1,0 +1,78 @@
+{
+    "pageTitle": "Dashboard",
+    "loadError": "We couldn't load your dashboard",
+    "greeting": "{{greeting}}, {{name}}",
+    "errors": {
+        "load": "Couldn't load the dashboard"
+    },
+    "newUser": {
+        "subtitle": "Let's set up your first study project.",
+        "title": "Create your first study project",
+        "description": "A project is a course, exam or certification. Upload your material and QuizMe turns it into quizzes, flashcards, summaries and a personal study plan.",
+        "cta": "Create a project"
+    },
+    "stats": {
+        "flashcardsDue": "Flashcards due",
+        "quizAccuracy": "Quiz accuracy",
+        "last30Days": "Last 30 days",
+        "examReadiness": "Exam readiness",
+        "focusProject": "Focus project",
+        "studyTime": "Study time",
+        "minSuffix": "min",
+        "weekMinutes_one": "{{count}} min this week",
+        "weekMinutes_other": "{{count}} min this week"
+    },
+    "projects": {
+        "title": "Active projects",
+        "all": "All projects",
+        "masteryAria": "Mastery of {{title}}",
+        "readiness": "Readiness",
+        "due_one": "{{count}} due",
+        "due_other": "{{count}} due"
+    },
+    "side": {
+        "streak": "Study streak",
+        "best_one": "best {{count}}",
+        "best_other": "best {{count}}",
+        "freezes_one": "{{count}} streak freeze",
+        "freezes_other": "{{count}} streak freezes",
+        "totalXp": "{{xp}} XP"
+    },
+    "today": {
+        "goalLabel": "Daily goal",
+        "minutesOf": "{{minutes}}/{{goal}} min",
+        "title": "Today's study",
+        "completed": "You completed today's session — anything extra is a bonus.",
+        "recommended_one": "About {{count}} minute recommended.",
+        "recommended_other": "About {{count}} minutes recommended.",
+        "recommendedFocus_one": "About {{count}} minute recommended · focus: {{project}}.",
+        "recommendedFocus_other": "About {{count}} minutes recommended · focus: {{project}}.",
+        "empty": "Create a project and upload material to get a personalised plan.",
+        "topicsNeedReview_one": "{{count}} topic needs review",
+        "topicsNeedReview_other": "{{count}} topics need review",
+        "flashcardsDue_one": "Flashcards due: {{count}}",
+        "flashcardsDue_other": "Flashcards due: {{count}}",
+        "keepStudying": "Keep studying",
+        "continue": "Continue studying",
+        "goalMet": "Daily goal met"
+    },
+    "insights": {
+        "recentScores": "Recent scores",
+        "recentScoresAria": "Recent quiz scores: {{scores}}",
+        "noScores": "Take a quiz to see your scores here.",
+        "weakTopics": "Weak topics",
+        "practiseAria": "Practise {{name}}",
+        "practise": "Practise",
+        "noWeakTopics": "No weak spots detected yet. Keep practising to build your knowledge map.",
+        "upcomingExams": "Upcoming exams",
+        "daysShort_one": "{{count}}d",
+        "daysShort_other": "{{count}}d",
+        "readiness": "readiness {{value}}%",
+        "noExams": "Set an exam date on a project to get a countdown and study plan.",
+        "weekSummary_one": "{{count}} minute studied · goal {{goal}} min/day",
+        "weekSummary_other": "{{count}} minutes studied · goal {{goal}} min/day",
+        "weekAria": "Study activity this week: {{days}}",
+        "studied": "Studied",
+        "goalMet": "Goal met"
+    }
+}

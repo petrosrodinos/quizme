@@ -2,6 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { closeRoom, createRoom, getRoom, getRooms, sendRoomMessage, sendTimerAction } from "../services/rooms.services";
 import type { TimerAction, TimerMode } from "../interfaces/rooms.interfaces";
+import { translateRoomError } from "../utils/room-errors.utils";
+import { tr } from "@/lib/i18n-options";
 
 export const useRooms = (projectId?: string) => useQuery({ queryKey: ["rooms", projectId ?? "all"], queryFn: () => getRooms(projectId), refetchInterval: 30_000 });
 
@@ -13,9 +15,9 @@ export const useCreateRoom = () => {
         mutationFn: createRoom,
         onSuccess: (room) => {
             qc.invalidateQueries({ queryKey: ["rooms"] });
-            toast({ title: "Room created", description: room.name, duration: 2000 });
+            toast({ title: tr("rooms:toasts.created"), description: room.name, duration: 2000 });
         },
-        onError: (error: Error) => toast({ title: "Could not create room", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("rooms:toasts.createFailed"), description: translateRoomError(error.message), variant: "error" }),
     });
 };
 
@@ -25,9 +27,9 @@ export const useCloseRoom = () => {
         mutationFn: closeRoom,
         onSuccess: () => {
             qc.invalidateQueries({ queryKey: ["rooms"] });
-            toast({ title: "Room closed", duration: 2000 });
+            toast({ title: tr("rooms:toasts.closed"), duration: 2000 });
         },
-        onError: (error: Error) => toast({ title: "Could not close room", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("rooms:toasts.closeFailed"), description: translateRoomError(error.message), variant: "error" }),
     });
 };
 
@@ -35,12 +37,12 @@ export const useSendRoomMessage = (roomId: string) =>
     useMutation({
         mutationFn: (content: string) => sendRoomMessage(roomId, content),
         onSuccess: () => undefined,
-        onError: (error: Error) => toast({ title: "Message not sent", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("rooms:toasts.messageFailed"), description: translateRoomError(error.message), variant: "error" }),
     });
 
 export const useRoomTimer = (roomId: string) =>
     useMutation({
         mutationFn: ({ action, minutes, mode }: { action: TimerAction; minutes?: number; mode?: TimerMode }) => sendTimerAction(roomId, action, minutes, mode),
         onSuccess: () => undefined,
-        onError: (error: Error) => toast({ title: "Timer update failed", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("rooms:toasts.timerFailed"), description: translateRoomError(error.message), variant: "error" }),
     });

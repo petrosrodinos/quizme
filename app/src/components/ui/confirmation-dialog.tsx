@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle } from "lucide-react";
+import { tr } from "@/lib/i18n-options";
 
 interface ConfirmationDialogProps {
   isOpen: boolean;
@@ -15,7 +16,7 @@ interface ConfirmationDialogProps {
   isLoading?: boolean;
 }
 
-const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title, description, confirmText = "Confirm", cancelText = "Cancel", variant = "default", icon, isLoading = false }: ConfirmationDialogProps) => {
+const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title, description, confirmText = tr("common:actions.confirm"), cancelText = tr("common:actions.cancel"), variant = "default", icon, isLoading = false }: ConfirmationDialogProps) => {
   const handleConfirm = () => {
     onConfirm();
   };

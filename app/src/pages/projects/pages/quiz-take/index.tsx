@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { Main } from "@/components/layout/main";
 import { DetailSkeleton } from "@/components/ui/card-skeletons";
@@ -17,6 +18,7 @@ import { PracticePlayer } from "./components/practice-player";
 import { ExamPlayer } from "./components/exam-player";
 
 export default function QuizTakePage() {
+    const { t } = useTranslation("quiz");
     const { projectId } = useProjectContext();
     const { quizId } = useParams<{ quizId: string }>();
     const navigate = useNavigate();
@@ -28,7 +30,7 @@ export default function QuizTakePage() {
     const [attemptId, setAttemptId] = useState<string | undefined>();
     const attemptQuery = useAttempt(attemptId);
     const quiz = quizQuery.data;
-    usePageMetadata({ title: quiz?.title ?? "Quiz" });
+    usePageMetadata({ title: quiz?.title ?? t("common:terms.quiz") });
 
     useRealtimeEvent<GenerationStatusEvent>(RealtimeEvents.GENERATION_STATUS, (e) => {
         if (e.id === quizId) queryClient.invalidateQueries({ queryKey: ["quiz", quizId] });
@@ -60,7 +62,7 @@ export default function QuizTakePage() {
     if (quizQuery.isError) {
         return (
             <Main>
-                <EmptyState title="Quiz not found" description={quizQuery.error.message} action={<Button onClick={backToQuizzes}>Back to quizzes</Button>} />
+                <EmptyState title={t("player.notFound")} description={quizQuery.error.message} action={<Button onClick={backToQuizzes}>{t("generation.backToQuizzes")}</Button>} />
             </Main>
         );
     }
@@ -74,7 +76,7 @@ export default function QuizTakePage() {
     if (start.isError) {
         return (
             <Main>
-                <EmptyState title="Could not start this quiz" description={start.error.message} action={<Button onClick={backToQuizzes}>Back to quizzes</Button>} />
+                <EmptyState title={t("player.couldNotStart")} description={start.error.message} action={<Button onClick={backToQuizzes}>{t("generation.backToQuizzes")}</Button>} />
             </Main>
         );
     }
@@ -88,7 +90,7 @@ export default function QuizTakePage() {
     if (!detail.questions.length) {
         return (
             <Main>
-                <EmptyState title="This quiz has no questions" action={<Button onClick={backToQuizzes}>Back to quizzes</Button>} />
+                <EmptyState title={t("player.noQuestions")} action={<Button onClick={backToQuizzes}>{t("generation.backToQuizzes")}</Button>} />
             </Main>
         );
     }

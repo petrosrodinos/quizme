@@ -8,6 +8,7 @@ import { TimerModeFormOptions, getTimerModeLabel } from "@/config/constants/drop
 import { formatClock } from "@/lib/date";
 import { useRoomTimer } from "@/features/rooms/hooks/use-rooms";
 import type { TimerMode, TimerState } from "@/features/rooms/interfaces/rooms.interfaces";
+import { useTranslation } from "react-i18next";
 
 interface RoomTimerProps {
     roomId: string;
@@ -19,6 +20,7 @@ const remainingOf = (t: TimerState) => (t.status === "running" && t.ends_at ? Ma
 
 /** Shared Pomodoro timer: state lives on the server; every client renders the countdown from ends_at. */
 export const RoomTimer = ({ roomId, timer, onFinished }: RoomTimerProps) => {
+    const { t } = useTranslation("rooms");
     const action = useRoomTimer(roomId);
     const [remaining, setRemaining] = useState(() => remainingOf(timer));
     const [minutes, setMinutes] = useState(String(Math.round(timer.duration_sec / 60)));
@@ -47,9 +49,9 @@ export const RoomTimer = ({ roomId, timer, onFinished }: RoomTimerProps) => {
     const pct = timer.duration_sec ? ((timer.duration_sec - remaining) / timer.duration_sec) * 100 : 0;
 
     return (
-        <section aria-label="Shared timer" className="rounded-xl border border-border bg-card p-5">
+        <section aria-label={t("timer.title")} className="rounded-xl border border-border bg-card p-5">
             <div className="flex items-center justify-between">
-                <h2 className="font-medium">Shared timer</h2>
+                <h2 className="font-medium">{t("timer.title")}</h2>
                 <Tabs value={timer.mode} onValueChange={(v) => setMode(v as TimerMode)}>
                     <TabsList>
                         {TimerModeFormOptions.map((o) => (
@@ -61,11 +63,11 @@ export const RoomTimer = ({ roomId, timer, onFinished }: RoomTimerProps) => {
                 </Tabs>
             </div>
             <div className="mt-4 flex flex-col items-center gap-4">
-                <ProgressRing value={pct} size={150} strokeWidth={10} label={`${getTimerModeLabel(timer.mode)} timer`}>
+                <ProgressRing value={pct} size={150} strokeWidth={10} label={t("timer.ringLabel", { mode: getTimerModeLabel(timer.mode) })}>
                     <span className="font-display text-4xl tabular-nums" aria-live="off">
                         {formatClock(remaining)}
                     </span>
-                    <span className="text-xs uppercase tracking-wider text-muted-foreground">{timer.status === "running" ? getTimerModeLabel(timer.mode) : timer.status === "paused" ? "Paused" : "Ready"}</span>
+                    <span className="text-xs uppercase tracking-wider text-muted-foreground">{timer.status === "running" ? getTimerModeLabel(timer.mode) : timer.status === "paused" ? t("timer.paused") : t("timer.ready")}</span>
                 </ProgressRing>
                 <div className="flex items-center gap-2">
                     {timer.status !== "running" ? (
@@ -76,19 +78,19 @@ export const RoomTimer = ({ roomId, timer, onFinished }: RoomTimerProps) => {
                                     inputMode="numeric"
                                     value={minutes}
                                     onChange={(e) => setMinutes(e.target.value.replace(/\D/g, "").slice(0, 3))}
-                                    aria-label="Minutes"
+                                    aria-label={t("timer.minutes")}
                                 />
                             ) : null}
                             <Button onClick={() => action.mutate({ action: "start", minutes: timer.status === "idle" ? mins : undefined, mode: timer.mode })} loading={action.isPending}>
-                                <Play className="mr-1.5 h-4 w-4" /> {timer.status === "paused" ? "Resume" : "Start"}
+                                <Play className="mr-1.5 h-4 w-4" /> {timer.status === "paused" ? t("timer.resume") : t("timer.start")}
                             </Button>
                         </>
                     ) : (
                         <Button variant="outline" onClick={() => action.mutate({ action: "pause" })} loading={action.isPending}>
-                            <Pause className="mr-1.5 h-4 w-4" /> Pause
+                            <Pause className="mr-1.5 h-4 w-4" /> {t("timer.pause")}
                         </Button>
                     )}
-                    <Button variant="ghost" size="icon" aria-label="Reset timer" onClick={() => action.mutate({ action: "reset", mode: timer.mode, minutes: mins })} disabled={action.isPending}>
+                    <Button variant="ghost" size="icon" aria-label={t("timer.reset")} onClick={() => action.mutate({ action: "reset", mode: timer.mode, minutes: mins })} disabled={action.isPending}>
                         <RotateCcw className="h-4 w-4" />
                     </Button>
                 </div>

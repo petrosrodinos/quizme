@@ -11,6 +11,7 @@ import {
     uploadProjectCover,
 } from "../services/projects.services";
 import type { ProjectQuery } from "../interfaces/projects.interfaces";
+import { tr } from "@/lib/i18n-options";
 
 export const useProjects = (query: ProjectQuery) =>
     useQuery({
@@ -35,7 +36,7 @@ const useInvalidateProjects = () => {
     };
 };
 
-const onError = (title: string) => (error: Error) => toast({ title, description: error.message, variant: "error" });
+const onError = (titleKey: string) => (error: Error) => toast({ title: tr(titleKey), description: error.message, variant: "error" });
 
 export const useCreateProject = () => {
     const invalidate = useInvalidateProjects();
@@ -43,9 +44,9 @@ export const useCreateProject = () => {
         mutationFn: createProject,
         onSuccess: (p) => {
             invalidate();
-            toast({ title: "Project created", description: `"${p.title}" is ready for your study material.`, duration: 2500 });
+            toast({ title: tr("projects:toasts.created.title"), description: tr("projects:toasts.created.description", { title: p.title }), duration: 2500 });
         },
-        onError: onError("Could not create project"),
+        onError: onError("projects:toasts.createFailed"),
     });
 };
 
@@ -55,9 +56,9 @@ export const useUpdateProject = () => {
         mutationFn: updateProject,
         onSuccess: () => {
             invalidate();
-            toast({ title: "Project updated", duration: 2000 });
+            toast({ title: tr("projects:toasts.updated"), duration: 2000 });
         },
-        onError: onError("Could not update project"),
+        onError: onError("projects:toasts.updateFailed"),
     });
 };
 
@@ -67,9 +68,9 @@ export const useDeleteProject = () => {
         mutationFn: deleteProject,
         onSuccess: () => {
             invalidate();
-            toast({ title: "Project deleted", duration: 2000 });
+            toast({ title: tr("projects:toasts.deleted"), duration: 2000 });
         },
-        onError: onError("Could not delete project"),
+        onError: onError("projects:toasts.deleteFailed"),
     });
 };
 
@@ -79,9 +80,9 @@ export const useArchiveProject = () => {
         mutationFn: setProjectArchived,
         onSuccess: (_d, v) => {
             invalidate();
-            toast({ title: v.archived ? "Project archived" : "Project restored", duration: 2000 });
+            toast({ title: v.archived ? tr("projects:toasts.archived") : tr("projects:toasts.restored"), duration: 2000 });
         },
-        onError: onError("Could not change archive state"),
+        onError: onError("projects:toasts.archiveFailed"),
     });
 };
 
@@ -91,9 +92,9 @@ export const useDuplicateProject = () => {
         mutationFn: duplicateProject,
         onSuccess: (p) => {
             invalidate();
-            toast({ title: "Project duplicated", description: `Created "${p.title}".`, duration: 2500 });
+            toast({ title: tr("projects:toasts.duplicated.title"), description: tr("projects:toasts.duplicated.description", { title: p.title }), duration: 2500 });
         },
-        onError: onError("Could not duplicate project"),
+        onError: onError("projects:toasts.duplicateFailed"),
     });
 };
 
@@ -103,8 +104,8 @@ export const useUploadProjectCover = () => {
         mutationFn: uploadProjectCover,
         onSuccess: () => {
             invalidate();
-            toast({ title: "Cover updated", duration: 2000 });
+            toast({ title: tr("projects:toasts.coverUpdated"), duration: 2000 });
         },
-        onError: onError("Could not upload cover"),
+        onError: onError("projects:toasts.coverFailed"),
     });
 };

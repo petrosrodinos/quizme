@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { GraduationCap, Loader2, Play } from "lucide-react";
 import { Main } from "@/components/layout/main";
 import { PageHeader } from "@/components/ui/page-header";
@@ -20,7 +21,8 @@ import { ExamConfigForm } from "./components/exam-config-form";
 import type { ExamFormValues } from "./validation-schemas/exam.schema";
 
 export default function ProjectExamPage() {
-    usePageMetadata({ title: "Exam simulation" });
+    const { t } = useTranslation("exam");
+    usePageMetadata({ title: t("page.title") });
     const { project, projectId } = useProjectContext();
     const navigate = useNavigate();
     const { flat: topics } = useFlatTopics(projectId);
@@ -53,9 +55,9 @@ export default function ProjectExamPage() {
     return (
         <Main width="wide">
             <PageHeader
-                eyebrow="Exam coach"
-                title="Exam simulation"
-                description="Practise under realistic conditions: timed, no hints, results only at the end. Compare every simulation against your target."
+                eyebrow={t("page.eyebrow")}
+                title={t("page.title")}
+                description={t("page.description")}
             />
 
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
@@ -63,7 +65,7 @@ export default function ProjectExamPage() {
                     <ExamConfigForm topics={topics} defaultTarget={target ?? 80} pending={create.isPending} onSubmit={start} />
                     {!!pendingExams.length && (
                         <div className="rounded-xl border border-border bg-card p-4">
-                            <div className="mb-2 text-sm font-medium">Ready or in progress</div>
+                            <div className="mb-2 text-sm font-medium">{t("pending.title")}</div>
                             <ul className="space-y-2">
                                 {pendingExams.map((q) => (
                                     <li key={q.id} className="flex items-center gap-3 text-sm">
@@ -75,7 +77,7 @@ export default function ProjectExamPage() {
                                         ) : (
                                             <Button size="sm" variant="outline" asChild>
                                                 <Link to={Routes.projects.quiz_take(projectId, q.id)}>
-                                                    <Play /> {q.in_progress_attempt_id ? "Resume" : "Start"}
+                                                    <Play /> {q.in_progress_attempt_id ? t("pending.resume") : t("pending.start")}
                                                 </Link>
                                             </Button>
                                         )}
@@ -88,13 +90,13 @@ export default function ProjectExamPage() {
 
                 <div className="space-y-6">
                     <div className="rounded-2xl border border-border bg-card p-5">
-                        <div className="mb-2 text-sm font-medium">Simulation results vs target</div>
+                        <div className="mb-2 text-sm font-medium">{t("results.title")}</div>
                         {history.isPending ? (
                             <ListSkeleton rows={2} />
                         ) : chronological.length ? (
-                            <ScoreHistoryChart points={chronological.map((a, i) => ({ label: `Sim ${i + 1}`, percentage: a.percentage }))} target={target} height={240} />
+                            <ScoreHistoryChart points={chronological.map((a, i) => ({ label: t("results.sim", { number: i + 1 }), percentage: a.percentage }))} target={target} height={240} />
                         ) : (
-                            <EmptyState icon={GraduationCap} title="No simulations yet" description="Your first simulation sets the baseline for your exam readiness." compact />
+                            <EmptyState icon={GraduationCap} title={t("results.emptyTitle")} description={t("results.emptyDescription")} compact />
                         )}
                     </div>
                     {!!rows.length && (

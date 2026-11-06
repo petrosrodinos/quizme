@@ -8,6 +8,8 @@ import { formatDate } from "@/lib/date";
 import { getDocumentFileTypeLabel } from "@/config/constants/dropdowns/documents/document-file-type.options";
 import type { StudyDocument } from "@/features/documents/interfaces/documents.interfaces";
 import { DocumentStatusStepper } from "./document-status-stepper";
+import { useTranslation } from "react-i18next";
+import { translateServerMessage } from "@/lib/api-error";
 
 const typeTone: Record<string, string> = {
     PDF: "bg-destructive/10 text-destructive",
@@ -27,6 +29,7 @@ interface DocumentRowProps {
 }
 
 export const DocumentRow = ({ doc, projectId, canContribute, canEdit, onDownload, onReprocess, onDelete }: DocumentRowProps) => {
+    const { t } = useTranslation("documents");
     const ready = doc.status === "READY";
     return (
         <li className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center">
@@ -46,11 +49,11 @@ export const DocumentRow = ({ doc, projectId, canContribute, canEdit, onDownload
                     <div className="mt-0.5 flex flex-wrap gap-x-3 text-xs text-muted-foreground">
                         <span>{getDocumentFileTypeLabel(doc.file_type)}</span>
                         <span>{formatBytes(doc.size_bytes)}</span>
-                        {doc.page_count != null && <span>{formatNumber(doc.page_count)} pages</span>}
-                        {doc.word_count != null && <span>{formatNumber(doc.word_count)} words</span>}
-                        <span>Uploaded {formatDate(doc.created_at)}</span>
+                        {doc.page_count != null && <span>{t("row.pages", { count: doc.page_count, formatted: formatNumber(doc.page_count) })}</span>}
+                        {doc.word_count != null && <span>{t("row.words", { count: doc.word_count })}</span>}
+                        <span>{t("row.uploaded", { date: formatDate(doc.created_at) })}</span>
                     </div>
-                    {doc.error_message && <p className="mt-1 text-xs text-destructive">{doc.error_message}</p>}
+                    {doc.error_message && <p className="mt-1 text-xs text-destructive">{translateServerMessage(doc.error_message)}</p>}
                 </div>
             </div>
             <div className="flex items-center justify-between gap-3 sm:w-80 sm:justify-end">
@@ -59,30 +62,30 @@ export const DocumentRow = ({ doc, projectId, canContribute, canEdit, onDownload
                     {ready && (
                         <Button asChild variant="ghost" size="sm">
                             <Link to={Routes.projects.document(projectId, doc.id)}>
-                                <BookOpen /> Read
+                                <BookOpen /> {t("row.read")}
                             </Link>
                         </Button>
                     )}
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={`Actions for ${doc.filename}`}>
+                            <Button variant="ghost" size="icon" className="h-8 w-8" aria-label={t("row.actions", { name: doc.filename })}>
                                 <MoreHorizontal />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={onDownload}>
-                                <Download className="mr-2 h-4 w-4" /> Download original
+                                <Download className="mr-2 h-4 w-4" /> {t("row.download")}
                             </DropdownMenuItem>
                             {canContribute && (
                                 <DropdownMenuItem onClick={onReprocess}>
-                                    <RefreshCw className="mr-2 h-4 w-4" /> Reprocess
+                                    <RefreshCw className="mr-2 h-4 w-4" /> {t("row.reprocess")}
                                 </DropdownMenuItem>
                             )}
                             {canEdit && (
                                 <>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={onDelete} className="text-destructive focus:text-destructive">
-                                        <Trash2 className="mr-2 h-4 w-4" /> Delete
+                                        <Trash2 className="mr-2 h-4 w-4" /> {t("row.delete")}
                                     </DropdownMenuItem>
                                 </>
                             )}

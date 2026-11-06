@@ -23,9 +23,11 @@ import {
 import { ProjectViews, type CreateProjectDto, type Project, type ProjectView } from "@/features/projects/interfaces/projects.interfaces";
 import { ProjectCard } from "./components/project-card";
 import { ProjectFormDialog } from "./components/project-form-dialog";
+import { useTranslation } from "react-i18next";
 
 export default function ProjectsPage() {
-    usePageMetadata({ title: "Projects" });
+    const { t } = useTranslation("projects");
+    usePageMetadata({ title: t("page.metaTitle") });
     const navigate = useNavigate();
     const [view, setView] = useState<ProjectView>(ProjectViews.ACTIVE);
     const [searchInput, setSearchInput] = useState("");
@@ -66,12 +68,12 @@ export default function ProjectsPage() {
     return (
         <Main width="wide">
             <PageHeader
-                eyebrow="Your learning"
-                title="Study projects"
-                description="Each project is a subject, course or exam with its own material, quizzes, flashcards and progress."
+                eyebrow={t("page.eyebrow")}
+                title={t("page.title")}
+                description={t("page.description")}
                 actions={
                     <Button onClick={openCreate}>
-                        <Plus /> New project
+                        <Plus /> {t("page.newProject")}
                     </Button>
                 }
             />
@@ -79,13 +81,13 @@ export default function ProjectsPage() {
             <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="relative w-full sm:max-w-sm">
                     <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder="Search projects, subjects, tags" className="pl-9" aria-label="Search projects" />
+                    <Input value={searchInput} onChange={(e) => setSearchInput(e.target.value)} placeholder={t("page.searchPlaceholder")} className="pl-9" aria-label={t("page.searchLabel")} />
                 </div>
                 <Tabs value={view} onValueChange={(v) => setView(v as ProjectView)}>
                     <TabsList>
-                        <TabsTrigger value={ProjectViews.ACTIVE}>Active</TabsTrigger>
-                        <TabsTrigger value={ProjectViews.ARCHIVED}>Archived</TabsTrigger>
-                        <TabsTrigger value={ProjectViews.ALL}>All</TabsTrigger>
+                        <TabsTrigger value={ProjectViews.ACTIVE}>{t("views.active")}</TabsTrigger>
+                        <TabsTrigger value={ProjectViews.ARCHIVED}>{t("views.archived")}</TabsTrigger>
+                        <TabsTrigger value={ProjectViews.ALL}>{t("views.all")}</TabsTrigger>
                     </TabsList>
                 </Tabs>
             </div>
@@ -93,18 +95,18 @@ export default function ProjectsPage() {
             {isPending ? (
                 <GridSkeleton count={6} />
             ) : isError ? (
-                <EmptyState title="Couldn't load projects" description={error.message} action={<Button variant="outline" onClick={() => refetch()}>Try again</Button>} />
+                <EmptyState title={t("page.loadError")} description={error.message} action={<Button variant="outline" onClick={() => refetch()}>{t("common:actions.tryAgain")}</Button>} />
             ) : !projects.length ? (
                 search || view !== ProjectViews.ACTIVE ? (
-                    <EmptyState icon={Search} title="No projects found" description="Try a different search or view." compact />
+                    <EmptyState icon={Search} title={t("page.noResults.title")} description={t("page.noResults.description")} compact />
                 ) : (
                     <EmptyState
                         icon={FolderPlus}
-                        title="Create your first study project"
-                        description="Add a subject or exam, upload your notes and textbooks, and QuizMe will turn them into quizzes, flashcards and a personal study plan."
+                        title={t("page.empty.title")}
+                        description={t("page.empty.description")}
                         action={
                             <Button onClick={openCreate}>
-                                <Plus /> New project
+                                <Plus /> {t("page.newProject")}
                             </Button>
                         }
                     />
@@ -133,9 +135,9 @@ export default function ProjectsPage() {
                 isOpen={!!deleting}
                 onClose={() => setDeleting(null)}
                 onConfirm={() => deleting && remove.mutate(deleting.id, { onSuccess: () => setDeleting(null) })}
-                title={`Delete "${deleting?.title ?? ""}"?`}
-                description="This permanently deletes the project with all its documents, quizzes, flashcards, notes and progress for every member. This cannot be undone."
-                confirmText="Delete project"
+                title={t("delete.title", { title: deleting?.title ?? "" })}
+                description={t("delete.description")}
+                confirmText={t("delete.confirm")}
                 variant="destructive"
                 isLoading={remove.isPending}
             />

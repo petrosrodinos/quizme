@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { usePageMetadata } from "@/hooks/use-page-metadata";
@@ -7,7 +8,8 @@ import type { NotificationPrefs } from "@/features/preferences/interfaces/prefer
 import { SettingsSection, ToggleRow } from "../../components/settings-section";
 
 export default function SettingsNotificationsPage() {
-    usePageMetadata({ title: "Notification settings" });
+    const { t } = useTranslation("settings");
+    usePageMetadata({ title: t("notificationsPage.pageTitle") });
     const { data, isPending } = usePreferences();
     const update = useUpdatePreferences({ silent: true });
     const prefs: NotificationPrefs = data?.notification_prefs ?? {};
@@ -17,7 +19,7 @@ export default function SettingsNotificationsPage() {
 
     return (
         <div className="space-y-6">
-            <SettingsSection title="In-app notifications" description="Choose what QuizMe tells you about. Reminders respect your timezone and are sent at most once a day.">
+            <SettingsSection title={t("notificationsPage.inApp.title")} description={t("notificationsPage.inApp.description")}>
                 <div className="divide-y divide-border">
                     {NotificationPrefOptions.map((o) => (
                         <ToggleRow
@@ -30,7 +32,7 @@ export default function SettingsNotificationsPage() {
                     ))}
                 </div>
             </SettingsSection>
-            <SettingsSection title="Email">
+            <SettingsSection title={t("notificationsPage.email")}>
                 <ToggleRow
                     id="notif-email"
                     label={EmailNotificationOption.label}

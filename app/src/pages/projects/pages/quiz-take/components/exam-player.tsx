@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Flag, Send } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import ConfirmationDialog from "@/components/ui/confirmation-dialog";
@@ -24,6 +25,7 @@ interface ExamPlayerProps {
  * answers can be changed until submission, server-synced countdown with auto-submit.
  */
 export const ExamPlayer = ({ detail, onFinish, finishing }: ExamPlayerProps) => {
+    const { t } = useTranslation("quiz");
     const { attempt, questions, quiz, server_time } = detail;
     const setExamMode = usePreferencesStore((s) => s.setExamMode);
     const submit = useSubmitAnswer(attempt.id);
@@ -86,9 +88,9 @@ export const ExamPlayer = ({ detail, onFinish, finishing }: ExamPlayerProps) => 
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
-            const t = e.target as HTMLElement;
-            if (t.tagName === "TEXTAREA" || t.tagName === "INPUT") return;
-            if (e.key === "ArrowRight" || (e.key === "Enter" && t.tagName !== "BUTTON")) {
+            const target = e.target as HTMLElement;
+            if (target.tagName === "TEXTAREA" || target.tagName === "INPUT") return;
+            if (e.key === "ArrowRight" || (e.key === "Enter" && target.tagName !== "BUTTON")) {
                 e.preventDefault();
                 if (index < questions.length - 1) goTo(index + 1);
             }
@@ -105,13 +107,13 @@ export const ExamPlayer = ({ detail, onFinish, finishing }: ExamPlayerProps) => 
             <div className="space-y-5">
                 <div className="flex flex-wrap items-center gap-3">
                     <h1 className="font-display text-xl">{quiz.title}</h1>
-                    <Badge variant="outline">Exam mode</Badge>
+                    <Badge variant="outline">{t("exam.mode")}</Badge>
                     <div className="ml-auto">{attempt.deadline_at && <ExamTimer deadline={attempt.deadline_at} serverTime={server_time} onExpire={finish} />}</div>
                 </div>
 
                 <div key={question.id} className="space-y-5 rounded-2xl border border-border bg-card p-5 sm:p-7">
                     <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <span className="font-medium text-foreground">Question {index + 1}</span> of {questions.length} · {getQuestionTypeLabel(question.type)}
+                        <span className="font-medium text-foreground">{t("exam.question", { number: index + 1 })}</span> {t("exam.of", { total: questions.length })} · {getQuestionTypeLabel(question.type)}
                         <Button
                             variant="ghost"
                             size="sm"
@@ -126,7 +128,7 @@ export const ExamPlayer = ({ detail, onFinish, finishing }: ExamPlayerProps) => 
                                 })
                             }
                         >
-                            <Flag className={cn(flagged.has(index) && "fill-amber")} /> {flagged.has(index) ? "Flagged" : "Flag for review"}
+                            <Flag className={cn(flagged.has(index) && "fill-amber")} /> {flagged.has(index) ? t("exam.flagged") : t("exam.flag")}
                         </Button>
                     </div>
                     <div className="font-display text-xl leading-snug sm:text-2xl">
@@ -144,15 +146,15 @@ export const ExamPlayer = ({ detail, onFinish, finishing }: ExamPlayerProps) => 
                     />
                     <div className="flex items-center justify-between border-t border-border pt-4">
                         <Button variant="outline" onClick={() => goTo(index - 1)} disabled={index === 0}>
-                            <ArrowLeft /> Previous
+                            <ArrowLeft /> {t("common:actions.previous")}
                         </Button>
                         {index < questions.length - 1 ? (
                             <Button onClick={() => goTo(index + 1)}>
-                                Next <ArrowRight />
+                                {t("common:actions.next")} <ArrowRight />
                             </Button>
                         ) : (
                             <Button onClick={() => setConfirmOpen(true)} loading={finishing}>
-                                <Send /> Submit exam
+                                <Send /> {t("exam.submit")}
                             </Button>
                         )}
                     </div>
@@ -162,12 +164,12 @@ export const ExamPlayer = ({ detail, onFinish, finishing }: ExamPlayerProps) => 
             <aside className="space-y-4 lg:sticky lg:top-20 lg:self-start">
                 <div className="rounded-2xl border border-border bg-card p-4">
                     <div className="mb-3 text-sm font-medium">
-                        {answeredIdx.size}/{questions.length} answered
+                        {t("exam.answeredCount", { done: answeredIdx.size, total: questions.length })}
                     </div>
                     <QuestionNavigator total={questions.length} current={index} answered={answeredIdx} flagged={flagged} onSelect={goTo} />
                 </div>
                 <Button className="w-full" variant="secondary" onClick={() => setConfirmOpen(true)} loading={finishing}>
-                    <Send /> Submit exam
+                    <Send /> {t("exam.submit")}
                 </Button>
             </aside>
 
@@ -175,15 +177,17 @@ export const ExamPlayer = ({ detail, onFinish, finishing }: ExamPlayerProps) => 
                 isOpen={confirmOpen}
                 onClose={() => setConfirmOpen(false)}
                 onConfirm={finish}
-                title="Submit your exam?"
+                title={t("exam.confirmTitle")}
                 description={
                     unanswered
-                        ? `You have ${unanswered} unanswered question${unanswered === 1 ? "" : "s"}${flagged.size ? ` and ${flagged.size} flagged` : ""}. Unanswered questions count as incorrect.`
+                        ? flagged.size
+                            ? t("exam.confirmUnansweredFlagged", { count: unanswered, flagged: flagged.size })
+                            : t("exam.confirmUnanswered", { count: unanswered })
                         : flagged.size
-                            ? `You still have ${flagged.size} flagged question${flagged.size === 1 ? "" : "s"}. Submit anyway?`
-                            : "You can't change your answers after submitting."
+                            ? t("exam.confirmFlagged", { count: flagged.size })
+                            : t("exam.confirmFinal")
                 }
-                confirmText="Submit exam"
+                confirmText={t("exam.submit")}
                 isLoading={finishing}
             />
         </div>

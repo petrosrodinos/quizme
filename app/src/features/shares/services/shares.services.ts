@@ -11,32 +11,33 @@ import type {
     SharedView,
     SharedWithMeItem,
 } from "../interfaces/shares.interfaces";
+import { tr } from "@/lib/i18n-options";
 
 export const getShares = (projectId: string) =>
-    withApiError(async () => (await axiosInstance.get<Share[]>(ApiRoutes.shares.by_project(projectId))).data, "Failed to load shares.");
+    withApiError(async () => (await axiosInstance.get<Share[]>(ApiRoutes.shares.by_project(projectId))).data, tr("members:errors.loadShares"));
 
 export const createShare = ({ projectId, dto }: { projectId: string; dto: CreateShareDto }) =>
-    withApiError(async () => (await axiosInstance.post<CreateShareResult>(ApiRoutes.shares.by_project(projectId), dto)).data, "Failed to share.");
+    withApiError(async () => (await axiosInstance.post<CreateShareResult>(ApiRoutes.shares.by_project(projectId), dto)).data, tr("members:errors.share"));
 
-export const revokeShare = (id: string) => withApiError(async () => (await axiosInstance.delete(ApiRoutes.shares.detail(id))).data, "Failed to revoke share.");
+export const revokeShare = (id: string) => withApiError(async () => (await axiosInstance.delete(ApiRoutes.shares.detail(id))).data, tr("members:errors.revokeShare"));
 
 export const getSharedWithMe = () =>
-    withApiError(async () => (await axiosInstance.get<SharedWithMeItem[]>(ApiRoutes.shares.shared_with_me)).data, "Failed to load shared content.");
+    withApiError(async () => (await axiosInstance.get<SharedWithMeItem[]>(ApiRoutes.shares.shared_with_me)).data, tr("shared:errors.loadSharedWithMe"));
 
 export const getSharedView = (by: { token?: string; id?: string }) =>
     withApiError(
         async () => (await axiosInstance.get<SharedView>(by.token ? ApiRoutes.shares.link(by.token) : ApiRoutes.shares.by_id(by.id!))).data,
-        "This shared content is not available.",
+        tr("shared:errors.unavailable"),
     );
 
 export const joinSharedProject = (token: string) =>
-    withApiError(async () => (await axiosInstance.post<{ project_id: string }>(ApiRoutes.shares.link_join(token))).data, "Failed to join project.");
+    withApiError(async () => (await axiosInstance.post<{ project_id: string }>(ApiRoutes.shares.link_join(token))).data, tr("shared:errors.join"));
 
 export const copyShared = ({ token, id, targetProjectId }: { token?: string; id?: string; targetProjectId?: string }) =>
     withApiError(
         async () =>
             (await axiosInstance.post<CopySharedResult>(token ? ApiRoutes.shares.link_copy(token) : ApiRoutes.shares.by_id_copy(id!), { target_project_id: targetProjectId })).data,
-        "Failed to copy.",
+        tr("shared:errors.copy"),
     );
 
 /** Loads candidate resources of a type for the share picker (API-derived options). */
@@ -63,4 +64,4 @@ export const getShareableResources = (projectId: string, type: ShareResourceType
             default:
                 return [];
         }
-    }, "Failed to load items to share.");
+    }, tr("members:errors.loadShareable"));

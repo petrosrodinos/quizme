@@ -5,6 +5,7 @@ import { usePreferencesStore } from "@/stores/preferences";
 import { Routes } from "@/routes/routes";
 import { toast } from "@/hooks/use-toast";
 import { browserTimezone } from "@/lib/date";
+import { tr } from "@/lib/i18n-options";
 import {
     changePassword,
     forgotPassword,
@@ -42,10 +43,10 @@ export function useSignin() {
         mutationFn: (data: SignInDto) => signIn(data),
         onSuccess: (session) => {
             onAuthenticated(session);
-            toast({ title: "Welcome back", description: "You're signed in.", duration: 2000 });
+            toast({ title: tr("auth:toasts.signedIn.title"), description: tr("auth:toasts.signedIn.description"), duration: 2000 });
         },
         onError: (error: Error) => {
-            toast({ title: "Could not sign in", description: error.message, duration: 4000, variant: "error" });
+            toast({ title: tr("auth:toasts.signInFailed"), description: error.message, duration: 4000, variant: "error" });
         },
     });
 }
@@ -56,10 +57,10 @@ export function useSignup() {
         mutationFn: (data: SignUpDto) => signUp({ ...data, timezone: data.timezone ?? browserTimezone() }),
         onSuccess: (session) => {
             onAuthenticated(session);
-            toast({ title: "Account created", description: "Check your inbox to verify your email.", duration: 3000 });
+            toast({ title: tr("auth:toasts.accountCreated.title"), description: tr("auth:toasts.accountCreated.description"), duration: 3000 });
         },
         onError: (error: Error) => {
-            toast({ title: "Could not create account", description: error.message, duration: 4000, variant: "error" });
+            toast({ title: tr("auth:toasts.signUpFailed"), description: error.message, duration: 4000, variant: "error" });
         },
     });
 }
@@ -70,10 +71,10 @@ export function useGoogleSignin() {
         mutationFn: (idToken: string) => signInWithGoogle(idToken, browserTimezone()),
         onSuccess: (session) => {
             onAuthenticated(session);
-            toast({ title: "Signed in with Google", duration: 2000 });
+            toast({ title: tr("auth:toasts.googleSignedIn"), duration: 2000 });
         },
         onError: (error: Error) => {
-            toast({ title: "Google sign-in failed", description: error.message, duration: 4000, variant: "error" });
+            toast({ title: tr("auth:toasts.googleFailed"), description: error.message, duration: 4000, variant: "error" });
         },
     });
 }
@@ -97,10 +98,10 @@ export function useLogout() {
             resetPrefs();
             queryClient.clear();
             navigate(Routes.auth.sign_in, { replace: true });
-            toast({ title: "Signed out", duration: 2000 });
+            toast({ title: tr("auth:toasts.signedOut"), duration: 2000 });
         },
         onError: (error: Error) => {
-            toast({ title: "Could not sign out", description: error.message, variant: "error" });
+            toast({ title: tr("auth:toasts.signOutFailed"), description: error.message, variant: "error" });
         },
     });
 }
@@ -123,8 +124,8 @@ export function useMe() {
 export function useForgotPassword() {
     return useMutation({
         mutationFn: (email: string) => forgotPassword(email),
-        onSuccess: (res) => toast({ title: "Check your inbox", description: res.message, duration: 5000 }),
-        onError: (error: Error) => toast({ title: "Could not send reset email", description: error.message, variant: "error" }),
+        onSuccess: () => toast({ title: tr("auth:forgot.sentTitle"), description: tr("auth:forgot.sentDescription"), duration: 5000 }),
+        onError: (error: Error) => toast({ title: tr("auth:toasts.forgotFailed"), description: error.message, variant: "error" }),
     });
 }
 
@@ -132,11 +133,11 @@ export function useResetPassword() {
     const navigate = useNavigate();
     return useMutation({
         mutationFn: (dto: ResetPasswordDto) => resetPassword(dto),
-        onSuccess: (res) => {
-            toast({ title: "Password updated", description: res.message, duration: 4000 });
+        onSuccess: () => {
+            toast({ title: tr("auth:toasts.passwordUpdated.title"), description: tr("auth:toasts.passwordUpdated.description"), duration: 4000 });
             navigate(Routes.auth.sign_in, { replace: true });
         },
-        onError: (error: Error) => toast({ title: "Could not reset password", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("auth:toasts.resetFailed"), description: error.message, variant: "error" }),
     });
 }
 
@@ -153,7 +154,7 @@ export function useVerifyEmail(token: string) {
             const res = await verifyEmail(token);
             updateUser({ email_verified: true });
             queryClient.invalidateQueries({ queryKey: ["me"] });
-            toast({ title: "Email verified", description: "Thanks for confirming your email.", duration: 3000 });
+            toast({ title: tr("auth:verify.successTitle"), description: tr("auth:verify.successDescription"), duration: 3000 });
             return res;
         },
         enabled: !!token,
@@ -168,8 +169,8 @@ export function useVerifyEmail(token: string) {
 export function useResendVerification() {
     return useMutation({
         mutationFn: () => resendVerification(),
-        onSuccess: (res) => toast({ title: "Verification email sent", description: res.message, duration: 4000 }),
-        onError: (error: Error) => toast({ title: "Could not send email", description: error.message, variant: "error" }),
+        onSuccess: () => toast({ title: tr("auth:toasts.verificationSent.title"), description: tr("auth:toasts.verificationSent.description"), duration: 4000 }),
+        onError: (error: Error) => toast({ title: tr("auth:toasts.emailFailed"), description: error.message, variant: "error" }),
     });
 }
 
@@ -179,9 +180,9 @@ export function useChangePassword() {
         mutationFn: (dto: ChangePasswordDto) => changePassword(dto),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["sessions"] });
-            toast({ title: "Password changed", description: "Other sessions were signed out.", duration: 3000 });
+            toast({ title: tr("auth:toasts.passwordChanged.title"), description: tr("auth:toasts.passwordChanged.description"), duration: 3000 });
         },
-        onError: (error: Error) => toast({ title: "Could not change password", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("auth:toasts.changePasswordFailed"), description: error.message, variant: "error" }),
     });
 }
 
@@ -195,9 +196,9 @@ export function useRevokeSession() {
         mutationFn: (id: string) => revokeSession(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["sessions"] });
-            toast({ title: "Session revoked", duration: 2000 });
+            toast({ title: tr("auth:toasts.sessionRevoked"), duration: 2000 });
         },
-        onError: (error: Error) => toast({ title: "Could not revoke session", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("auth:toasts.revokeFailed"), description: error.message, variant: "error" }),
     });
 }
 
@@ -207,8 +208,8 @@ export function useRevokeOtherSessions() {
         mutationFn: () => revokeOtherSessions(),
         onSuccess: (res) => {
             queryClient.invalidateQueries({ queryKey: ["sessions"] });
-            toast({ title: "Other sessions signed out", description: `${res.revoked} session(s) revoked.`, duration: 3000 });
+            toast({ title: tr("auth:toasts.othersRevoked.title"), description: tr("auth:toasts.othersRevoked.description", { count: res.revoked }), duration: 3000 });
         },
-        onError: (error: Error) => toast({ title: "Could not revoke sessions", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("auth:toasts.revokeOthersFailed"), description: error.message, variant: "error" }),
     });
 }

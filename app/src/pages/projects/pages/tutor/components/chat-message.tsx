@@ -6,11 +6,14 @@ import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover"
 import { Routes } from "@/routes/routes";
 import { cn } from "@/lib/utils";
 import type { ChatMessage as Message, Citation } from "@/features/tutor/interfaces/tutor.interfaces";
+import { useTranslation } from "react-i18next";
 
-const citationLabel = (c: Citation) => `${c.document_title}${c.page ? `, p.${c.page}` : ""}`;
+const citationLabel = (c: Citation, pageShort: (page: number) => string) => `${c.document_title}${c.page ? `, ${pageShort(c.page)}` : ""}`;
 
 /** One chat bubble. Assistant replies render Markdown with clickable source chips. */
 export const ChatMessage = ({ message, projectId }: { message: Message; projectId: string }) => {
+    const { t } = useTranslation("tutor");
+    const pageShort = (page: number) => t("citations.pageShort", { page });
     const [openIndex, setOpenIndex] = useState<number | null>(null);
     const isUser = message.role === "USER";
     const citations = message.citations ?? [];
@@ -33,16 +36,16 @@ export const ChatMessage = ({ message, projectId }: { message: Message; projectI
                     <Markdown
                         content={message.content}
                         className="prose-study text-sm"
-                        citations={citations.map((c) => ({ index: c.index, label: citationLabel(c), onClick: () => setOpenIndex(c.index) }))}
+                        citations={citations.map((c) => ({ index: c.index, label: citationLabel(c, pageShort), onClick: () => setOpenIndex(c.index) }))}
                     />
                 </div>
                 {!message.grounded && (
                     <p className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-amber/15 px-2 py-0.5 text-xs text-amber">
-                        <Info className="h-3 w-3" aria-hidden /> Not covered by your sources
+                        <Info className="h-3 w-3" aria-hidden /> {t("citations.notGrounded")}
                     </p>
                 )}
                 {citations.length > 0 && (
-                    <div className="mt-2 flex flex-wrap gap-1.5" aria-label="Sources">
+                    <div className="mt-2 flex flex-wrap gap-1.5" aria-label={t("citations.sources")}>
                         {citations.map((c) => (
                             <Popover key={c.index} open={openIndex === c.index} onOpenChange={(o) => setOpenIndex(o ? c.index : null)}>
                                 <PopoverAnchor asChild>
@@ -55,17 +58,17 @@ export const ChatMessage = ({ message, projectId }: { message: Message; projectI
                                         )}
                                     >
                                         <span className="font-semibold text-primary">{c.index}</span>
-                                        <span className="truncate">{citationLabel(c)}</span>
+                                        <span className="truncate">{citationLabel(c, pageShort)}</span>
                                     </button>
                                 </PopoverAnchor>
                                 <PopoverContent className="w-80 text-sm" align="start">
                                     <p className="font-medium">{c.document_title}</p>
                                     <p className="text-xs text-muted-foreground">
-                                        {[c.section, c.page ? `page ${c.page}` : null].filter(Boolean).join(" · ") || "Source passage"}
+                                        {[c.section, c.page ? t("citations.page", { page: c.page }) : null].filter(Boolean).join(" · ") || t("citations.passage")}
                                     </p>
                                     {c.quote && <blockquote className="mt-2 max-h-40 overflow-y-auto border-l-2 border-primary/40 pl-2 text-xs italic">{c.quote}…</blockquote>}
                                     <Link to={Routes.projects.document(projectId, c.document_id)} className="mt-3 inline-flex items-center gap-1 text-xs text-primary hover:underline">
-                                        <BookOpen className="h-3 w-3" aria-hidden /> Open in reader
+                                        <BookOpen className="h-3 w-3" aria-hidden /> {t("citations.openInReader")}
                                     </Link>
                                 </PopoverContent>
                             </Popover>

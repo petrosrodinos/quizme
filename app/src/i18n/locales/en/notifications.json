@@ -1,0 +1,48 @@
+{
+    "pageTitle": "Notifications",
+    "description": "Reminders, results, invitations and achievements.",
+    "markAllRead": "Mark all read",
+    "tabs": {
+        "all": "All",
+        "unread": "Unread"
+    },
+    "empty": {
+        "caughtUp": "You're all caught up",
+        "title": "No notifications yet",
+        "description": "We'll let you know about due reviews, exams, results and invitations."
+    },
+    "delete": {
+        "aria": "Delete notification",
+        "title": "Delete notification?",
+        "description": "This notification will be removed permanently."
+    },
+    "pagination": "Page {{page}} of {{total}}",
+    "types": {
+        "study_reminder": "Reminder",
+        "flashcards_due": "Flashcards",
+        "invitation": "Invitation",
+        "collaboration": "Collaboration",
+        "quiz_completed": "Quiz",
+        "goal": "Goal",
+        "exam_upcoming": "Exam",
+        "streak_risk": "Streak",
+        "achievement": "Achievement",
+        "document": "Document",
+        "update": "Update"
+    },
+    "toasts": {
+        "updateFailed": "Couldn't update the notification",
+        "allRead": "All caught up",
+        "markedRead_one": "{{count}} notification marked as read",
+        "markedRead_other": "{{count}} notifications marked as read",
+        "removed": "Notification removed",
+        "updateAllFailed": "Couldn't mark notifications as read",
+        "deleteFailed": "Couldn't delete the notification"
+    },
+    "errors": {
+        "load": "Couldn't load notifications",
+        "update": "Couldn't update the notification",
+        "updateAll": "Couldn't update notifications",
+        "delete": "Couldn't delete the notification"
+    }
+}

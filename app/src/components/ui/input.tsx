@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { tr } from "@/lib/i18n-options";
 import { useState } from "react";
 import { X } from "lucide-react";
 
@@ -32,7 +33,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type,
       <input type={type} className={cn("flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm", className)} ref={ref} {...props} onChange={handleFileChange} />
       {(avatarPreview || fileName) && (
         <div className="relative">
-          {avatarPreview && <img src={avatarPreview} alt="Avatar Preview" className="h-16 w-16 rounded-full object-cover border" width={64} height={64} />}
+          {avatarPreview && <img src={avatarPreview} alt={tr("ui:input.avatarPreview")} className="h-16 w-16 rounded-full object-cover border" width={64} height={64} />}
           {fileName && <div className="mt-1">{fileName}</div>}
           <button
             type="button"
@@ -42,9 +43,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, type,
               onDelete?.();
               props.onChange?.(undefined as unknown as React.ChangeEvent<HTMLInputElement>);
             }}
-            className="absolute -top-2 -right-2 bg-white border border-gray-300 rounded-full p-1 shadow hover:bg-gray-100"
+            className="absolute -top-2 -right-2 bg-background border border-border rounded-full p-1 shadow hover:bg-muted"
           >
-            <X className="w-4 h-4 text-gray-500" />
+            <X className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
       )}

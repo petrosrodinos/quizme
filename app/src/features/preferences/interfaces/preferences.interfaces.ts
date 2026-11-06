@@ -22,6 +22,8 @@ export interface UserPreferences {
     focus_mode: boolean;
     leaderboard_opt_in: boolean;
     achievement_popups: boolean;
+    /** UI / email / notification language. */
+    language: "en" | "el";
     notification_prefs: NotificationPrefs;
 }
 

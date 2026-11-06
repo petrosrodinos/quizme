@@ -14,6 +14,7 @@ import { useRemoveMember, useUpdateMember } from "@/features/collaboration/hooks
 import type { MemberRole, ProjectMember } from "@/features/collaboration/interfaces/collaboration.interfaces";
 import { formatDate } from "@/lib/date";
 import { Routes } from "@/routes/routes";
+import { useTranslation } from "react-i18next";
 
 interface MembersListProps {
     projectId: string;
@@ -22,6 +23,7 @@ interface MembersListProps {
 }
 
 export const MembersList = ({ projectId, myRole, members }: MembersListProps) => {
+    const { t } = useTranslation("members");
     const navigate = useNavigate();
     const update = useUpdateMember();
     const remove = useRemoveMember();
@@ -59,10 +61,10 @@ export const MembersList = ({ projectId, myRole, members }: MembersListProps) =>
                                 <UserAvatar name={name} src={m.user.avatar_url} />
                                 <div className="min-w-0">
                                     <p className="truncate font-medium">
-                                        {name} {m.is_me ? <span className="text-muted-foreground">(you)</span> : null}
+                                        {name} {m.is_me ? <span className="text-muted-foreground">{t("list.you")}</span> : null}
                                     </p>
                                     <p className="truncate text-sm text-muted-foreground">
-                                        {m.user.email} · joined {formatDate(m.joined_at)}
+                                        {t("list.emailJoined", { email: m.user.email, date: formatDate(m.joined_at) })}
                                     </p>
                                 </div>
                             </div>
@@ -74,10 +76,10 @@ export const MembersList = ({ projectId, myRole, members }: MembersListProps) =>
                                                 id={`copy-${m.user.id}`}
                                                 checked={m.can_copy}
                                                 onCheckedChange={(v) => update.mutate({ projectId, userId: m.user.id, dto: { can_copy: v } })}
-                                                aria-label={`Allow ${name} to copy content`}
+                                                aria-label={t("list.allowCopyAria", { name })}
                                             />
                                             <Label htmlFor={`copy-${m.user.id}`} className="text-xs text-muted-foreground">
-                                                Copy
+                                                {t("list.copy")}
                                             </Label>
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -85,10 +87,10 @@ export const MembersList = ({ projectId, myRole, members }: MembersListProps) =>
                                                 id={`reshare-${m.user.id}`}
                                                 checked={m.can_reshare}
                                                 onCheckedChange={(v) => update.mutate({ projectId, userId: m.user.id, dto: { can_reshare: v } })}
-                                                aria-label={`Allow ${name} to reshare content`}
+                                                aria-label={t("list.allowReshareAria", { name })}
                                             />
                                             <Label htmlFor={`reshare-${m.user.id}`} className="text-xs text-muted-foreground">
-                                                Reshare
+                                                {t("list.reshare")}
                                             </Label>
                                         </div>
                                     </>
@@ -97,14 +99,14 @@ export const MembersList = ({ projectId, myRole, members }: MembersListProps) =>
                                 {editable || (m.is_me && m.role !== "OWNER") ? (
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                            <Button variant="ghost" size="icon" aria-label={`Actions for ${name}`}>
+                                            <Button variant="ghost" size="icon" aria-label={t("list.actionsAria", { name })}>
                                                 <MoreHorizontal className="h-4 w-4" />
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end" className="w-56">
                                             {editable ? (
                                                 <>
-                                                    <DropdownMenuLabel>Change role</DropdownMenuLabel>
+                                                    <DropdownMenuLabel>{t("list.changeRole")}</DropdownMenuLabel>
                                                     <DropdownMenuRadioGroup
                                                         value={m.role}
                                                         onValueChange={(role) => role !== m.role && update.mutate({ projectId, userId: m.user.id, dto: { role: role as Exclude<MemberRole, "OWNER"> } })}
@@ -117,12 +119,12 @@ export const MembersList = ({ projectId, myRole, members }: MembersListProps) =>
                                                     </DropdownMenuRadioGroup>
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem className="text-destructive focus:text-destructive" onSelect={() => setPendingRemoval(m)}>
-                                                        <UserMinus className="mr-2 h-4 w-4" /> Remove access
+                                                        <UserMinus className="mr-2 h-4 w-4" /> {t("list.removeAccess")}
                                                     </DropdownMenuItem>
                                                 </>
                                             ) : (
                                                 <DropdownMenuItem className="text-destructive focus:text-destructive" onSelect={() => setPendingRemoval(m)}>
-                                                    <LogOut className="mr-2 h-4 w-4" /> Leave project
+                                                    <LogOut className="mr-2 h-4 w-4" /> {t("list.leaveProject")}
                                                 </DropdownMenuItem>
                                             )}
                                         </DropdownMenuContent>
@@ -139,13 +141,13 @@ export const MembersList = ({ projectId, myRole, members }: MembersListProps) =>
                 onConfirm={confirmRemoval}
                 isLoading={remove.isPending}
                 variant="destructive"
-                title={pendingRemoval?.is_me ? "Leave this project?" : `Remove ${pendingRemoval ? displayName(pendingRemoval.user) : ""}?`}
+                title={pendingRemoval?.is_me ? t("list.leaveConfirm.title") : t("list.removeConfirm.title", { name: pendingRemoval ? displayName(pendingRemoval.user) : "" })}
                 description={
                     pendingRemoval?.is_me
-                        ? "You'll lose access to its material. Your own progress history is kept if you are invited back."
-                        : "They will immediately lose access to this project and anything shared with them from it."
+                        ? t("list.leaveConfirm.description")
+                        : t("list.removeConfirm.description")
                 }
-                confirmText={pendingRemoval?.is_me ? "Leave" : "Remove"}
+                confirmText={pendingRemoval?.is_me ? t("list.leaveConfirm.confirm") : t("list.removeConfirm.confirm")}
             />
         </>
     );

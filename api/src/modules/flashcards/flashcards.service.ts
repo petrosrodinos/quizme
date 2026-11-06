@@ -14,6 +14,8 @@ import { Passage, toSourceRef } from '../ai/ai.types';
 import { KnowledgeService } from '../knowledge/knowledge.service';
 import { CreateDeckDto, CreateFlashcardDto, FlashcardQueryType, GenerateFlashcardsDto, ReviewCardDto, ReviewQueryType, UpdateDeckDto, UpdateFlashcardDto } from './dto/flashcards.dto';
 import { previewIntervals, schedule } from './srs.utils';
+import { I18nService } from '@/shared/i18n/i18n.service';
+
 
 const cardHash = (front: string) => sha256(front.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim());
 
@@ -29,6 +31,7 @@ export class FlashcardsService implements OnModuleInit {
         private readonly events: DomainEventsService,
         private readonly ai: AiService,
         private readonly knowledge: KnowledgeService,
+        private readonly i18n: I18nService,
     ) { }
 
     onModuleInit() {
@@ -79,7 +82,7 @@ export class FlashcardsService implements OnModuleInit {
     private async defaultDeck(projectId: string, userId: string) {
         return (
             (await this.prisma.flashcardDeck.findFirst({ where: { project_id: projectId }, orderBy: { created_at: 'asc' } })) ??
-            (await this.prisma.flashcardDeck.create({ data: { project_id: projectId, name: 'Main deck', created_by: userId } }))
+            (await this.prisma.flashcardDeck.create({ data: { project_id: projectId, name: this.i18n.t(await this.i18n.languageOf(userId), 'deck.default'), created_by: userId } }))
         );
     }
 

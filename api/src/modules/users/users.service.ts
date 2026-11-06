@@ -6,6 +6,7 @@ import { AuditActions, AuditService } from '@/shared/audit/audit.service';
 import { safeZone } from '@/shared/utils/date.utils';
 import { publicUser } from '../auth/auth.service';
 import { UpdatePreferencesDto, UpdateProfileDto } from './dto/users.dto';
+import { I18nService } from '@/shared/i18n/i18n.service';
 
 export const DEFAULT_NOTIFICATION_PREFS = {
     study_reminders: true,
@@ -26,6 +27,7 @@ export class UsersService {
         private readonly prisma: PrismaService,
         private readonly storage: StorageService,
         private readonly audit: AuditService,
+        private readonly i18n: I18nService,
     ) { }
 
     async updateProfile(userId: string, dto: UpdateProfileDto) {
@@ -56,6 +58,7 @@ export class UsersService {
             where: { user_id: userId },
             data: { ...rest, ...(merged ? { notification_prefs: merged as Prisma.InputJsonValue } : {}) },
         });
+        if (dto.language) this.i18n.forget(userId);
         return this.getPreferences(userId);
     }
 

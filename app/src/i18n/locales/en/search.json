@@ -1,0 +1,33 @@
+{
+  "errors": {
+    "failed": "Search failed."
+  },
+  "metaTitle": "Search",
+  "title": "Search",
+  "description": "Find anything across your projects — or search your study material by meaning.",
+  "placeholder": "Try \"things related to cell energy\"",
+  "inputLabel": "Search",
+  "semantic": "Semantic search",
+  "intro": {
+    "title": "Search your learning",
+    "description": "Projects, documents, notes, flashcards, questions and topics — plus passages from your material that match the meaning of your query."
+  },
+  "failed": "Search failed",
+  "noResults": {
+    "title": "No results",
+    "description": "Nothing matched \"{{query}}\". Try different words.",
+    "descriptionSemantic": "Nothing matched \"{{query}}\". Try different words or enable semantic search."
+  },
+  "groups": {
+    "material": "From your material",
+    "projects": "Projects",
+    "documents": "Documents",
+    "topics": "Topics",
+    "notes": "Notes",
+    "flashcards": "Flashcards",
+    "questions": "Questions"
+  },
+  "page": "· p. {{page}}",
+  "untitledNote": "Untitled note",
+  "updating": "Updating…"
+}

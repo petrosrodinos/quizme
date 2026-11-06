@@ -8,6 +8,8 @@ import { ProjectAccessService } from '@/shared/access/project-access.service';
 import { AiService } from '../ai/ai.service';
 import { FlashcardsService } from '../flashcards/flashcards.service';
 import { QuizzesService } from '../quizzes/quizzes.service';
+import { I18nService } from '@/shared/i18n/i18n.service';
+
 
 export class CreateNoteDto {
     @ApiProperty({ enum: NoteType, required: false }) @IsOptional() @IsEnum(NoteType) type?: NoteType;
@@ -48,6 +50,7 @@ export class NotesService {
         private readonly ai: AiService,
         private readonly flashcards: FlashcardsService,
         private readonly quizzes: QuizzesService,
+        private readonly i18n: I18nService,
     ) { }
 
     async list(userId: string, projectId: string, q: NoteQueryType) {
@@ -122,20 +125,21 @@ export class NotesService {
             .join('\n\n')
             .slice(0, 12_000);
         if (text.trim().length < 30) throw new BadRequestException('Selected notes do not contain enough text');
+        const { t } = await this.i18n.forUser(userId);
         if (dto.target === 'flashcards') return { kind: 'flashcards', ...(await this.flashcards.generate(userId, projectId, { note_ids: notes.map((n) => n.id), count: Math.min(30, notes.length * 4) })) };
         if (dto.target === 'quiz') {
-            const quiz = await this.quizzes.create(userId, projectId, { mode: 'SELECTION', selection_text: text, count: Math.min(15, Math.max(5, notes.length * 2)), title: 'Quiz from my notes' });
+            const quiz = await this.quizzes.create(userId, projectId, { mode: 'SELECTION', selection_text: text, count: Math.min(15, Math.max(5, notes.length * 2)), title: t('quiz.title.fromNotes') });
             return { kind: 'quiz', quiz_id: quiz.id };
         }
         const level = dto.target === 'summary' ? 'FIVE_MINUTE' : 'STUDY_GUIDE';
         const passage = { chunkId: '', documentId: '', documentTitle: 'My notes', pageStart: null, pageEnd: null, section: null, topicId: null, content: text };
-        const res = await this.ai.summarize({ userId, projectId, task: `notes_${dto.target}` }, level, dto.target === 'summary' ? 'Summary of my notes' : 'Study guide from my notes', [passage]);
+        const res = await this.ai.summarize({ userId, projectId, task: `notes_${dto.target}` }, level, dto.target === 'summary' ? t('notes.summaryTitle') : t('notes.guideTitle'), [passage]);
         const note = await this.prisma.note.create({
             data: {
                 project_id: projectId,
                 user_id: userId,
                 type: NoteType.NOTE,
-                title: dto.target === 'summary' ? 'Summary of my notes' : 'Study guide from my notes',
+                title: dto.target === 'summary' ? t('notes.summaryTitle') : t('notes.guideTitle'),
                 content: res.content.replace(/\s?\[\d+\]/g, ''),
                 tags: ['ai', dto.target],
             },

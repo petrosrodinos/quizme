@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsIn, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 const lower = ({ value }: { value: unknown }) => (typeof value === 'string' ? value.trim().toLowerCase() : value);
@@ -28,6 +28,11 @@ export class RegisterDto {
     @IsString()
     @MaxLength(64)
     timezone?: string;
+
+    @ApiProperty({ required: false, enum: ['en', 'el'] })
+    @IsOptional()
+    @IsIn(['en', 'el'])
+    language?: 'en' | 'el';
 }
 
 export class LoginDto {
@@ -52,6 +57,11 @@ export class GoogleLoginDto {
     @IsOptional()
     @IsString()
     timezone?: string;
+
+    @ApiProperty({ required: false, enum: ['en', 'el'] })
+    @IsOptional()
+    @IsIn(['en', 'el'])
+    language?: 'en' | 'el';
 }
 
 export class ForgotPasswordDto {

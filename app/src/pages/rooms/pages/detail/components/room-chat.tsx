@@ -9,6 +9,7 @@ import { formatRelative } from "@/lib/date";
 import { cn } from "@/lib/utils";
 import { useSendRoomMessage } from "@/features/rooms/hooks/use-rooms";
 import type { RoomMessage } from "@/features/rooms/interfaces/rooms.interfaces";
+import { Trans, useTranslation } from "react-i18next";
 
 interface RoomChatProps {
     roomId: string;
@@ -18,6 +19,7 @@ interface RoomChatProps {
 }
 
 export const RoomChat = ({ roomId, myId, messages, disabled }: RoomChatProps) => {
+    const { t } = useTranslation("rooms");
     const send = useSendRoomMessage(roomId);
     const [text, setText] = useState("");
     const listRef = useRef<HTMLDivElement>(null);
@@ -35,16 +37,16 @@ export const RoomChat = ({ roomId, myId, messages, disabled }: RoomChatProps) =>
     };
 
     return (
-        <section aria-label="Room chat" className="flex h-[28rem] flex-col rounded-xl border border-border bg-card lg:h-[34rem]">
+        <section aria-label={t("chat.aria")} className="flex h-[28rem] flex-col rounded-xl border border-border bg-card lg:h-[34rem]">
             <div ref={listRef} className="flex-1 space-y-4 overflow-y-auto p-4" aria-live="polite">
                 {!messages.length ? (
                     <p className="py-10 text-center text-sm text-muted-foreground">
-                        Say hi! Ask the AI tutor with <code className="rounded bg-muted px-1">@tutor your question</code>.
+                        <Trans t={t} i18nKey="chat.empty" components={{ code: <code className="rounded bg-muted px-1" /> }} />
                     </p>
                 ) : (
                     messages.map((m) => {
                         const mine = m.user_id === myId && !m.is_ai;
-                        const name = m.is_ai ? "AI tutor" : displayName(m.user);
+                        const name = m.is_ai ? t("chat.aiTutor") : displayName(m.user);
                         return (
                             <div key={m.id} className={cn("flex gap-2.5", mine && "flex-row-reverse")}>
                                 {m.is_ai ? (
@@ -56,7 +58,7 @@ export const RoomChat = ({ roomId, myId, messages, disabled }: RoomChatProps) =>
                                 )}
                                 <div className={cn("max-w-[80%] space-y-1", mine && "items-end text-right")}>
                                     <p className="text-xs text-muted-foreground">
-                                        {mine ? "You" : name} · {formatRelative(m.created_at)}
+                                        {mine ? t("chat.you") : name} · {formatRelative(m.created_at)}
                                     </p>
                                     <div
                                         className={cn(
@@ -76,12 +78,12 @@ export const RoomChat = ({ roomId, myId, messages, disabled }: RoomChatProps) =>
                 <Input
                     value={text}
                     onChange={(e) => setText(e.target.value)}
-                    placeholder="Message the room… (@tutor to ask the AI)"
-                    aria-label="Message"
+                    placeholder={t("chat.placeholder")}
+                    aria-label={t("chat.messageAria")}
                     maxLength={2000}
                     disabled={disabled}
                 />
-                <Button type="submit" size="icon" aria-label="Send message" loading={send.isPending} disabled={disabled || !text.trim()}>
+                <Button type="submit" size="icon" aria-label={t("chat.send")} loading={send.isPending} disabled={disabled || !text.trim()}>
                     <Send className="h-4 w-4" />
                 </Button>
             </form>

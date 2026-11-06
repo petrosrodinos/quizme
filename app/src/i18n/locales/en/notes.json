@@ -1,0 +1,112 @@
+{
+  "page": {
+    "title": "Notes",
+    "description": "Your notes, highlights, annotations, bookmarks and questions — connected to the material they came from."
+  },
+  "actions": {
+    "newNote": "New note"
+  },
+  "types": {
+    "all": "All types",
+    "NOTE": "Note",
+    "HIGHLIGHT": "Highlight",
+    "ANNOTATION": "Annotation",
+    "BOOKMARK": "Bookmark",
+    "QUESTION": "Question"
+  },
+  "scope": {
+    "all": "Mine & shared",
+    "mine": "Only mine",
+    "shared": "Shared with project"
+  },
+  "colors": {
+    "amber": "Amber",
+    "teal": "Teal",
+    "coral": "Coral",
+    "violet": "Violet"
+  },
+  "filters": {
+    "searchPlaceholder": "Search notes…",
+    "searchAria": "Search notes",
+    "type": "Filter by type",
+    "owner": "Filter by owner",
+    "document": "Filter by document",
+    "allDocuments": "All documents",
+    "topic": "Filter by topic",
+    "allTopics": "All topics"
+  },
+  "selection": {
+    "ariaLabel": "Selection actions",
+    "count_one": "{{count}} selected",
+    "count_other": "{{count}} selected"
+  },
+  "transform": {
+    "button": "Transform with AI",
+    "menuLabel": "Turn selected notes into…",
+    "targets": {
+      "flashcards": { "label": "Flashcards", "description": "Turn the selected notes into spaced-repetition cards" },
+      "quiz": { "label": "Quiz", "description": "Generate a practice quiz from the notes" },
+      "summary": { "label": "Summary", "description": "A concise summary saved as a new note" },
+      "study_guide": { "label": "Study guide", "description": "A structured study guide saved as a new note" }
+    }
+  },
+  "empty": {
+    "title": "No notes yet",
+    "filteredTitle": "No notes match these filters",
+    "description": "Write notes here, or highlight text while reading a document to capture it with its source."
+  },
+  "list": {
+    "selectNote": "Select note {{title}}",
+    "shared": "Shared",
+    "byAuthor": "by {{name}}",
+    "actions": "Note actions",
+    "pageShort": "p.{{page}}"
+  },
+  "editor": {
+    "newTitle": "New note",
+    "editTitle": "Edit note",
+    "description": "Markdown, tables and math are supported.",
+    "write": "Write",
+    "preview": "Preview",
+    "emptyPreview": "Nothing to preview yet.",
+    "create": "Create note",
+    "fields": {
+      "title": "Title",
+      "titlePlaceholder": "Krebs cycle — key steps",
+      "type": "Type",
+      "content": "Content",
+      "contentPlaceholder": "Write your note in Markdown…",
+      "topic": "Topic",
+      "noTopic": "No topic",
+      "color": "Color",
+      "noColor": "None",
+      "tags": "Tags",
+      "share": "Share with project members",
+      "shareHint": "Collaborators can read this note."
+    }
+  },
+  "confirm": {
+    "deleteTitle": "Delete this note?",
+    "deleteDescription": "This cannot be undone."
+  },
+  "toasts": {
+    "saved": "Note saved",
+    "saveFailed": "Could not save note",
+    "updated": "Note updated",
+    "updateFailed": "Could not update note",
+    "deleted": "Note deleted",
+    "deleteFailed": "Could not delete note",
+    "transformFlashcards": "Generating flashcards",
+    "transformFlashcardsDescription": "They will appear in your deck shortly.",
+    "transformQuiz": "Generating your quiz",
+    "transformNote": "Created from your notes",
+    "transformFailed": "Could not transform notes"
+  },
+  "errors": {
+    "load": "Failed to load notes.",
+    "save": "Failed to save note.",
+    "update": "Failed to update note.",
+    "delete": "Failed to delete note.",
+    "transform": "Failed to transform notes."
+  }
+}

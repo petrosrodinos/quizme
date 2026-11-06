@@ -1,8 +1,9 @@
 import { ReviewStrategies, type ReviewStrategy } from "@/features/quizzes/interfaces/quizzes.interfaces";
+import { tOption } from "@/lib/i18n-options";
 
-export const ReviewStrategyFormOptions: { id: ReviewStrategy; label: string; description: string }[] = [
-    { id: ReviewStrategies.NEW_QUESTIONS, label: "New questions, same concepts", description: "Fresh questions that test the ideas you missed from a different angle." },
-    { id: ReviewStrategies.RETRY, label: "Retry the exact questions", description: "Answer the questions you got wrong again." },
-];
+export const ReviewStrategyFormOptions = [
+    tOption(ReviewStrategies.NEW_QUESTIONS, "quiz:reviewStrategy.new_questions.label", "quiz:reviewStrategy.new_questions.description"),
+    tOption(ReviewStrategies.RETRY, "quiz:reviewStrategy.retry.label", "quiz:reviewStrategy.retry.description"),
+] as { id: ReviewStrategy; label: string; description: string }[];
 
 export const getReviewStrategyLabel = (s: ReviewStrategy | string): string => ReviewStrategyFormOptions.find((o) => o.id === s)?.label ?? s;

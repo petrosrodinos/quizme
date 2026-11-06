@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { tr } from "@/lib/i18n-options";
 
 interface PinInputProps {
   children: React.ReactElement<typeof PinInputField> | React.ReactElement<typeof PinInputField>[];
@@ -172,7 +173,7 @@ const PinInput = ({ className, children, ref, ...props }: PinInputProps) => {
 
   return (
     <PinInputContext.Provider value={true}>
-      <div ref={ref} aria-label="Pin Input" className={className} {...rest}>
+      <div ref={ref} aria-label={tr("ui:pinInput")} className={className} {...rest}>
         {clones}
         <input type="hidden" name={name} form={form} value={pinValue} />
       </div>

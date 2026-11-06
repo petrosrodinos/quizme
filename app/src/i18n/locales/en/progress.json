@@ -1,0 +1,99 @@
+{
+  "errors": {
+    "load": "Failed to load progress."
+  },
+  "ratings": {
+    "AGAIN": "Again",
+    "HARD": "Hard",
+    "GOOD": "Good",
+    "EASY": "Easy"
+  },
+  "confidence": {
+    "low": "Low confidence — answer more questions",
+    "medium": "Medium confidence",
+    "high": "High confidence"
+  },
+  "metaTitle": "{{title}} · Progress",
+  "loadError": "Couldn't load progress",
+  "empty": {
+    "title": "Your learning analytics will appear here",
+    "description": "Take quizzes, review flashcards and explain concepts to build up your progress history.",
+    "action": "Start a quiz"
+  },
+  "stats": {
+    "studyTime": "Study time",
+    "minSuffix": " min",
+    "last60": "Last 60 days",
+    "questions": "Questions answered",
+    "completedQuizzes_one": "{{count}} completed quiz",
+    "completedQuizzes_other": "{{count}} completed quizzes",
+    "accuracy": "Accuracy",
+    "averageScore": "Average score",
+    "retention": "Flashcard retention",
+    "reviews_one": "{{count}} review",
+    "reviews_other": "{{count}} reviews",
+    "improvement": "Improvement",
+    "pts": " pts",
+    "improvementHint": "First vs latest 5 quizzes",
+    "recall": "Recall score",
+    "recallHint": "Active recall & teach-back",
+    "readinessLabel": "Exam readiness",
+    "readiness": "Readiness"
+  },
+  "charts": {
+    "last30": {
+      "title": "Last 30 days",
+      "description": "Minutes studied (bars) and answer accuracy (line)"
+    },
+    "attempts": {
+      "title": "Quiz attempts over time",
+      "empty": "No completed quizzes yet."
+    },
+    "difficulty": {
+      "title": "Accuracy by difficulty",
+      "description": "Are harder questions holding you back?"
+    },
+    "ratings": {
+      "title": "Flashcard ratings",
+      "description": "Last 60 days"
+    },
+    "readiness": {
+      "title": "Readiness breakdown",
+      "noData": "no data"
+    },
+    "strong": {
+      "title": "Strongest topics",
+      "empty": "Practise topics to see your strengths."
+    },
+    "weak": {
+      "title": "Weakest topics",
+      "empty": "No weak topics detected yet."
+    }
+  },
+  "chart": {
+    "dailyLabel": "Study minutes and accuracy over the last 30 days",
+    "accuracy": "Accuracy",
+    "studied": "Studied",
+    "minutes": "{{value}} min",
+    "attemptsLabel": "Attempt scores: {{list}}",
+    "attemptItem": "Attempt {{index}} {{score}}%",
+    "score": "Score",
+    "difficultyLabel": "Accuracy by difficulty: {{list}}",
+    "difficultyItem": "level {{level}} {{value}}%",
+    "na": "n/a",
+    "level": "Lv {{level}}",
+    "answers_one": "{{value}}% ({{count}} answer)",
+    "answers_other": "{{value}}% ({{count}} answers)",
+    "ratingsLabel": "Flashcard ratings: {{list}}",
+    "reviews": "Reviews"
+  },
+  "leaderboard": {
+    "title": "This week's leaderboard",
+    "description": "Weekly XP among collaborators who opted in. Resets every Monday.",
+    "hidden": "Others can't see you yet.",
+    "optIn": "Opt in to leaderboards",
+    "first": "First place",
+    "you": "(you)",
+    "xp": "{{value}} XP"
+  }
+}

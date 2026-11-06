@@ -10,6 +10,7 @@ import { useCreateRoom } from "@/features/rooms/hooks/use-rooms";
 import type { Project } from "@/features/projects/interfaces/projects.interfaces";
 import type { StudyRoom } from "@/features/rooms/interfaces/rooms.interfaces";
 import { createRoomSchema, type CreateRoomFormValues } from "../validation-schemas/rooms.schema";
+import { useTranslation } from "react-i18next";
 
 interface CreateRoomDialogProps {
     open: boolean;
@@ -20,6 +21,7 @@ interface CreateRoomDialogProps {
 }
 
 export const CreateRoomDialog = ({ open, onOpenChange, projects, defaultProjectId, onCreated }: CreateRoomDialogProps) => {
+    const { t } = useTranslation("rooms");
     const create = useCreateRoom();
     const form = useForm<CreateRoomFormValues>({ resolver: zodResolver(createRoomSchema), defaultValues: { project_id: defaultProjectId ?? "", name: "" } });
 
@@ -42,8 +44,8 @@ export const CreateRoomDialog = ({ open, onOpenChange, projects, defaultProjectI
         <Dialog open={open} onOpenChange={(o) => !create.isPending && onOpenChange(o)}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle className="font-display text-2xl font-normal">New study room</DialogTitle>
-                    <DialogDescription>Project members can join to chat, run a shared timer and play quizzes together.</DialogDescription>
+                    <DialogTitle className="font-display text-2xl font-normal">{t("create.title")}</DialogTitle>
+                    <DialogDescription>{t("create.description")}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(submit)} className="space-y-4" noValidate>
@@ -52,11 +54,11 @@ export const CreateRoomDialog = ({ open, onOpenChange, projects, defaultProjectI
                             name="project_id"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Project</FormLabel>
+                                    <FormLabel>{t("create.project")}</FormLabel>
                                     <Select value={field.value || undefined} onValueChange={field.onChange}>
                                         <FormControl>
-                                            <SelectTrigger aria-label="Project">
-                                                <SelectValue placeholder="Choose a project" />
+                                            <SelectTrigger aria-label={t("create.project")}>
+                                                <SelectValue placeholder={t("create.chooseProject")} />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
@@ -76,9 +78,9 @@ export const CreateRoomDialog = ({ open, onOpenChange, projects, defaultProjectI
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Room name</FormLabel>
+                                    <FormLabel>{t("create.name")}</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Evening revision" {...field} />
+                                        <Input placeholder={t("create.namePlaceholder")} {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -86,10 +88,10 @@ export const CreateRoomDialog = ({ open, onOpenChange, projects, defaultProjectI
                         />
                         <DialogFooter>
                             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} disabled={create.isPending}>
-                                Cancel
+                                {t("common:actions.cancel")}
                             </Button>
                             <Button type="submit" loading={create.isPending}>
-                                Create room
+                                {t("create.submit")}
                             </Button>
                         </DialogFooter>
                     </form>

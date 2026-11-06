@@ -9,6 +9,9 @@ import { CelebrationKinds, useCelebrationsStore } from "@/stores/celebrations";
 import { toast } from "@/hooks/use-toast";
 import { CelebrationModal } from "@/components/ui/celebration-modal";
 import { XpPopupLayer } from "@/components/ui/xp-popup";
+import { tr } from "@/lib/i18n-options";
+import { getLevelTitleLabel } from "@/config/constants/dropdowns/gamification/level-title.options";
+import { getAchievementText } from "@/config/constants/dropdowns/gamification/achievement-text.options";
 
 const MAJOR_RARITIES = new Set(["RARE", "EPIC", "LEGENDARY"]);
 
@@ -37,7 +40,7 @@ export const GamificationEventsProvider = ({ children }: { children: ReactNode }
     useRealtimeEvent<LevelUpEvent>(RealtimeEvents.LEVEL_UP, (e) => {
         queryClient.invalidateQueries({ queryKey: ["gamification-profile"] });
         if (quiet()) return;
-        push({ kind: CelebrationKinds.LEVEL_UP, title: `Level ${e.level}`, description: `You are now a ${e.level_title}.`, level: e.level });
+        push({ kind: CelebrationKinds.LEVEL_UP, title: tr("ui:celebration.levelTitle", { level: e.level }), description: tr("ui:celebration.levelDescription", { title: getLevelTitleLabel(e.level_title) }), level: e.level });
         play("levelUp");
         haptic("celebrate");
     });
@@ -48,10 +51,11 @@ export const GamificationEventsProvider = ({ children }: { children: ReactNode }
         const prefs = usePreferencesStore.getState();
         if (quiet() || !prefs.achievement_popups) return;
         play("achievement");
+        const text = getAchievementText(e);
         if (MAJOR_RARITIES.has(e.rarity)) {
-            push({ kind: CelebrationKinds.ACHIEVEMENT, title: e.title, description: e.description, icon: e.icon, rarity: e.rarity });
+            push({ kind: CelebrationKinds.ACHIEVEMENT, title: text.title, description: text.description, icon: e.icon, rarity: e.rarity });
         } else {
-            toast({ title: `Achievement unlocked · ${e.title}`, description: e.description, duration: 4000 });
+            toast({ title: tr("ui:celebration.achievementToast", { title: text.title }), description: text.description, duration: 4000 });
         }
     });
 
@@ -62,7 +66,7 @@ export const GamificationEventsProvider = ({ children }: { children: ReactNode }
     useRealtimeEvent(RealtimeEvents.DAILY_GOAL_MET, () => {
         queryClient.invalidateQueries({ queryKey: ["gamification-profile"] });
         if (quiet()) return;
-        push({ kind: CelebrationKinds.DAILY_GOAL, title: "Daily goal complete", description: "Consistency builds mastery. Your streak is safe today." });
+        push({ kind: CelebrationKinds.DAILY_GOAL, title: tr("ui:celebration.goalTitle"), description: tr("ui:celebration.goalDescription") });
         play("goal");
     });
 

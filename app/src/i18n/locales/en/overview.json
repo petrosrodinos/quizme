@@ -1,0 +1,74 @@
+{
+  "metaTitle": "{{title}} · Overview",
+  "empty": {
+    "title": "Add your study material",
+    "description": "Upload PDFs, Word documents, text or Markdown files. QuizMe will process them so you can ask questions, generate quizzes and flashcards.",
+    "action": "Upload documents"
+  },
+  "stats": {
+    "cardsDue": "Flashcards due",
+    "quizAccuracy": "Quiz accuracy",
+    "studyTime": "Study time this week",
+    "minSuffix": " min",
+    "exam": "Exam",
+    "daySuffix_one": " day",
+    "daySuffix_other": " days",
+    "noExamDate": "No exam date set"
+  },
+  "session": {
+    "title": "Today's recommended session",
+    "blocks": {
+      "flashcards": "Flashcard review",
+      "weak_topics": "Weak topics",
+      "adaptive_quiz": "Adaptive quiz",
+      "recall": "Explain concepts",
+      "exam": "Exam simulation",
+      "upload": "Upload your study material"
+    },
+    "minutes": "{{count}} min",
+    "start": "Start",
+    "unavailable": "Recommendations are unavailable right now.",
+    "pending": "Once your documents are processed, we'll plan a personalised session for you here."
+  },
+  "actions": {
+    "title": "Quick actions",
+    "upload": "Upload material",
+    "adaptive": "Start adaptive quiz",
+    "review": "Review flashcards",
+    "tutor": "Ask the tutor"
+  },
+  "attempts": {
+    "title": "Recent quiz scores",
+    "allProgress": "All progress",
+    "chartLabel": "Recent quiz scores: {{scores}}",
+    "score": "Score"
+  },
+  "docs": {
+    "title": "Study material",
+    "manage": "Manage",
+    "readyLabel": "Documents ready",
+    "ready": "{{count}} ready",
+    "processing": "{{count}} processing",
+    "failed": "{{count}} failed"
+  },
+  "weak": {
+    "title": "Weak topics",
+    "map": "Knowledge map",
+    "masteryLabel": "{{name}} mastery",
+    "none": "No weak topics detected yet. Keep practising!"
+  },
+  "readiness": {
+    "title": "Exam readiness",
+    "target": "target {{value}}%",
+    "empty": "Answer some questions and review flashcards to calculate your readiness.",
+    "blockers": "What's holding you back",
+    "factors": {
+      "quiz_performance": "Quiz performance",
+      "recent_performance": "Recent performance",
+      "difficulty": "Harder questions",
+      "retention": "Flashcard retention",
+      "topic_mastery": "Topic mastery",
+      "exam_simulation": "Exam simulations"
+    }
+  }
+}

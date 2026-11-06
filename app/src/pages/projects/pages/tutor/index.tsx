@@ -19,11 +19,13 @@ import { useFlatTopics } from "@/features/topics/hooks/use-topics";
 import { ChatModes, type ChatMode, type ChatThread } from "@/features/tutor/interfaces/tutor.interfaces";
 import { ChatModeFormOptions, TutorSuggestedPromptOptions, getChatModeLabel } from "@/config/constants/dropdowns/tutor/chat-mode.options";
 import { ChatMessage } from "./components/chat-message";
+import { useTranslation } from "react-i18next";
 
 const ANY = "any";
 
 export default function ProjectTutorPage() {
-    usePageMetadata({ title: "AI Tutor" });
+    const { t } = useTranslation("tutor");
+    usePageMetadata({ title: t("page.title") });
     const { projectId, project } = useProjectContext();
     const { data: threads = [], isPending: threadsPending } = useThreads(projectId);
     const { data: documents = [] } = useDocuments(projectId);
@@ -44,7 +46,7 @@ export default function ProjectTutorPage() {
     const scrollRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLTextAreaElement>(null);
 
-    const activeThread = threads.find((t) => t.id === activeId) ?? thread?.thread ?? null;
+    const activeThread = threads.find((th) => th.id === activeId) ?? thread?.thread ?? null;
     const activeMode = activeThread?.mode ?? mode;
     const messages = thread?.messages ?? [];
     const pendingText = send.isPending && send.variables?.threadId === activeId && !messages.some((m) => m.id.startsWith("temp-")) ? send.variables?.dto.content : null;
@@ -98,48 +100,48 @@ export default function ProjectTutorPage() {
     return (
         <Main width="full" className="pb-4">
             <div className="grid h-[calc(100dvh-13rem)] min-h-[520px] gap-4 lg:grid-cols-[260px_1fr]">
-                <aside aria-label="Conversations" className="hidden flex-col rounded-xl border border-border bg-card lg:flex">
+                <aside aria-label={t("threads.title")} className="hidden flex-col rounded-xl border border-border bg-card lg:flex">
                     <div className="border-b border-border p-3">
                         <Button className="w-full" variant="outline" onClick={newChat}>
-                            <MessageSquarePlus /> New chat
+                            <MessageSquarePlus /> {t("threads.newChat")}
                         </Button>
                     </div>
                     <div className="flex-1 overflow-y-auto p-2">
                         {threadsPending ? (
                             Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="mb-2 h-12 w-full" />)
                         ) : !threads.length ? (
-                            <p className="p-3 text-sm text-muted-foreground">No conversations yet.</p>
+                            <p className="p-3 text-sm text-muted-foreground">{t("threads.empty")}</p>
                         ) : (
-                            threads.map((t) => (
-                                <div key={t.id} className={cn("group flex items-center rounded-md", activeId === t.id ? "bg-surface-card" : "hover:bg-muted")}>
+                            threads.map((th) => (
+                                <div key={th.id} className={cn("group flex items-center rounded-md", activeId === th.id ? "bg-surface-card" : "hover:bg-muted")}>
                                     <button
                                         type="button"
-                                        onClick={() => setActiveId(t.id)}
-                                        aria-current={activeId === t.id}
+                                        onClick={() => setActiveId(th.id)}
+                                        aria-current={activeId === th.id}
                                         className="min-w-0 flex-1 rounded-md px-3 py-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                                     >
-                                        <span className="block truncate text-sm">{t.title}</span>
+                                        <span className="block truncate text-sm">{th.title}</span>
                                         <span className="text-xs text-muted-foreground">
-                                            {getChatModeLabel(t.mode)} · {formatRelative(t.updated_at)}
+                                            {getChatModeLabel(th.mode)} · {formatRelative(th.updated_at)}
                                         </span>
                                     </button>
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                            <Button size="icon" variant="ghost" className="h-7 w-7 opacity-60 group-hover:opacity-100" aria-label={`Actions for ${t.title}`}>
+                                            <Button size="icon" variant="ghost" className="h-7 w-7 opacity-60 group-hover:opacity-100" aria-label={t("threads.actionsFor", { title: th.title })}>
                                                 <MoreHorizontal />
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end">
                                             <DropdownMenuItem
                                                 onSelect={() => {
-                                                    setRenaming(t);
-                                                    setRenameValue(t.title);
+                                                    setRenaming(th);
+                                                    setRenameValue(th.title);
                                                 }}
                                             >
-                                                <Pencil /> Rename
+                                                <Pencil /> {t("common:actions.rename")}
                                             </DropdownMenuItem>
-                                            <DropdownMenuItem className="text-destructive" onSelect={() => setToDelete(t)}>
-                                                <Trash2 /> Delete
+                                            <DropdownMenuItem className="text-destructive" onSelect={() => setToDelete(th)}>
+                                                <Trash2 /> {t("common:actions.delete")}
                                             </DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>
@@ -149,24 +151,24 @@ export default function ProjectTutorPage() {
                     </div>
                 </aside>
 
-                <section aria-label="Chat" className="flex min-h-0 flex-col rounded-xl border border-border bg-card">
+                <section aria-label={t("chat.ariaLabel")} className="flex min-h-0 flex-col rounded-xl border border-border bg-card">
                     <header className="flex flex-wrap items-center gap-2 border-b border-border p-3">
                         <div className="lg:hidden">
                             <Select value={activeId ?? "new"} onValueChange={(v) => (v === "new" ? newChat() : setActiveId(v))}>
-                                <SelectTrigger className="w-44" aria-label="Conversation">
+                                <SelectTrigger className="w-44" aria-label={t("threads.select")}>
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="new">New chat</SelectItem>
-                                    {threads.map((t) => (
-                                        <SelectItem key={t.id} value={t.id}>
-                                            {t.title}
+                                    <SelectItem value="new">{t("threads.newChat")}</SelectItem>
+                                    {threads.map((th) => (
+                                        <SelectItem key={th.id} value={th.id}>
+                                            {th.title}
                                         </SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
                         </div>
-                        <div role="radiogroup" aria-label="Tutor mode" className="inline-flex rounded-lg bg-muted p-0.5">
+                        <div role="radiogroup" aria-label={t("chat.modeGroup")} className="inline-flex rounded-lg bg-muted p-0.5">
                             {ChatModeFormOptions.map((o) => (
                                 <button
                                     key={o.id}
@@ -186,11 +188,11 @@ export default function ProjectTutorPage() {
                         </div>
                         <div className="ml-auto flex flex-wrap gap-2">
                             <Select value={docScope} onValueChange={setDocScope}>
-                                <SelectTrigger className="h-8 w-44 text-xs" aria-label="Limit to document">
+                                <SelectTrigger className="h-8 w-auto min-w-36 max-w-56 text-xs" aria-label={t("chat.limitDocument")}>
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value={ANY}>All documents</SelectItem>
+                                    <SelectItem value={ANY}>{t("chat.allDocuments")}</SelectItem>
                                     {documents
                                         .filter((d) => d.status === "READY")
                                         .map((d) => (
@@ -201,11 +203,11 @@ export default function ProjectTutorPage() {
                                 </SelectContent>
                             </Select>
                             <Select value={topicScope} onValueChange={setTopicScope}>
-                                <SelectTrigger className="h-8 w-40 text-xs" aria-label="Limit to topic">
+                                <SelectTrigger className="h-8 w-auto min-w-36 max-w-56 text-xs" aria-label={t("chat.limitTopic")}>
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value={ANY}>All topics</SelectItem>
+                                    <SelectItem value={ANY}>{t("chat.allTopics")}</SelectItem>
                                     {topics.map((t) => (
                                         <SelectItem key={t.id} value={t.id}>
                                             {t.depth ? "↳ " : ""}
@@ -228,11 +230,9 @@ export default function ProjectTutorPage() {
                                 <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-surface-card">
                                     {activeMode === ChatModes.SOCRATIC ? <HelpCircle className="h-6 w-6 text-primary" /> : <GraduationCap className="h-6 w-6 text-primary" />}
                                 </div>
-                                <h2 className="font-display text-2xl">{activeMode === ChatModes.SOCRATIC ? "Let's think it through together" : `Ask anything about ${project.title}`}</h2>
+                                <h2 className="font-display text-2xl">{activeMode === ChatModes.SOCRATIC ? t("empty.socraticTitle") : t("empty.tutorTitle", { title: project.title })}</h2>
                                 <p className="mt-2 text-sm text-muted-foreground">
-                                    {activeMode === ChatModes.SOCRATIC
-                                        ? "I'll guide you with questions instead of giving the answer straight away."
-                                        : "Answers come from your uploaded sources, with citations. If something isn't covered, I'll say so."}
+                                    {activeMode === ChatModes.SOCRATIC ? t("empty.socraticDescription") : t("empty.tutorDescription")}
                                 </p>
                                 <div className="mt-6 flex flex-wrap justify-center gap-2">
                                     {TutorSuggestedPromptOptions.map((p) => (
@@ -269,7 +269,7 @@ export default function ProjectTutorPage() {
                                     {[0, 1, 2].map((i) => (
                                         <span key={i} className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground/60 motion-reduce:animate-none" style={{ animationDelay: `${i * 120}ms` }} />
                                     ))}
-                                    <span className="sr-only">The tutor is typing</span>
+                                    <span className="sr-only">{t("chat.typing")}</span>
                                 </div>
                             </div>
                         )}
@@ -290,15 +290,15 @@ export default function ProjectTutorPage() {
                                 onKeyDown={onKeyDown}
                                 rows={2}
                                 maxLength={6000}
-                                placeholder={activeMode === ChatModes.SOCRATIC ? "What are you trying to understand?" : "Ask your tutor…"}
-                                aria-label="Message"
+                                placeholder={activeMode === ChatModes.SOCRATIC ? t("chat.socraticPlaceholder") : t("chat.placeholder")}
+                                aria-label={t("chat.message")}
                                 className="max-h-48 min-h-12 resize-none"
                             />
-                            <Button type="submit" size="icon" aria-label="Send" disabled={!draft.trim() || send.isPending || createThread.isPending}>
+                            <Button type="submit" size="icon" aria-label={t("common:actions.send")} disabled={!draft.trim() || send.isPending || createThread.isPending}>
                                 <Send />
                             </Button>
                         </div>
-                        <p className="mt-1 text-xs text-muted-foreground">Enter to send · Shift+Enter for a new line</p>
+                        <p className="mt-1 text-xs text-muted-foreground">{t("chat.keyboardHint")}</p>
                     </form>
                 </section>
             </div>
@@ -306,7 +306,7 @@ export default function ProjectTutorPage() {
             <Dialog open={!!renaming} onOpenChange={(o) => !o && setRenaming(null)}>
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                        <DialogTitle>Rename conversation</DialogTitle>
+                        <DialogTitle>{t("threads.renameTitle")}</DialogTitle>
                     </DialogHeader>
                     <form
                         onSubmit={(e) => {
@@ -315,13 +315,13 @@ export default function ProjectTutorPage() {
                         }}
                         className="space-y-4"
                     >
-                        <Input value={renameValue} onChange={(e) => setRenameValue(e.target.value)} maxLength={120} autoFocus aria-label="Conversation title" />
+                        <Input value={renameValue} onChange={(e) => setRenameValue(e.target.value)} maxLength={120} autoFocus aria-label={t("threads.titleField")} />
                         <DialogFooter>
                             <Button type="button" variant="outline" onClick={() => setRenaming(null)}>
-                                Cancel
+                                {t("common:actions.cancel")}
                             </Button>
                             <Button type="submit" loading={updateThread.isPending} disabled={!renameValue.trim()}>
-                                Save
+                                {t("common:actions.save")}
                             </Button>
                         </DialogFooter>
                     </form>
@@ -339,9 +339,9 @@ export default function ProjectTutorPage() {
                         },
                     })
                 }
-                title="Delete this conversation?"
-                description="All messages in it will be removed."
-                confirmText="Delete"
+                title={t("confirm.deleteTitle")}
+                description={t("confirm.deleteDescription")}
+                confirmText={t("common:actions.delete")}
                 variant="destructive"
                 isLoading={deleteThread.isPending}
             />

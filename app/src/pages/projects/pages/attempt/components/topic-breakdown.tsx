@@ -9,7 +9,8 @@ interface TopicBreakdownProps {
     reduceMotion?: boolean;
 }
 
-export const TopicBreakdown = ({ rows, reduceMotion }: TopicBreakdownProps) => (
+export const TopicBreakdown = ({ rows, reduceMotion }: TopicBreakdownProps) => {
+    return (
     <ul className="space-y-3">
         {rows.map((t) => (
             <li key={t.topic_id ?? t.topic}>
@@ -30,4 +31,5 @@ export const TopicBreakdown = ({ rows, reduceMotion }: TopicBreakdownProps) => (
             </li>
         ))}
     </ul>
-);
+    );
+};

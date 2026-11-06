@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { tr } from "@/lib/i18n-options";
 
 interface ComboBadgeProps {
     combo: number;
@@ -27,7 +28,7 @@ export const ComboBadge = ({ combo, minVisible = 2, className }: ComboBadgeProps
                 transition={{ duration: 0.3 }}
                 className={cn("inline-flex items-center gap-1 rounded-full px-3 py-1 text-sm font-bold", intensity(combo), className)}
                 aria-live="polite"
-                aria-label={`Combo ${combo}`}
+                aria-label={tr("ui:combo", { count: combo })}
             >
                 <Zap className="h-3.5 w-3.5" aria-hidden />x{combo}
             </motion.div>

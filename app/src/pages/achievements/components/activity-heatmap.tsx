@@ -1,6 +1,7 @@
 import type { FC } from "react";
 import { Snowflake } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 import { formatDate } from "@/lib/date";
 import type { ActivityDay } from "@/features/gamification/interfaces/gamification.interfaces";
 
@@ -14,6 +15,7 @@ const intensity = (d: ActivityDay) => {
 
 /** 12-week calendar heatmap (columns = weeks, rows = weekdays). */
 export const ActivityHeatmap: FC<{ days: ActivityDay[] }> = ({ days }) => {
+    const { t } = useTranslation("achievements");
     const first = days[0] ? new Date(`${days[0].date}T12:00:00`) : new Date();
     const offset = (first.getDay() + 6) % 7; // Monday-first
     const cells: (ActivityDay | null)[] = [...Array.from({ length: offset }, () => null), ...days];
@@ -23,7 +25,7 @@ export const ActivityHeatmap: FC<{ days: ActivityDay[] }> = ({ days }) => {
     return (
         <div>
             <div className="scrollbar-none overflow-x-auto">
-                <div className="flex gap-1" role="img" aria-label={`Daily goal met on ${met} of the last ${days.length} days`}>
+                <div className="flex gap-1" role="img" aria-label={t("heatmap.aria", { count: met, total: days.length })}>
                     {weeks.map((w, wi) => (
                         <div key={wi} className="flex flex-col gap-1">
                             {Array.from({ length: 7 }).map((_, di) => {
@@ -32,7 +34,7 @@ export const ActivityHeatmap: FC<{ days: ActivityDay[] }> = ({ days }) => {
                                 return (
                                     <div
                                         key={di}
-                                        title={`${formatDate(d.date)} · ${d.minutes_studied} min · ${d.xp_earned} XP${d.goal_met ? " · goal met" : ""}${d.freeze_used ? " · streak freeze" : ""}`}
+                                        title={[formatDate(d.date), t("common:units.min", { count: d.minutes_studied }), t("common:units.xp", { count: d.xp_earned }), d.goal_met ? t("heatmap.goalMet") : null, d.freeze_used ? t("heatmap.freeze") : null].filter(Boolean).join(" · ")}
                                         className={cn("flex h-3.5 w-3.5 items-center justify-center rounded-[3px]", intensity(d))}
                                     >
                                         {d.freeze_used && <Snowflake className="h-2.5 w-2.5 text-white" aria-hidden />}
@@ -45,16 +47,16 @@ export const ActivityHeatmap: FC<{ days: ActivityDay[] }> = ({ days }) => {
             </div>
             <div className="mt-3 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
                 <span className="inline-flex items-center gap-1">
-                    <span className="h-2.5 w-2.5 rounded-sm bg-surface-strong" /> No study
+                    <span className="h-2.5 w-2.5 rounded-sm bg-surface-strong" /> {t("heatmap.noStudy")}
                 </span>
                 <span className="inline-flex items-center gap-1">
-                    <span className="h-2.5 w-2.5 rounded-sm bg-success/50" /> Studied
+                    <span className="h-2.5 w-2.5 rounded-sm bg-success/50" /> {t("heatmap.studied")}
                 </span>
                 <span className="inline-flex items-center gap-1">
-                    <span className="h-2.5 w-2.5 rounded-sm bg-success" /> Goal met
+                    <span className="h-2.5 w-2.5 rounded-sm bg-success" /> {t("heatmap.goalMetLegend")}
                 </span>
                 <span className="inline-flex items-center gap-1">
-                    <span className="h-2.5 w-2.5 rounded-sm bg-teal/50" /> Freeze used
+                    <span className="h-2.5 w-2.5 rounded-sm bg-teal/50" /> {t("heatmap.freezeUsed")}
                 </span>
             </div>
         </div>

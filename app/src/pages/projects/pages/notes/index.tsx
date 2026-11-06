@@ -29,6 +29,7 @@ import { NoteScopeFilterOptions } from "@/config/constants/dropdowns/notes/note-
 import { NoteTransformOptions } from "@/config/constants/dropdowns/notes/note-transform.options";
 import { NoteEditorDialog } from "./components/note-editor-dialog";
 import type { NoteFormValues } from "./validation-schemas/note.schema";
+import { useTranslation } from "react-i18next";
 
 const ALL = "all";
 const colorBorder: Record<string, string> = {
@@ -39,7 +40,8 @@ const colorBorder: Record<string, string> = {
 };
 
 export default function ProjectNotesPage() {
-    usePageMetadata({ title: "Notes" });
+    const { t } = useTranslation("notes");
+    usePageMetadata({ title: t("page.title") });
     const { projectId, can } = useProjectContext();
     const navigate = useNavigate();
     const me = useAuthStore((s) => s.user?.id);
@@ -48,8 +50,8 @@ export default function ProjectNotesPage() {
     const [search, setSearch] = useState("");
     const [query, setQuery] = useState<NotesQuery>({ scope: "all" });
     useEffect(() => {
-        const t = setTimeout(() => setQuery((q) => ({ ...q, search: search.trim() || undefined })), 300);
-        return () => clearTimeout(t);
+        const timer = setTimeout(() => setQuery((q) => ({ ...q, search: search.trim() || undefined })), 300);
+        return () => clearTimeout(timer);
     }, [search]);
     const { data: notes = [], isPending } = useNotes(projectId, query);
     const create = useCreateNote();
@@ -107,8 +109,8 @@ export default function ProjectNotesPage() {
     return (
         <Main width="wide">
             <PageHeader
-                title="Notes"
-                description="Your notes, highlights, annotations, bookmarks and questions — connected to the material they came from."
+                title={t("page.title")}
+                description={t("page.description")}
                 actions={
                     <div className="flex flex-wrap gap-2">
                         <ExportMenu projectId={projectId} type="notes" />
@@ -118,7 +120,7 @@ export default function ProjectNotesPage() {
                                 setEditorOpen(true);
                             }}
                         >
-                            <Plus /> New note
+                            <Plus /> {t("actions.newNote")}
                         </Button>
                     </div>
                 }
@@ -127,10 +129,10 @@ export default function ProjectNotesPage() {
             <div className="mb-4 flex flex-col gap-2 rounded-xl border border-border bg-card p-3 lg:flex-row lg:flex-wrap lg:items-center">
                 <div className="relative min-w-48 flex-1">
                     <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-                    <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search notes…" className="pl-9" aria-label="Search notes" />
+                    <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t("filters.searchPlaceholder")} className="pl-9" aria-label={t("filters.searchAria")} />
                 </div>
                 <Select value={query.type ?? ALL} onValueChange={(v) => setFilter("type", v === ALL ? undefined : (v as NoteType))}>
-                    <SelectTrigger className="w-36" aria-label="Filter by type">
+                    <SelectTrigger className="w-auto min-w-36 max-w-full" aria-label={t("filters.type")}>
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -142,7 +144,7 @@ export default function ProjectNotesPage() {
                     </SelectContent>
                 </Select>
                 <Select value={query.scope ?? "all"} onValueChange={(v) => setFilter("scope", v as NoteScope)}>
-                    <SelectTrigger className="w-44" aria-label="Filter by owner">
+                    <SelectTrigger className="w-auto min-w-40 max-w-64" aria-label={t("filters.owner")}>
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -154,11 +156,11 @@ export default function ProjectNotesPage() {
                     </SelectContent>
                 </Select>
                 <Select value={query.document_id ?? ALL} onValueChange={(v) => setFilter("document_id", v === ALL ? undefined : v)}>
-                    <SelectTrigger className="w-48" aria-label="Filter by document">
+                    <SelectTrigger className="w-auto min-w-40 max-w-64" aria-label={t("filters.document")}>
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value={ALL}>All documents</SelectItem>
+                        <SelectItem value={ALL}>{t("filters.allDocuments")}</SelectItem>
                         {documents.map((d) => (
                             <SelectItem key={d.id} value={d.id}>
                                 {d.filename}
@@ -167,11 +169,11 @@ export default function ProjectNotesPage() {
                     </SelectContent>
                 </Select>
                 <Select value={query.topic_id ?? ALL} onValueChange={(v) => setFilter("topic_id", v === ALL ? undefined : v)}>
-                    <SelectTrigger className="w-44" aria-label="Filter by topic">
+                    <SelectTrigger className="w-auto min-w-40 max-w-64" aria-label={t("filters.topic")}>
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value={ALL}>All topics</SelectItem>
+                        <SelectItem value={ALL}>{t("filters.allTopics")}</SelectItem>
                         {topics.map((t) => (
                             <SelectItem key={t.id} value={t.id}>
                                 {t.depth ? "↳ " : ""}
@@ -183,16 +185,16 @@ export default function ProjectNotesPage() {
             </div>
 
             {selectedIds.length > 0 && (
-                <div className="sticky top-16 z-10 mb-4 flex flex-wrap items-center gap-2 rounded-xl border border-primary/30 bg-primary/5 p-3" role="region" aria-label="Selection actions">
-                    <span className="text-sm font-medium">{selectedIds.length} selected</span>
+                <div className="sticky top-16 z-10 mb-4 flex flex-wrap items-center gap-2 rounded-xl border border-primary/30 bg-primary/5 p-3" role="region" aria-label={t("selection.ariaLabel")}>
+                    <span className="text-sm font-medium">{t("selection.count", { count: selectedIds.length })}</span>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button size="sm" loading={transform.isPending}>
-                                <Sparkles /> Transform with AI
+                                <Sparkles /> {t("transform.button")}
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="start" className="w-72">
-                            <DropdownMenuLabel>Turn selected notes into…</DropdownMenuLabel>
+                            <DropdownMenuLabel>{t("transform.menuLabel")}</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             {NoteTransformOptions.map((o) => (
                                 <DropdownMenuItem key={o.id} onSelect={() => runTransform(o.id)} className="flex-col items-start">
@@ -203,7 +205,7 @@ export default function ProjectNotesPage() {
                         </DropdownMenuContent>
                     </DropdownMenu>
                     <Button size="sm" variant="ghost" onClick={() => setSelected(new Set())}>
-                        Clear
+                        {t("common:actions.clear")}
                     </Button>
                 </div>
             )}
@@ -213,8 +215,8 @@ export default function ProjectNotesPage() {
             ) : !notes.length ? (
                 <EmptyState
                     icon={StickyNote}
-                    title={query.search || query.type || query.document_id || query.topic_id ? "No notes match these filters" : "No notes yet"}
-                    description="Write notes here, or highlight text while reading a document to capture it with its source."
+                    title={query.search || query.type || query.document_id || query.topic_id ? t("empty.filteredTitle") : t("empty.title")}
+                    description={t("empty.description")}
                     action={
                         <Button
                             onClick={() => {
@@ -222,7 +224,7 @@ export default function ProjectNotesPage() {
                                 setEditorOpen(true);
                             }}
                         >
-                            <Plus /> New note
+                            <Plus /> {t("actions.newNote")}
                         </Button>
                     }
                 />
@@ -242,23 +244,23 @@ export default function ProjectNotesPage() {
                                 )}
                             >
                                 <div className="flex items-start gap-3">
-                                    <Checkbox checked={selected.has(n.id)} onCheckedChange={() => toggle(n.id)} aria-label={`Select note ${n.title ?? ""}`} className="mt-1" />
+                                    <Checkbox checked={selected.has(n.id)} onCheckedChange={() => toggle(n.id)} aria-label={t("list.selectNote", { title: n.title ?? "" })} className="mt-1" />
                                     <div className="min-w-0 flex-1">
                                         <div className="flex flex-wrap items-center gap-1.5">
                                             <Badge variant="outline">{getNoteTypeLabel(n.type)}</Badge>
                                             {n.is_shared && (
                                                 <Badge variant="secondary">
-                                                    <Share2 className="h-3 w-3" /> Shared
+                                                    <Share2 className="h-3 w-3" /> {t("list.shared")}
                                                 </Badge>
                                             )}
-                                            {!mine && n.user && <span className="text-xs text-muted-foreground">by {n.user.full_name || n.user.email}</span>}
+                                            {!mine && n.user && <span className="text-xs text-muted-foreground">{t("list.byAuthor", { name: n.user.full_name || n.user.email })}</span>}
                                         </div>
                                         {n.title && <h3 className="mt-2 font-medium">{n.title}</h3>}
                                     </div>
                                     {(canEdit || canDelete) && (
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
-                                                <Button size="icon" variant="ghost" aria-label="Note actions">
+                                                <Button size="icon" variant="ghost" aria-label={t("list.actions")}>
                                                     <MoreHorizontal />
                                                 </Button>
                                             </DropdownMenuTrigger>
@@ -270,10 +272,10 @@ export default function ProjectNotesPage() {
                                                         setEditorOpen(true);
                                                     }}
                                                 >
-                                                    <Pencil /> Edit
+                                                    <Pencil /> {t("common:actions.edit")}
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem disabled={!canDelete} className="text-destructive" onSelect={() => setToDelete(n)}>
-                                                    <Trash2 /> Delete
+                                                    <Trash2 /> {t("common:actions.delete")}
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
@@ -292,7 +294,7 @@ export default function ProjectNotesPage() {
                                         <Link to={Routes.projects.document(projectId, n.document.id)} className="inline-flex items-center gap-1 text-primary hover:underline">
                                             <FileText className="h-3 w-3" aria-hidden />
                                             {n.document.filename}
-                                            {n.page ? `, p.${n.page}` : ""}
+                                            {n.page ? `, ${t("list.pageShort", { page: n.page })}` : ""}
                                         </Link>
                                     )}
                                     {n.topic && <span>· {n.topic.name}</span>}
@@ -320,9 +322,9 @@ export default function ProjectNotesPage() {
                 isOpen={!!toDelete}
                 onClose={() => setToDelete(null)}
                 onConfirm={() => toDelete && remove.mutate(toDelete.id, { onSuccess: () => setToDelete(null) })}
-                title="Delete this note?"
-                description="This cannot be undone."
-                confirmText="Delete"
+                title={t("confirm.deleteTitle")}
+                description={t("confirm.deleteDescription")}
+                confirmText={t("common:actions.delete")}
                 variant="destructive"
                 isLoading={remove.isPending}
             />

@@ -16,6 +16,7 @@ import type { NoteWithRelations } from "@/features/notes/interfaces/notes.interf
 import type { FlatTopic } from "@/features/topics/interfaces/topics.interfaces";
 import { TagsInput } from "@/pages/projects/components/tags-input";
 import { noteFormSchema, type NoteFormValues } from "../validation-schemas/note.schema";
+import { useTranslation } from "react-i18next";
 
 const NONE = "none";
 
@@ -40,6 +41,7 @@ const toDefaults = (n: NoteWithRelations | null): NoteFormValues => ({
 });
 
 export const NoteEditorDialog = ({ open, onOpenChange, note, topics, canShare, isPending, onSubmit }: NoteEditorDialogProps) => {
+    const { t } = useTranslation("notes");
     const form = useForm<NoteFormValues>({ resolver: zodResolver(noteFormSchema), defaultValues: toDefaults(note) });
     const [tab, setTab] = useState<"write" | "preview">("write");
 
@@ -56,8 +58,8 @@ export const NoteEditorDialog = ({ open, onOpenChange, note, topics, canShare, i
         <Dialog open={open} onOpenChange={(o) => !isPending && onOpenChange(o)}>
             <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl">
                 <DialogHeader>
-                    <DialogTitle className="font-display text-2xl font-normal">{note ? "Edit note" : "New note"}</DialogTitle>
-                    <DialogDescription>Markdown, tables and math are supported.</DialogDescription>
+                    <DialogTitle className="font-display text-2xl font-normal">{note ? t("editor.editTitle") : t("editor.newTitle")}</DialogTitle>
+                    <DialogDescription>{t("editor.description")}</DialogDescription>
                 </DialogHeader>
                 {note?.selection_text && (
                     <blockquote className="border-l-2 border-primary/50 pl-3 text-sm italic text-muted-foreground">{note.selection_text}</blockquote>
@@ -70,9 +72,9 @@ export const NoteEditorDialog = ({ open, onOpenChange, note, topics, canShare, i
                                 name="title"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Title</FormLabel>
+                                        <FormLabel>{t("editor.fields.title")}</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Krebs cycle — key steps" autoFocus {...field} />
+                                            <Input placeholder={t("editor.fields.titlePlaceholder")} autoFocus {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -83,7 +85,7 @@ export const NoteEditorDialog = ({ open, onOpenChange, note, topics, canShare, i
                                 name="type"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Type</FormLabel>
+                                        <FormLabel>{t("editor.fields.type")}</FormLabel>
                                         <Select value={field.value} onValueChange={field.onChange}>
                                             <FormControl>
                                                 <SelectTrigger>
@@ -104,13 +106,13 @@ export const NoteEditorDialog = ({ open, onOpenChange, note, topics, canShare, i
                         </div>
                         <Tabs value={tab} onValueChange={(v) => setTab(v as "write" | "preview")}>
                             <TabsList>
-                                <TabsTrigger value="write">Write</TabsTrigger>
-                                <TabsTrigger value="preview">Preview</TabsTrigger>
+                                <TabsTrigger value="write">{t("editor.write")}</TabsTrigger>
+                                <TabsTrigger value="preview">{t("editor.preview")}</TabsTrigger>
                             </TabsList>
                         </Tabs>
                         {tab === "preview" ? (
                             <div className="min-h-48 rounded-lg border border-border bg-card p-4">
-                                <Markdown content={content || "*Nothing to preview yet.*"} />
+                                <Markdown content={content || `*${t("editor.emptyPreview")}*`} />
                             </div>
                         ) : (
                             <FormField
@@ -118,9 +120,9 @@ export const NoteEditorDialog = ({ open, onOpenChange, note, topics, canShare, i
                                 name="content"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="sr-only">Content</FormLabel>
+                                        <FormLabel className="sr-only">{t("editor.fields.content")}</FormLabel>
                                         <FormControl>
-                                            <Textarea rows={10} className="font-mono text-sm" placeholder="Write your note in Markdown…" {...field} />
+                                            <Textarea rows={10} className="font-mono text-sm" placeholder={t("editor.fields.contentPlaceholder")} {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -133,7 +135,7 @@ export const NoteEditorDialog = ({ open, onOpenChange, note, topics, canShare, i
                                 name="topic_id"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Topic</FormLabel>
+                                        <FormLabel>{t("editor.fields.topic")}</FormLabel>
                                         <Select value={field.value ?? NONE} onValueChange={(v) => field.onChange(v === NONE ? undefined : v)}>
                                             <FormControl>
                                                 <SelectTrigger>
@@ -141,7 +143,7 @@ export const NoteEditorDialog = ({ open, onOpenChange, note, topics, canShare, i
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value={NONE}>No topic</SelectItem>
+                                                <SelectItem value={NONE}>{t("editor.fields.noTopic")}</SelectItem>
                                                 {topics.map((t) => (
                                                     <SelectItem key={t.id} value={t.id}>
                                                         {t.depth ? "↳ " : ""}
@@ -158,7 +160,7 @@ export const NoteEditorDialog = ({ open, onOpenChange, note, topics, canShare, i
                                 name="color"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Color</FormLabel>
+                                        <FormLabel>{t("editor.fields.color")}</FormLabel>
                                         <Select value={field.value ?? NONE} onValueChange={(v) => field.onChange(v === NONE ? undefined : v)}>
                                             <FormControl>
                                                 <SelectTrigger>
@@ -166,7 +168,7 @@ export const NoteEditorDialog = ({ open, onOpenChange, note, topics, canShare, i
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value={NONE}>None</SelectItem>
+                                                <SelectItem value={NONE}>{t("editor.fields.noColor")}</SelectItem>
                                                 {HighlightColorOptions.map((o) => (
                                                     <SelectItem key={o.id} value={o.id}>
                                                         {o.label}
@@ -183,7 +185,7 @@ export const NoteEditorDialog = ({ open, onOpenChange, note, topics, canShare, i
                             name="tags"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Tags</FormLabel>
+                                    <FormLabel>{t("editor.fields.tags")}</FormLabel>
                                     <TagsInput value={field.value} onChange={field.onChange} />
                                 </FormItem>
                             )}
@@ -195,8 +197,8 @@ export const NoteEditorDialog = ({ open, onOpenChange, note, topics, canShare, i
                                 render={({ field }) => (
                                     <FormItem className="flex items-center justify-between rounded-lg border border-border p-3">
                                         <div>
-                                            <FormLabel>Share with project members</FormLabel>
-                                            <p className="text-xs text-muted-foreground">Collaborators can read this note.</p>
+                                            <FormLabel>{t("editor.fields.share")}</FormLabel>
+                                            <p className="text-xs text-muted-foreground">{t("editor.fields.shareHint")}</p>
                                         </div>
                                         <FormControl>
                                             <Switch checked={field.value} onCheckedChange={field.onChange} />
@@ -207,10 +209,10 @@ export const NoteEditorDialog = ({ open, onOpenChange, note, topics, canShare, i
                         )}
                         <DialogFooter>
                             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
-                                Cancel
+                                {t("common:actions.cancel")}
                             </Button>
                             <Button type="submit" loading={isPending}>
-                                {note ? "Save changes" : "Create note"}
+                                {note ? t("common:actions.saveChanges") : t("editor.create")}
                             </Button>
                         </DialogFooter>
                     </form>

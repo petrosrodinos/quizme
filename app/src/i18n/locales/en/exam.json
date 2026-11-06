@@ -1,0 +1,44 @@
+{
+  "page": {
+    "title": "Exam simulation",
+    "eyebrow": "Exam coach",
+    "description": "Practise under realistic conditions: timed, no hints, results only at the end. Compare every simulation against your target."
+  },
+  "pending": {
+    "title": "Ready or in progress",
+    "resume": "Resume",
+    "start": "Start"
+  },
+  "results": {
+    "title": "Simulation results vs target",
+    "sim": "Sim {{number}}",
+    "emptyTitle": "No simulations yet",
+    "emptyDescription": "Your first simulation sets the baseline for your exam readiness."
+  },
+  "form": {
+    "count": "Questions",
+    "timeLimit": "Time limit (min)",
+    "target": "Target score (%)",
+    "difficulty": "Difficulty",
+    "title": "Title (optional)",
+    "titlePlaceholder": "e.g. Mock final #2",
+    "types": "Question types",
+    "topics": "Topics",
+    "topicsHint": "Leave empty to cover all material.",
+    "topicsEmpty": "No topics detected yet — the exam will cover all material.",
+    "randomize": "Randomize order",
+    "randomizeHint": "Shuffle questions each time.",
+    "useBank": "Use question bank",
+    "useBankHint": "Mix existing questions with fresh ones.",
+    "conditions": "Exam conditions: no feedback until the end, sounds and celebrations off, answers auto-submit when time runs out.",
+    "start": "Start exam"
+  },
+  "validation": {
+    "countMin": "At least {{count}} questions",
+    "countMax": "At most {{count}} questions",
+    "timeMin": "At least 1 minute",
+    "timeMax": "At most {{count}} minutes",
+    "target": "Enter a target between 1 and 100",
+    "types": "Pick at least one question type"
+  }
+}

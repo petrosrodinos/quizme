@@ -14,6 +14,7 @@ import { useTextAction } from "@/features/ai-actions/hooks/use-ai-actions";
 import { TextActions, type TextAction } from "@/features/ai-actions/interfaces/ai-actions.interfaces";
 import { useCreateReaderNote } from "@/features/notes/hooks/use-reader-notes";
 import { NoteTypes } from "@/features/notes/interfaces/notes.interfaces";
+import { useTranslation } from "react-i18next";
 
 export interface ActionRequest {
     action: TextAction;
@@ -33,6 +34,7 @@ const NEEDS_INPUT: TextAction[] = [TextActions.TRANSLATE, TextActions.COMPARE, T
 
 /** Side panel that runs a contextual AI action on the selected text and shows the Markdown result. */
 export const AiActionPanel = ({ projectId, documentId, request, onClose }: AiActionPanelProps) => {
+    const { t } = useTranslation("reader");
     const run = useTextAction();
     const saveNote = useCreateReaderNote();
     const [language, setLanguage] = useState("English");
@@ -94,9 +96,9 @@ export const AiActionPanel = ({ projectId, documentId, request, onClose }: AiAct
                                 >
                                     {request.action === TextActions.TRANSLATE && (
                                         <>
-                                            <Label htmlFor="ai-lang">Translate into</Label>
+                                            <Label htmlFor="ai-lang">{t("panel.translateInto")}</Label>
                                             <Select value={language} onValueChange={setLanguage}>
-                                                <SelectTrigger id="ai-lang" aria-label="Target language">
+                                                <SelectTrigger id="ai-lang" aria-label={t("panel.targetLanguage")}>
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent data-reader-keep="">
@@ -111,19 +113,19 @@ export const AiActionPanel = ({ projectId, documentId, request, onClose }: AiAct
                                     )}
                                     {request.action === TextActions.COMPARE && (
                                         <>
-                                            <Label htmlFor="ai-compare">Compare with</Label>
-                                            <Input id="ai-compare" value={compareWith} onChange={(e) => setCompareWith(e.target.value)} placeholder="e.g. Chloroplasts" autoFocus />
+                                            <Label htmlFor="ai-compare">{t("panel.compareWith")}</Label>
+                                            <Input id="ai-compare" value={compareWith} onChange={(e) => setCompareWith(e.target.value)} placeholder={t("panel.comparePlaceholder")} autoFocus />
                                         </>
                                     )}
                                     {request.action === TextActions.ASK && (
                                         <>
-                                            <Label htmlFor="ai-question">Your question</Label>
+                                            <Label htmlFor="ai-question">{t("panel.yourQuestion")}</Label>
                                             <Textarea
                                                 id="ai-question"
                                                 rows={3}
                                                 value={question}
                                                 onChange={(e) => setQuestion(e.target.value)}
-                                                placeholder="What would you like to know about this passage?"
+                                                placeholder={t("panel.questionPlaceholder")}
                                                 autoFocus
                                                 onKeyDown={(e) => {
                                                     if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) execute(request);
@@ -137,12 +139,12 @@ export const AiActionPanel = ({ projectId, documentId, request, onClose }: AiAct
                                         loading={run.isPending}
                                         disabled={(request.action === TextActions.ASK && !question.trim()) || (request.action === TextActions.COMPARE && !compareWith.trim())}
                                     >
-                                        <Play /> Run
+                                        <Play /> {t("panel.run")}
                                     </Button>
                                 </form>
                             )}
                             {run.isPending && (
-                                <div className="space-y-2" aria-busy="true" aria-label="Generating">
+                                <div className="space-y-2" aria-busy="true" aria-label={t("panel.generating")}>
                                     <Skeleton className="h-4 w-full" />
                                     <Skeleton className="h-4 w-11/12" />
                                     <Skeleton className="h-4 w-4/5" />
@@ -153,7 +155,7 @@ export const AiActionPanel = ({ projectId, documentId, request, onClose }: AiAct
                                 <div className="space-y-2 text-sm text-destructive">
                                     <p>{run.error.message}</p>
                                     <Button size="sm" variant="outline" onClick={() => execute(request)}>
-                                        Retry
+                                        {t("panel.retry")}
                                     </Button>
                                 </div>
                             )}
@@ -161,10 +163,10 @@ export const AiActionPanel = ({ projectId, documentId, request, onClose }: AiAct
                         </div>
                         {content && !run.isPending && (
                             <div className="flex items-center justify-between gap-2 border-t border-border p-4">
-                                <span className="text-xs text-muted-foreground">{run.data?.cached ? "Cached result" : run.data?.model}</span>
+                                <span className="text-xs text-muted-foreground">{run.data?.cached ? t("panel.cached") : run.data?.model}</span>
                                 <div className="flex gap-2">
                                     <Button variant="outline" size="sm" onClick={copy}>
-                                        {copied ? <Check /> : <Copy />} {copied ? "Copied" : "Copy"}
+                                        {copied ? <Check /> : <Copy />} {copied ? t("panel.copied") : t("panel.copy")}
                                     </Button>
                                     <Button
                                         size="sm"
@@ -174,7 +176,7 @@ export const AiActionPanel = ({ projectId, documentId, request, onClose }: AiAct
                                                 projectId,
                                                 dto: {
                                                     type: NoteTypes.NOTE,
-                                                    title: `${getTextActionLabel(request.action)}: ${request.text.slice(0, 60)}`,
+                                                    title: t("panel.noteTitle", { action: getTextActionLabel(request.action), excerpt: request.text.slice(0, 60) }),
                                                     content,
                                                     document_id: documentId,
                                                     chunk_id: request.chunkId ?? undefined,
@@ -184,7 +186,7 @@ export const AiActionPanel = ({ projectId, documentId, request, onClose }: AiAct
                                             })
                                         }
                                     >
-                                        <Save /> Save as note
+                                        <Save /> {t("panel.saveAsNote")}
                                     </Button>
                                 </div>
                             </div>

@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { tr } from "@/lib/i18n-options";
 
 interface PaginationProps {
   currentPage: number;
@@ -44,7 +45,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
     <div className={cn("flex items-center justify-center space-x-2", className)}>
       <Button variant="outline" size="sm" onClick={() => onPageChange(currentPage - 1)} disabled={currentPage <= 1}>
         <ChevronLeft className="h-4 w-4" />
-        <span className="sr-only">Previous page</span>
+        <span className="sr-only">{tr("ui:pagination.previous")}</span>
       </Button>
 
       {getVisiblePages().map((page, index) => (
@@ -61,7 +62,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className }:
 
       <Button variant="outline" size="sm" onClick={() => onPageChange(currentPage + 1)} disabled={currentPage >= totalPages}>
         <ChevronRight className="h-4 w-4" />
-        <span className="sr-only">Next page</span>
+        <span className="sr-only">{tr("ui:pagination.next")}</span>
       </Button>
     </div>
   );

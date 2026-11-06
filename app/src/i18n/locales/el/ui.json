@@ -1,0 +1,92 @@
+{
+    "celebration": {
+        "levelTitle": "Επίπεδο {{level}}",
+        "levelDescription": "Είστε πλέον: {{title}}.",
+        "achievementToast": "Νέο επίτευγμα · {{title}}",
+        "goalTitle": "Ο ημερήσιος στόχος ολοκληρώθηκε",
+        "goalDescription": "Η συνέπεια φέρνει επάρκεια. Το σερί σας είναι ασφαλές για σήμερα.",
+        "levelUp": "Νέο επίπεδο",
+        "rarityAchievement": "Επίτευγμα: {{rarity}}",
+        "achievement": "Επίτευγμα",
+        "goalReached": "Ο στόχος επιτεύχθηκε",
+        "outstanding": "Εξαιρετικά",
+        "dismissHint": "Κάντε κλικ ή πατήστε Esc για να συνεχίσετε"
+    },
+    "errorBoundary": {
+        "description": "Παρουσιάστηκε απρόσμενο σφάλμα. Ανανεώστε τη σελίδα ή επικοινωνήστε με την υποστήριξη αν το πρόβλημα παραμένει.",
+        "details": "Λεπτομέρειες σφάλματος"
+    },
+    "dropzone": {
+        "unsupported": "{{name}}: μη υποστηριζόμενος τύπος αρχείου",
+        "tooLarge": "Το {{name}} ξεπερνά τα {{size}}",
+        "tooMany_one": "Μπορείτε να ανεβάσετε έως {{count}} αρχείο κάθε φορά",
+        "tooMany_other": "Μπορείτε να ανεβάσετε έως {{count}} αρχεία κάθε φορά",
+        "aria": "Μεταφόρτωση αρχείων: αφήστε αρχεία εδώ ή πατήστε Enter για αναζήτηση",
+        "title": "Αφήστε αρχεία εδώ ή κάντε κλικ για αναζήτηση",
+        "maxEach": "έως {{size}} το καθένα",
+        "remove": "Αφαίρεση {{name}}"
+    },
+    "notification": {
+        "unread": "Μη αναγνωσμένη"
+    },
+    "streak": {
+        "aria_one": "Σερί μελέτης {{count}} ημέρας",
+        "aria_other": "Σερί μελέτης {{count}} ημερών",
+        "title_one": "Σερί {{count}} ημέρας",
+        "title_other": "Σερί {{count}} ημερών",
+        "days_one": "ημέρα",
+        "days_other": "ημέρες"
+    },
+    "combo_one": "Σερί σωστών {{count}}",
+    "combo_other": "Σερί σωστών {{count}}",
+    "level": {
+        "number": "Επίπεδο {{level}}",
+        "withTitle": "Επίπεδο {{level}} · {{title}}"
+    },
+    "xpBar": {
+        "aria": "Εμπειρία προς το επόμενο επίπεδο",
+        "label": "{{current}} / {{target}} XP"
+    },
+    "markdown": {
+        "source": "Πηγή {{index}}: {{label}}"
+    },
+    "sidebar": {
+        "toggle": "Εναλλαγή πλευρικής στήλης",
+        "title": "Πλοήγηση",
+        "description": "Κύρια πλοήγηση"
+    },
+    "pagination": {
+        "previous": "Προηγούμενη",
+        "next": "Επόμενη"
+    },
+    "theme": {
+        "toggle": "Εναλλαγή θέματος",
+        "light": "Φωτεινό",
+        "dark": "Σκοτεινό",
+        "system": "Σύστημα",
+        "switchToLight": "Μετάβαση σε φωτεινό θέμα",
+        "switchToDark": "Μετάβαση σε σκοτεινό θέμα"
+    },
+    "countdown": {
+        "passed": "Το ραντεβού έχει περάσει"
+    },
+    "imagePicker": {
+        "rejected": "Το αρχείο απορρίφθηκε",
+        "deleteTitle": "Διαγραφή εικόνας",
+        "deleteDescription": "Θέλετε σίγουρα να διαγράψετε αυτή την εικόνα; Η ενέργεια δεν αναιρείται."
+    },
+    "input": {
+        "avatarPreview": "Προεπισκόπηση εικόνας προφίλ"
+    },
+    "pinInput": "Εισαγωγή PIN",
+    "fileUpload": {
+        "typeNotAccepted": "Ο τύπος αρχείου δεν επιτρέπεται",
+        "tooLarge": "Το αρχείο είναι πολύ μεγάλο",
+        "failed": "Η μεταφόρτωση απέτυχε",
+        "label": "Μεταφόρτωση αρχείου",
+        "error": "Σφάλμα: {{error}}",
+        "uploading": "Μεταφόρτωση… {{progress}}%",
+        "complete": "Η μεταφόρτωση ολοκληρώθηκε",
+        "ready": "Έτοιμο για μεταφόρτωση"
+    }
+}

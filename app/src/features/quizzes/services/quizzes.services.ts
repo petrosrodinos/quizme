@@ -1,3 +1,4 @@
+import { tr } from "@/lib/i18n-options";
 import axiosInstance from "@/config/api/axios";
 import { ApiRoutes } from "@/config/api/routes";
 import { withApiError } from "@/lib/api-error";
@@ -16,49 +17,49 @@ import type {
 } from "../interfaces/quizzes.interfaces";
 
 export const getQuizzes = (projectId: string) =>
-    withApiError(async () => (await axiosInstance.get<Quiz[]>(ApiRoutes.quizzes.by_project(projectId))).data, "Failed to load quizzes.");
+    withApiError(async () => (await axiosInstance.get<Quiz[]>(ApiRoutes.quizzes.by_project(projectId))).data, tr("quizzes:errors.loadList"));
 
 export const getQuiz = (id: string) =>
-    withApiError(async () => (await axiosInstance.get<Quiz>(ApiRoutes.quizzes.detail(id))).data, "Failed to load quiz.");
+    withApiError(async () => (await axiosInstance.get<Quiz>(ApiRoutes.quizzes.detail(id))).data, tr("quizzes:errors.load"));
 
 export const createQuiz = (projectId: string, dto: CreateQuizDto) =>
-    withApiError(async () => (await axiosInstance.post<Quiz>(ApiRoutes.quizzes.by_project(projectId), dto)).data, "Failed to create quiz.");
+    withApiError(async () => (await axiosInstance.post<Quiz>(ApiRoutes.quizzes.by_project(projectId), dto)).data, tr("quizzes:errors.create"));
 
 export const deleteQuiz = (id: string) =>
-    withApiError(async () => (await axiosInstance.delete(ApiRoutes.quizzes.detail(id))).data, "Failed to delete quiz.");
+    withApiError(async () => (await axiosInstance.delete(ApiRoutes.quizzes.detail(id))).data, tr("quizzes:errors.delete"));
 
 export const shareQuiz = (id: string) =>
-    withApiError(async () => (await axiosInstance.post<Quiz>(ApiRoutes.quizzes.share(id))).data, "Failed to share quiz.");
+    withApiError(async () => (await axiosInstance.post<Quiz>(ApiRoutes.quizzes.share(id))).data, tr("quizzes:errors.share"));
 
 export const getQuizResults = (id: string) =>
-    withApiError(async () => (await axiosInstance.get<GroupResults>(ApiRoutes.quizzes.results(id))).data, "Failed to load group results.");
+    withApiError(async () => (await axiosInstance.get<GroupResults>(ApiRoutes.quizzes.results(id))).data, tr("quizzes:errors.groupResults"));
 
 export const getReviewOverview = (projectId: string) =>
-    withApiError(async () => (await axiosInstance.get<ReviewOverview>(ApiRoutes.quizzes.review(projectId))).data, "Failed to load review overview.");
+    withApiError(async () => (await axiosInstance.get<ReviewOverview>(ApiRoutes.quizzes.review(projectId))).data, tr("quizzes:errors.review"));
 
 export const getProjectDocumentOptions = (projectId: string) =>
     withApiError(
         async () => (await axiosInstance.get<DocumentOption[]>(ApiRoutes.quizzes.project_documents(projectId))).data,
-        "Failed to load documents.",
+        tr("quizzes:errors.documents"),
     );
 
 export const startAttempt = (quizId: string) =>
-    withApiError(async () => (await axiosInstance.post<AttemptDetail>(ApiRoutes.quizzes.start_attempt(quizId))).data, "Failed to start quiz.");
+    withApiError(async () => (await axiosInstance.post<AttemptDetail>(ApiRoutes.quizzes.start_attempt(quizId))).data, tr("quizzes:errors.start"));
 
 export const getAttempt = (id: string) =>
-    withApiError(async () => (await axiosInstance.get<AttemptDetail>(ApiRoutes.attempts.detail(id))).data, "Failed to load attempt.");
+    withApiError(async () => (await axiosInstance.get<AttemptDetail>(ApiRoutes.attempts.detail(id))).data, tr("quizzes:errors.attempt"));
 
 export const submitAnswer = (attemptId: string, dto: SubmitAnswerDto) =>
-    withApiError(async () => (await axiosInstance.post<AnswerResult>(ApiRoutes.attempts.answers(attemptId), dto)).data, "Failed to submit answer.");
+    withApiError(async () => (await axiosInstance.post<AnswerResult>(ApiRoutes.attempts.answers(attemptId), dto)).data, tr("quizzes:errors.answer"));
 
 export const completeAttempt = (attemptId: string) =>
-    withApiError(async () => (await axiosInstance.post<AttemptSummary>(ApiRoutes.attempts.complete(attemptId))).data, "Failed to submit quiz.");
+    withApiError(async () => (await axiosInstance.post<AttemptSummary>(ApiRoutes.attempts.complete(attemptId))).data, tr("quizzes:errors.submit"));
 
 export const getAttemptSummary = (attemptId: string) =>
-    withApiError(async () => (await axiosInstance.get<AttemptSummary>(ApiRoutes.attempts.summary(attemptId))).data, "Failed to load results.");
+    withApiError(async () => (await axiosInstance.get<AttemptSummary>(ApiRoutes.attempts.summary(attemptId))).data, tr("quizzes:errors.results"));
 
 export const getAttemptHistory = (projectId: string, query?: AttemptHistoryQuery) =>
     withApiError(
         async () => (await axiosInstance.get<AttemptHistoryRow[]>(ApiRoutes.attempts.by_project(projectId), { params: query })).data,
-        "Failed to load attempt history.",
+        tr("quizzes:errors.history"),
     );

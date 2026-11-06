@@ -1,0 +1,72 @@
+{
+  "page": {
+    "metaTitle": "Multiplayer quiz",
+    "metaTitleWithQuiz": "Multiplayer · {{quiz}}",
+    "unavailable": "Game unavailable",
+    "backToRooms": "Back to rooms",
+    "leave": "Leave game"
+  },
+  "lobby": {
+    "title": "Waiting in the lobby",
+    "info": "{{questions}} · {{seconds}}s each · faster correct answers score more.",
+    "players": "Players",
+    "start": "Start game ({{players}})",
+    "waitingHost": "Waiting for the host to start…"
+  },
+  "question": {
+    "currentAria": "Current question",
+    "progress": "Question {{current}} of {{total}}",
+    "timesUp": "Time's up",
+    "timeRemaining": "Time remaining",
+    "answeredCount": "{{answered}} of {{total}} answered",
+    "locked": "Answer locked in — waiting for others…",
+    "lockIn": "Lock in answer",
+    "nextNow": "Next now",
+    "nextSoon": "Next question in a few seconds…"
+  },
+  "rankings": {
+    "title": "Rankings",
+    "liveAria": "Live rankings",
+    "you": "(you)",
+    "answered": "answered"
+  },
+  "finished": {
+    "youWon": "You won!",
+    "wins": "{{name}} wins!",
+    "someone": "Someone",
+    "backToRoom": "Back to the room",
+    "podium": "Final podium",
+    "winner": "Winner"
+  },
+  "toasts": {
+    "lobbyCreated": {
+      "title": "Game lobby created",
+      "description": "Invite others to join from the room."
+    },
+    "createFailed": "Could not start a game",
+    "startFailed": "Could not start",
+    "advanceFailed": "Could not advance",
+    "answerFailed": "Answer not accepted",
+    "joinFailed": "Could not join the game"
+  },
+  "errors": {
+    "create": "Failed to create game.",
+    "load": "Failed to load game."
+  },
+  "serverErrors": {
+    "timesUp": "Time's up for this question.",
+    "alreadyAnswered": "You already answered this question.",
+    "onlyHostStart": "Only the host can start the game.",
+    "onlyHostAdvance": "Only the host can move to the next question.",
+    "alreadyStarted": "The game has already started.",
+    "noActiveQuestion": "There is no active question right now.",
+    "questionInactive": "This question is no longer active.",
+    "joinFirst": "Join the game first.",
+    "notFound": "This game doesn't exist.",
+    "quizNotFound": "The quiz for this game wasn't found.",
+    "quizNotReady": "The quiz isn't ready yet.",
+    "roomNotFound": "The study room wasn't found.",
+    "offline": "You're offline. Reconnecting…",
+    "timeout": "The game didn't respond in time. Please try again."
+  }
+}

@@ -14,6 +14,7 @@ import type { StudyDocument } from "@/features/documents/interfaces/documents.in
 import type { GenerateFlashcardsDto } from "@/features/flashcards/services/flashcard-generation.services";
 import { ChipMultiSelect } from "@/pages/projects/components/quiz/chip-multi-select";
 import { generateFlashcardsSchema, type GenerateFlashcardsFormValues } from "../validation-schemas/flashcard.schema";
+import { useTranslation } from "react-i18next";
 
 const NONE = "none";
 
@@ -29,6 +30,7 @@ interface GenerateFlashcardsDialogProps {
 }
 
 export const GenerateFlashcardsDialog = ({ open, onOpenChange, decks, topics, documents, defaultDeckId, isPending, onSubmit }: GenerateFlashcardsDialogProps) => {
+    const { t } = useTranslation("flashcards");
     const form = useForm<GenerateFlashcardsFormValues>({
         resolver: zodResolver(generateFlashcardsSchema) as unknown as Resolver<GenerateFlashcardsFormValues>,
         defaultValues: { count: 15, deck_id: defaultDeckId, document_ids: [], topic_ids: [], instructions: "" },
@@ -53,8 +55,8 @@ export const GenerateFlashcardsDialog = ({ open, onOpenChange, decks, topics, do
         <Dialog open={open} onOpenChange={(o) => !isPending && onOpenChange(o)}>
             <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-xl">
                 <DialogHeader>
-                    <DialogTitle className="font-display text-2xl font-normal">Generate flashcards</DialogTitle>
-                    <DialogDescription>Cards are created from your processed material in the background, each linked to its source.</DialogDescription>
+                    <DialogTitle className="font-display text-2xl font-normal">{t("generate.title")}</DialogTitle>
+                    <DialogDescription>{t("generate.description")}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(submit)} className="space-y-4" noValidate>
@@ -64,7 +66,7 @@ export const GenerateFlashcardsDialog = ({ open, onOpenChange, decks, topics, do
                                 name="count"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Number of cards</FormLabel>
+                                        <FormLabel>{t("generate.fields.count")}</FormLabel>
                                         <FormControl>
                                             <Input type="number" min={1} max={60} {...field} />
                                         </FormControl>
@@ -77,7 +79,7 @@ export const GenerateFlashcardsDialog = ({ open, onOpenChange, decks, topics, do
                                 name="deck_id"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>Add to deck</FormLabel>
+                                        <FormLabel>{t("generate.fields.deck")}</FormLabel>
                                         <Select value={field.value ?? NONE} onValueChange={(v) => field.onChange(v === NONE ? undefined : v)}>
                                             <FormControl>
                                                 <SelectTrigger>
@@ -85,7 +87,7 @@ export const GenerateFlashcardsDialog = ({ open, onOpenChange, decks, topics, do
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent>
-                                                <SelectItem value={NONE}>Default deck</SelectItem>
+                                                <SelectItem value={NONE}>{t("generate.fields.defaultDeck")}</SelectItem>
                                                 {decks.map((d) => (
                                                     <SelectItem key={d.id} value={d.id}>
                                                         {d.name}
@@ -102,13 +104,13 @@ export const GenerateFlashcardsDialog = ({ open, onOpenChange, decks, topics, do
                             name="document_ids"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>From documents (optional — all by default)</FormLabel>
+                                    <FormLabel>{t("generate.fields.documents")}</FormLabel>
                                     <ChipMultiSelect
-                                        label="Documents"
+                                        label={t("common:terms.documents")}
                                         options={readyDocs.map((d) => ({ id: d.id, label: d.filename }))}
                                         value={field.value}
                                         onChange={field.onChange}
-                                        emptyHint="No processed documents yet."
+                                        emptyHint={t("generate.fields.documentsEmpty")}
                                     />
                                 </FormItem>
                             )}
@@ -118,13 +120,13 @@ export const GenerateFlashcardsDialog = ({ open, onOpenChange, decks, topics, do
                             name="topic_ids"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Focus topics (optional)</FormLabel>
+                                    <FormLabel>{t("generate.fields.topics")}</FormLabel>
                                     <ChipMultiSelect
-                                        label="Topics"
+                                        label={t("common:terms.topics")}
                                         options={topics.map((t) => ({ id: t.id, label: t.name, depth: t.depth }))}
                                         value={field.value}
                                         onChange={field.onChange}
-                                        emptyHint="Topics appear once your knowledge map is built."
+                                        emptyHint={t("generate.fields.topicsEmpty")}
                                     />
                                 </FormItem>
                             )}
@@ -134,9 +136,9 @@ export const GenerateFlashcardsDialog = ({ open, onOpenChange, decks, topics, do
                             name="instructions"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Instructions (optional)</FormLabel>
+                                    <FormLabel>{t("generate.fields.instructions")}</FormLabel>
                                     <FormControl>
-                                        <Textarea rows={2} placeholder="Focus on definitions and formulas" {...field} />
+                                        <Textarea rows={2} placeholder={t("generate.fields.instructionsPlaceholder")} {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -144,10 +146,10 @@ export const GenerateFlashcardsDialog = ({ open, onOpenChange, decks, topics, do
                         />
                         <DialogFooter>
                             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
-                                Cancel
+                                {t("common:actions.cancel")}
                             </Button>
                             <Button type="submit" loading={isPending} disabled={!readyDocs.length}>
-                                <Sparkles /> Generate
+                                <Sparkles /> {t("common:actions.generate")}
                             </Button>
                         </DialogFooter>
                     </form>

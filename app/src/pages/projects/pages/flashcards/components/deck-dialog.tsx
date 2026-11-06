@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import type { Deck, DeckDto } from "@/features/flashcards/interfaces/flashcards.interfaces";
 import { deckFormSchema, type DeckFormValues } from "../validation-schemas/flashcard.schema";
+import { useTranslation } from "react-i18next";
 
 interface DeckDialogProps {
     open: boolean;
@@ -18,6 +19,7 @@ interface DeckDialogProps {
 }
 
 export const DeckDialog = ({ open, onOpenChange, deck, isPending, onSubmit }: DeckDialogProps) => {
+    const { t } = useTranslation("flashcards");
     const form = useForm<DeckFormValues>({ resolver: zodResolver(deckFormSchema), defaultValues: { name: "", description: "" } });
 
     useEffect(() => {
@@ -28,7 +30,7 @@ export const DeckDialog = ({ open, onOpenChange, deck, isPending, onSubmit }: De
         <Dialog open={open} onOpenChange={(o) => !isPending && onOpenChange(o)}>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle className="font-display text-2xl font-normal">{deck ? "Rename deck" : "New deck"}</DialogTitle>
+                    <DialogTitle className="font-display text-2xl font-normal">{deck ? t("decks.renameTitle") : t("decks.newTitle")}</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit((v) => onSubmit({ name: v.name.trim(), description: v.description?.trim() || undefined }))} className="space-y-4" noValidate>
@@ -37,9 +39,9 @@ export const DeckDialog = ({ open, onOpenChange, deck, isPending, onSubmit }: De
                             name="name"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Name</FormLabel>
+                                    <FormLabel>{t("decks.fields.name")}</FormLabel>
                                     <FormControl>
-                                        <Input autoFocus placeholder="Chapter 4 — Cell energy" {...field} />
+                                        <Input autoFocus placeholder={t("decks.fields.namePlaceholder")} {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -50,7 +52,7 @@ export const DeckDialog = ({ open, onOpenChange, deck, isPending, onSubmit }: De
                             name="description"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Description</FormLabel>
+                                    <FormLabel>{t("decks.fields.description")}</FormLabel>
                                     <FormControl>
                                         <Textarea rows={2} {...field} />
                                     </FormControl>
@@ -60,10 +62,10 @@ export const DeckDialog = ({ open, onOpenChange, deck, isPending, onSubmit }: De
                         />
                         <DialogFooter>
                             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
-                                Cancel
+                                {t("common:actions.cancel")}
                             </Button>
                             <Button type="submit" loading={isPending}>
-                                {deck ? "Save" : "Create deck"}
+                                {deck ? t("common:actions.save") : t("decks.create")}
                             </Button>
                         </DialogFooter>
                     </form>

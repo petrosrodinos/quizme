@@ -1,0 +1,56 @@
+{
+    "nav": {
+        "groups": {
+            "learn": "Μάθηση",
+            "explore": "Εξερεύνηση",
+            "account": "Λογαριασμός"
+        },
+        "dashboard": "Πίνακας ελέγχου",
+        "todaysStudy": "Σημερινή μελέτη",
+        "projects": "Έργα",
+        "studyRooms": "Αίθουσες μελέτης",
+        "search": "Αναζήτηση",
+        "achievements": "Επιτεύγματα",
+        "notifications": "Ειδοποιήσεις",
+        "settings": "Ρυθμίσεις",
+        "home": "Αρχική {{app}}"
+    },
+    "userMenu": {
+        "aria": "Μενού λογαριασμού",
+        "fallbackName": "Μαθητής",
+        "accountSettings": "Ρυθμίσεις λογαριασμού",
+        "preferences": "Προτιμήσεις",
+        "achievements": "Επιτεύγματα",
+        "toggleTheme": "Εναλλαγή θέματος"
+    },
+    "header": {
+        "toggleSidebar": "Εναλλαγή πλευρικής στήλης",
+        "search": "Αναζήτηση"
+    },
+    "verifyBanner": {
+        "message": "Επαληθεύστε τη διεύθυνση email σας ({{email}}) για να προστατέψετε τον λογαριασμό σας.",
+        "resend": "Επαναποστολή email",
+        "dismiss": "Απόκρυψη"
+    },
+    "bell": {
+        "title": "Ειδοποιήσεις",
+        "ariaUnread_one": "Ειδοποιήσεις ({{count}} μη αναγνωσμένη)",
+        "ariaUnread_other": "Ειδοποιήσεις ({{count}} μη αναγνωσμένες)",
+        "markAllRead": "Σήμανση όλων ως αναγνωσμένων",
+        "empty": "Είστε πλήρως ενημερωμένοι."
+    },
+    "strip": {
+        "levelAria": "Επίπεδο {{level}}, {{title}}",
+        "freezes_one": "{{count}} πάγωμα σερί",
+        "freezes_other": "{{count}} παγώματα σερί",
+        "streakTooltip_one": "Σερί {{count}} ημέρας · καλύτερο {{best}}",
+        "streakTooltip_other": "Σερί {{count}} ημερών · καλύτερο {{best}}",
+        "goalLabel": "Πρόοδος ημερήσιου στόχου",
+        "goalTooltip": "Ημερήσιος στόχος: {{minutes}}/{{goalMinutes}} λεπτά · {{xp}}/{{goalXp}} XP",
+        "goalComplete": "ολοκληρώθηκε!"
+    },
+    "realtime": {
+        "unavailable": "Η σύνδεση πραγματικού χρόνου δεν είναι διαθέσιμη",
+        "timeout": "Το αίτημα πραγματικού χρόνου έληξε"
+    }
+}

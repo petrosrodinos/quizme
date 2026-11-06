@@ -4,6 +4,7 @@ import { useRealtimeEvent } from "@/features/realtime/hooks/use-realtime";
 import { RealtimeEvents } from "@/features/realtime/interfaces/realtime-events.constants";
 import { deleteDocument, getDocument, getDocumentContent, getDocumentDownloadUrl, getDocuments, reprocessDocument, uploadDocuments } from "../services/documents.services";
 import { isProcessing, type DocumentStatusEvent, type StudyDocument } from "../interfaces/documents.interfaces";
+import { tr } from "@/lib/i18n-options";
 
 /** Project documents with live processing status (socket push + polling fallback while anything is processing). */
 export const useDocuments = (projectId: string | undefined) => {
@@ -44,7 +45,7 @@ export const useDocumentContent = (id: string | undefined) =>
         enabled: !!id,
     });
 
-const onError = (title: string) => (error: Error) => toast({ title, description: error.message, variant: "error" });
+const onError = (titleKey: string) => (error: Error) => toast({ title: tr(titleKey), description: error.message, variant: "error" });
 
 export const useUploadDocuments = () => {
     const queryClient = useQueryClient();
@@ -56,13 +57,17 @@ export const useUploadDocuments = () => {
             const queued = res.results.filter((r) => r.status === "queued").length;
             const skipped = res.results.length - queued;
             toast({
-                title: queued ? `${queued} file${queued === 1 ? "" : "s"} uploaded` : "Nothing new uploaded",
-                description: queued ? `Processing has started.${skipped ? ` ${skipped} skipped.` : ""}` : "All files were duplicates or rejected.",
+                title: queued ? tr("documents:toasts.uploaded", { count: queued }) : tr("documents:toasts.nothingUploaded"),
+                description: queued
+                    ? skipped
+                        ? tr("documents:toasts.processingStartedSkipped", { count: skipped })
+                        : tr("documents:toasts.processingStarted")
+                    : tr("documents:toasts.allSkipped"),
                 duration: 3000,
                 variant: queued ? undefined : "error",
             });
         },
-        onError: onError("Upload failed"),
+        onError: onError("documents:toasts.uploadFailed"),
     });
 };
 
@@ -71,9 +76,9 @@ export const useDownloadDocument = () =>
         mutationFn: getDocumentDownloadUrl,
         onSuccess: ({ url }) => {
             window.open(url, "_blank", "noopener");
-            toast({ title: "Download started", duration: 1500 });
+            toast({ title: tr("documents:toasts.downloadStarted"), duration: 1500 });
         },
-        onError: onError("Could not download"),
+        onError: onError("documents:toasts.downloadFailed"),
     });
 
 export const useReprocessDocument = () => {
@@ -82,9 +87,9 @@ export const useReprocessDocument = () => {
         mutationFn: reprocessDocument,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["documents"] });
-            toast({ title: "Reprocessing started", duration: 2000 });
+            toast({ title: tr("documents:toasts.reprocessStarted"), duration: 2000 });
         },
-        onError: onError("Could not reprocess"),
+        onError: onError("documents:toasts.reprocessFailed"),
     });
 };
 
@@ -95,9 +100,9 @@ export const useDeleteDocument = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["documents"] });
             queryClient.invalidateQueries({ queryKey: ["project-overview"] });
-            toast({ title: "Document deleted", duration: 2000 });
+            toast({ title: tr("documents:toasts.deleted"), duration: 2000 });
         },
-        onError: onError("Could not delete document"),
+        onError: onError("documents:toasts.deleteFailed"),
     });
 };
 
@@ -105,5 +110,5 @@ export const useDeleteDocument = () => {
 export const useResolveDocument = () =>
     useMutation({
         mutationFn: getDocument,
-        onError: onError("Could not open document"),
+        onError: onError("documents:toasts.openFailed"),
     });

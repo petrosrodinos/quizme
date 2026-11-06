@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FileUpload, FileUploadDropzone, FileUploadTrigger, FileUploadList, FileUploadItem, FileUploadItemPreview, FileUploadItemMetadata, FileUploadItemDelete } from "@/components/ui/file-upload";
 import ConfirmationDialog from "@/components/ui/confirmation-dialog";
+import { tr } from "@/lib/i18n-options";
 import { X, Image as ImageIcon, Camera, Loader2 } from "lucide-react";
 
 interface ImageUploaderProps {
@@ -88,7 +89,7 @@ const ImageUploader = ({ label, currentImageUrl, currentImageAlt, onUpload, onRe
         </FileUpload>
       )}
 
-      <ConfirmationDialog isOpen={isRemoveDialogOpen} onClose={() => setIsRemoveDialogOpen(false)} onConfirm={handleRemove} title={removeDialogTitle} description={removeDialogDescription} confirmText={removeDialogConfirmText} cancelText="Cancel" variant="destructive" isLoading={isRemoving} />
+      <ConfirmationDialog isOpen={isRemoveDialogOpen} onClose={() => setIsRemoveDialogOpen(false)} onConfirm={handleRemove} title={removeDialogTitle} description={removeDialogDescription} confirmText={removeDialogConfirmText} cancelText={tr("common:actions.cancel")} variant="destructive" isLoading={isRemoving} />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { generateFlashcards } from "../services/flashcard-generation.services";
+import { tr } from "@/lib/i18n-options";
 
 export const useGenerateFlashcards = () => {
     const queryClient = useQueryClient();
@@ -8,8 +9,8 @@ export const useGenerateFlashcards = () => {
         mutationFn: generateFlashcards,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["flashcards"] });
-            toast({ title: "Generating flashcards", description: "They'll appear in your deck in a moment.", duration: 3000 });
+            toast({ title: tr("reader:toasts.flashcardsGenerating.title"), description: tr("reader:toasts.flashcardsGenerating.description"), duration: 3000 });
         },
-        onError: (error: Error) => toast({ title: "Could not generate flashcards", description: error.message, variant: "error" }),
+        onError: (error: Error) => toast({ title: tr("reader:toasts.flashcardsFailed"), description: error.message, variant: "error" }),
     });
 };
