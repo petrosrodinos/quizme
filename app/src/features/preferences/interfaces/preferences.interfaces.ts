@@ -11,6 +11,12 @@ export interface NotificationPrefs {
     email?: boolean;
 }
 
+export const UiModes = {
+    CLASSIC: "classic",
+    PLAYFUL: "playful",
+} as const;
+export type UiMode = (typeof UiModes)[keyof typeof UiModes];
+
 export interface UserPreferences {
     sound_enabled: boolean;
     volume: number;
@@ -24,6 +30,8 @@ export interface UserPreferences {
     achievement_popups: boolean;
     /** UI / email / notification language. */
     language: "en" | "el";
+    /** "playful" = mobile-first, Duolingo-style UI; "classic" = original desktop sidebar UI. */
+    ui_mode: UiMode;
     notification_prefs: NotificationPrefs;
 }
 

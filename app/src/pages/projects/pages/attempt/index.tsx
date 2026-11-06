@@ -24,6 +24,8 @@ import { getQuizModeLabel } from "@/config/constants/dropdowns/quizzes/quiz-mode
 import { ScoreHistoryChart } from "@/pages/projects/components/quiz/score-history-chart";
 import { QuestionReviewList } from "./components/question-review-list";
 import { TopicBreakdown } from "./components/topic-breakdown";
+import { LessonComplete } from "./components/lesson-complete";
+import { useIsPlayful } from "@/hooks/use-ui-mode";
 
 export default function AttemptPage() {
     const { t } = useTranslation("attempt");
@@ -37,6 +39,7 @@ export default function AttemptPage() {
     const pushCelebration = useCelebrationsStore((s) => s.push);
     const celebrated = useRef(false);
     const [xpRefreshed, setXpRefreshed] = useState(false);
+    const playful = useIsPlayful();
     usePageMetadata({ title: t("page.title") });
 
     const data = summary.data;
@@ -111,8 +114,10 @@ export default function AttemptPage() {
     const delta = previousExam ? attempt.percentage - previousExam.percentage : null;
 
     return (
+        <>
+        {playful && !isExam && <LessonComplete projectId={projectId} quizId={data.quiz.id} attempt={attempt} passed={passed} />}
         <Main width="wide" className="space-y-8">
-            <div className="flex flex-wrap items-center gap-2">
+            <div className={cn("flex flex-wrap items-center gap-2", playful && !isExam && "hidden")}>
                 <Button variant="ghost" size="sm" asChild>
                     <Link to={isExam ? Routes.projects.exam(projectId) : Routes.projects.quizzes(projectId)}>
                         <ArrowLeft /> {isExam ? t("page.backExams") : t("page.backQuizzes")}
@@ -120,7 +125,7 @@ export default function AttemptPage() {
                 </Button>
             </div>
 
-            <section className="grid items-center gap-8 rounded-2xl border border-border bg-card p-6 sm:p-8 lg:grid-cols-[auto_1fr]">
+            <section className={cn("grid items-center gap-8 rounded-2xl border border-border bg-card p-6 sm:p-8 lg:grid-cols-[auto_1fr]", playful && !isExam && "hidden")}>
                 <div className="mx-auto">
                     <ProgressRing value={attempt.percentage} size={168} strokeWidth={12} indicatorClassName={ringTone} label={t("hero.scoreLabel", { value: Math.round(attempt.percentage) })}>
                         <div className="text-center">
@@ -222,7 +227,9 @@ export default function AttemptPage() {
                 </section>
             )}
 
+            <div id="answers" className="scroll-mt-20" />
             {detail.data ? <QuestionReviewList projectId={projectId} questions={detail.data.questions} /> : <DetailSkeleton />}
         </Main>
+        </>
     );
 }

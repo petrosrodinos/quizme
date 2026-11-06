@@ -16,6 +16,8 @@ import { GenerationStatuses, QuizModes, type GenerationStatusEvent } from "@/fea
 import { GenerationWaiting } from "@/pages/projects/components/quiz/generation-waiting";
 import { PracticePlayer } from "./components/practice-player";
 import { ExamPlayer } from "./components/exam-player";
+import { useIsPlayful } from "@/hooks/use-ui-mode";
+import { Mascot } from "@/components/ui/mascot";
 
 export default function QuizTakePage() {
     const { t } = useTranslation("quiz");
@@ -50,7 +52,10 @@ export default function QuizTakePage() {
         if (detail?.attempt.status === "COMPLETED") navigate(Routes.projects.attempt(projectId, detail.attempt.id), { replace: true });
     }, [detail?.attempt.status, detail?.attempt.id, navigate, projectId]);
 
+    const playful = useIsPlayful();
     const backToQuizzes = useCallback(() => navigate(Routes.projects.quizzes(projectId)), [navigate, projectId]);
+    /** Leaving a lesson returns to the learning path in the playful UI. */
+    const exitPlayer = useCallback(() => navigate(playful ? Routes.dashboard : Routes.projects.quizzes(projectId)), [navigate, playful, projectId]);
 
     const finish = useCallback(() => {
         if (!detail || complete.isPending) return;
@@ -68,8 +73,9 @@ export default function QuizTakePage() {
     }
     if (quiz && quiz.status !== GenerationStatuses.READY) {
         return (
-            <Main width="narrow">
-                <GenerationWaiting quiz={quiz} onBack={backToQuizzes} />
+            <Main width="narrow" className={playful ? "flex min-h-dvh flex-col justify-center" : undefined}>
+                {playful && <Mascot pose="think" animated className="mx-auto mb-2 size-36" />}
+                <GenerationWaiting quiz={quiz} onBack={exitPlayer} />
             </Main>
         );
     }
@@ -93,6 +99,10 @@ export default function QuizTakePage() {
                 <EmptyState title={t("player.noQuestions")} action={<Button onClick={backToQuizzes}>{t("generation.backToQuizzes")}</Button>} />
             </Main>
         );
+    }
+
+    if (playful && detail.quiz.mode !== QuizModes.EXAM) {
+        return <PracticePlayer projectId={projectId} detail={detail} onFinish={finish} onExit={exitPlayer} finishing={complete.isPending} />;
     }
 
     return (

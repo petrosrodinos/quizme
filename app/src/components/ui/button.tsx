@@ -36,11 +36,11 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant, size, loading = false, asChild = false, ...props }, ref) => {
   if (asChild) {
     // Slot merges the button styles onto the single child (e.g. a <Link>) — never wrap it, or the styles land on the wrapper.
-    return <Slot className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
+    return <Slot data-slot="button" data-variant={variant ?? "default"} data-size={size ?? "default"} className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} />;
   }
 
   return (
-    <button className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} disabled={loading || props.disabled}>
+    <button data-slot="button" data-variant={variant ?? "default"} data-size={size ?? "default"} className={cn(buttonVariants({ variant, size, className }))} ref={ref} {...props} disabled={loading || props.disabled}>
       {loading && <Loader className="animate-spin w-5 h-5" />}
       {props.children}
     </button>

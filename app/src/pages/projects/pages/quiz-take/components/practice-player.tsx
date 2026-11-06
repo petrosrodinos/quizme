@@ -16,6 +16,8 @@ import { QuestionInput, isAnswerReady } from "@/pages/projects/components/quiz/q
 import { EvaluationPanel, FeedbackBanner, SourceCitation } from "@/pages/projects/components/quiz/answer-feedback";
 import { Markdown } from "@/components/ui/markdown";
 import { cn } from "@/lib/utils";
+import { useIsPlayful } from "@/hooks/use-ui-mode";
+import { LessonView } from "./lesson-view";
 
 interface PracticePlayerProps {
     projectId: string;
@@ -32,6 +34,7 @@ export const PracticePlayer = ({ projectId, detail, onFinish, onExit, finishing 
     const { t } = useTranslation("quiz");
     const { attempt, questions, quiz } = detail;
     const feedback = useFeedback();
+    const playful = useIsPlayful();
     const submit = useSubmitAnswer(attempt.id);
     const cardRef = useRef<HTMLDivElement>(null);
     const startedAt = useRef(Date.now());
@@ -121,6 +124,49 @@ export const PracticePlayer = ({ projectId, detail, onFinish, onExit, finishing 
     if (!question) return null;
     const ready = isAnswerReady(question, value);
     const correctAnswer = result?.correct_answer ?? null;
+
+    if (playful) {
+        const evaluation = result?.feedback && question.type === "FREE_TEXT" ? result.feedback : null;
+        const source = result ? (result.source_ref ?? question.source_ref) : null;
+        return (
+            <LessonView
+                cardRef={cardRef}
+                question={question}
+                index={index}
+                total={questions.length}
+                answeredCount={answeredCount}
+                combo={combo}
+                showCombo={feedback.showCombos}
+                result={result}
+                ready={ready}
+                checking={submit.isPending}
+                finishing={finishing}
+                isLast={isLast}
+                onCheck={handleSubmit}
+                onNext={handleNext}
+                onExit={onExit}
+                hasDetails={!!(evaluation || result?.explanation || source?.document_title)}
+                input={
+                    <QuestionInput
+                        question={question}
+                        value={value}
+                        onChange={(v) => setAnswers((a) => ({ ...a, [question.id]: v }))}
+                        disabled={!!result || submit.isPending}
+                        correct={correctAnswer}
+                        keyboard={!result}
+                        onSubmitShortcut={handleSubmit}
+                    />
+                }
+                details={
+                    <>
+                        {evaluation && <EvaluationPanel evaluation={evaluation} />}
+                        {result?.explanation && <Markdown content={result.explanation} />}
+                        <SourceCitation projectId={projectId} source={source} />
+                    </>
+                }
+            />
+        );
+    }
 
     return (
         <div className="mx-auto w-full max-w-3xl space-y-5">

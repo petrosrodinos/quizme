@@ -85,7 +85,7 @@ export const DESIGN_SYSTEMS: DesignSystem[] = [
         id: "playful",
         name: "Playful Rounded",
         description: "Duolingo-like: chunky, very round, bottom-ridge shadows, green",
-        fonts: ["Nunito:wght@400;600;700;800"],
+        fonts: ["Nunito:wght@400;600;700;800;900"],
         vars: {
             "--radius": "1.25rem",
             "--ds-font-sans": `'Nunito', ${SANS}`,
@@ -95,8 +95,8 @@ export const DESIGN_SYSTEMS: DesignSystem[] = [
             "--ds-heading-tracking": "-0.01em",
             ...shadows("0 2px 0 0 var(--border)", "0 3px 0 0 var(--border)", "0 4px 0 0 var(--border)", "0 6px 0 0 var(--border)"),
         },
-        light: { bg: "#f5faf0", fg: "#1f2a1a", card: "#ffffff", primary: "#58a700", primaryFg: "#ffffff", chart4: "#1cb0f6", border: "#dbe5d0" },
-        dark: { bg: "#131f24", fg: "#eaf2ee", card: "#1b2b32", primary: "#58cc02", primaryFg: "#0d1a05", chart4: "#49c0f8", border: "#2c414a" },
+        light: { bg: "#ffffff", fg: "#3c3c3c", card: "#ffffff", primary: "#58cc02", primaryFg: "#ffffff", chart4: "#1cb0f6", border: "#e5e5e5" },
+        dark: { bg: "#131f24", fg: "#f1f7fb", card: "#131f24", primary: "#58cc02", primaryFg: "#ffffff", chart4: "#1cb0f6", border: "#37464f", popover: "#202f36" },
     },
     {
         id: "aurora",

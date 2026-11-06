@@ -18,10 +18,12 @@ import { Features } from "@/config/features";
 import { useChangePassword, useResendVerification } from "@/features/auth/hooks/use-auth";
 import { useDeleteAccount, useUpdateProfile } from "@/features/account/hooks/use-account";
 import { SettingsSection } from "../../components/settings-section";
+import { UiModePicker } from "../../components/ui-mode-picker";
 import { changePasswordSchema, profileSchema, type ChangePasswordFormValues, type ProfileFormValues } from "../../validation-schemas/settings.schema";
 
 export default function SettingsProfilePage() {
     const { t } = useTranslation("settings");
+    const { t: tp } = useTranslation("playful");
     usePageMetadata({ title: t("profile.pageTitle") });
     const confirmWord = t("profile.delete.confirmWord");
     const user = useAuthStore((s) => s.user);
@@ -52,6 +54,9 @@ export default function SettingsProfilePage() {
 
     return (
         <div className="space-y-6">
+            <SettingsSection title={tp("profile.uiMode")} description={tp("profile.uiModeDescription")}>
+                <UiModePicker />
+            </SettingsSection>
             <SettingsSection title={t("profile.title")} description={t("profile.description")}>
                 <Form {...profileForm}>
                     <form onSubmit={profileForm.handleSubmit((v) => updateProfile.mutate(v))} className="space-y-4">

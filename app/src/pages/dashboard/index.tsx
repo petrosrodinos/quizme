@@ -1,3 +1,4 @@
+import { lazy } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { BookOpenCheck, Clock, FolderPlus, Gauge, Layers } from "lucide-react";
@@ -12,12 +13,20 @@ import { useDashboard } from "@/features/dashboard/hooks/use-dashboard";
 import { Routes } from "@/routes/routes";
 import { formatDate, greeting } from "@/lib/date";
 import { useAuthStore } from "@/stores/auth";
+import { useIsPlayful } from "@/hooks/use-ui-mode";
 import { TodayCard } from "./components/today-card";
 import { ProgressSideCards } from "./components/progress-side-cards";
 import { ActiveProjects } from "./components/active-projects";
 import { RecentScoresCard, UpcomingExamsCard, WeakTopicsCard, WeekActivityCard } from "./components/insight-cards";
 
+const LearnHome = lazy(() => import("./components/playful/learn-home"));
+
+/** Home: the learning path in playful mode, the analytics dashboard in classic mode. */
 export default function DashboardPage() {
+    return useIsPlayful() ? <LearnHome /> : <ClassicDashboard />;
+}
+
+function ClassicDashboard() {
     const { t } = useTranslation("dashboard");
     usePageMetadata({ title: t("pageTitle") });
     const user = useAuthStore((s) => s.user);

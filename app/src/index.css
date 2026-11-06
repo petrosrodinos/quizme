@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @import "katex/dist/katex.min.css";
 @import "./themes/design-systems.css";
+@import "./themes/playful.css";
 
 @custom-variant dark (&:is(.dark *));
 

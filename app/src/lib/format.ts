@@ -29,3 +29,7 @@ export const pluralize = (count: number, singular: string, plural = `${singular}
 
 /** Localised count of a common noun from `common:count.*` (e.g. tCount("question", 3) → "3 ερωτήσεις"). */
 export const tCount = (noun: string, count: number): string => i18n.t(`common:count.${noun}`, { count }) as string;
+
+/** Short number for tight UI (1.2k, 3.4M). */
+export const formatCompact = (n: number | null | undefined): string =>
+    new Intl.NumberFormat(currentLocale(), { notation: "compact", maximumFractionDigits: 1 }).format(Math.round(n ?? 0));

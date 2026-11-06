@@ -16,6 +16,7 @@ export const Routes = {
     search: "/search",
     achievements: "/achievements",
     notifications: "/notifications",
+    profile: "/profile",
     settings: {
         root: "/settings",
         profile: "/settings/profile",
@@ -71,6 +72,7 @@ export const RoutePatterns = {
     search: "/search",
     achievements: "/achievements",
     notifications: "/notifications",
+    profile: "/profile",
     settings: {
         root: "/settings",
         profile: "profile",

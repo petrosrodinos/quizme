@@ -7,19 +7,28 @@ import { useProjectContext } from "@/pages/projects/hooks/use-project-context";
 import { Routes } from "@/routes/routes";
 import { ReviewSession } from "./components/review-session";
 import { useTranslation } from "react-i18next";
+import { useIsPlayful } from "@/hooks/use-ui-mode";
+import { X } from "lucide-react";
 
 export default function ProjectFlashcardsReviewPage() {
     const { t } = useTranslation("flashcards");
     usePageMetadata({ title: t("review.pageTitle") });
     const { projectId, project } = useProjectContext();
     const navigate = useNavigate();
-    const back = () => navigate(Routes.projects.flashcards(projectId));
+    const playful = useIsPlayful();
+    const back = () => navigate(playful ? Routes.dashboard : Routes.projects.flashcards(projectId));
     return (
         <Main width="narrow">
             <div className="mb-6 flex items-center justify-between">
-                <Button variant="ghost" onClick={back}>
-                    <ArrowLeft /> {t("page.title")}
-                </Button>
+                {playful ? (
+                    <Button variant="ghost" size="icon" onClick={back} aria-label={t("page.title")}>
+                        <X className="!size-7" strokeWidth={2.8} />
+                    </Button>
+                ) : (
+                    <Button variant="ghost" onClick={back}>
+                        <ArrowLeft /> {t("page.title")}
+                    </Button>
+                )}
                 <p className="text-sm text-muted-foreground">{project.title}</p>
             </div>
             <ReviewSession projectId={projectId} onFinish={back} />

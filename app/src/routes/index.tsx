@@ -23,6 +23,7 @@ const Study = lazy(() => import("@/pages/study"));
 const Search = lazy(() => import("@/pages/search"));
 const Achievements = lazy(() => import("@/pages/achievements"));
 const Notifications = lazy(() => import("@/pages/notifications"));
+const Profile = lazy(() => import("@/pages/profile"));
 const SettingsProfile = lazy(() => import("@/pages/settings/pages/profile"));
 const SettingsPreferences = lazy(() => import("@/pages/settings/pages/preferences"));
 const SettingsNotifications = lazy(() => import("@/pages/settings/pages/notifications"));
@@ -95,6 +96,7 @@ export default function AppRoutes() {
                     <Route path={P.search} element={<Search />} />
                     <Route path={P.achievements} element={<Achievements />} />
                     <Route path={P.notifications} element={<Notifications />} />
+                    <Route path={P.profile} element={<Profile />} />
                     <Route path={P.settings.root} element={<SettingsLayout />}>
                         <Route index element={<Navigate to={Routes.settings.profile} replace />} />
                         <Route path={P.settings.profile} element={<SettingsProfile />} />

@@ -3,6 +3,7 @@ import { DEFAULT_SYSTEM_ID, getDesignSystem, loadFonts } from "@/themes/design-s
 import { SYSTEM_PALETTE_ID, getPalette, paletteVars } from "@/themes/palettes";
 
 export type Theme = "light" | "dark" | "system";
+export type UiMode = "classic" | "playful";
 export type ResolvedTheme = "light" | "dark";
 
 const STORAGE_KEY = "theme";
@@ -40,6 +41,20 @@ const readStoredPalette = (): string => {
     }
 };
 
+/** Playful mode always renders with the playful design system and its own (Duolingo-like) colours. */
+const PLAYFUL_SYSTEM_ID = "playful";
+
+/** The UI mode is a server-side preference persisted locally by the preferences store; read it early to avoid a flash. */
+const readStoredUiMode = (): UiMode => {
+    try {
+        const raw = localStorage.getItem("preferences");
+        const mode = raw ? JSON.parse(raw)?.state?.ui_mode : undefined;
+        return mode === "classic" ? "classic" : "playful";
+    } catch {
+        return "playful";
+    }
+};
+
 /** Custom properties we set inline last time, so they can be cleared when switching. */
 let appliedVars: string[] = [];
 
@@ -48,8 +63,12 @@ let appliedVars: string[] = [];
  * and colour palette on top as inline custom properties (they beat :root / .dark). The default
  * system with its own colours sets nothing, i.e. the plain index.css look.
  */
-const apply = (resolved: ResolvedTheme, systemId: string, paletteId: string) => {
+const apply = (resolved: ResolvedTheme, chosenSystemId: string, chosenPaletteId: string, uiMode: UiMode) => {
     const root = document.documentElement;
+    const playful = uiMode === "playful";
+    const systemId = playful ? PLAYFUL_SYSTEM_ID : chosenSystemId;
+    const paletteId = playful ? SYSTEM_PALETTE_ID : chosenPaletteId;
+    root.dataset.ui = uiMode;
     root.classList.remove("light", "dark");
     root.classList.add(resolved);
     root.style.colorScheme = resolved;
@@ -75,7 +94,9 @@ interface ThemeStore {
     resolved: ResolvedTheme;
     system: string;
     palette: string;
+    uiMode: UiMode;
     setTheme: (theme: Theme) => void;
+    setUiMode: (mode: UiMode) => void;
     setSystem: (id: string) => void;
     setPalette: (id: string) => void;
 }
@@ -96,34 +117,40 @@ const useThemeStore = create<ThemeStore>()((set, get) => {
         resolved: resolve(initial),
         system: readStoredSystem(),
         palette: readStoredPalette(),
+        uiMode: readStoredUiMode(),
+        setUiMode: (mode) => {
+            if (mode === get().uiMode) return;
+            apply(get().resolved, get().system, get().palette, mode);
+            set({ uiMode: mode });
+        },
         setTheme: (theme) => {
             persist(STORAGE_KEY, theme);
             const resolved = resolve(theme);
-            apply(resolved, get().system, get().palette);
+            apply(resolved, get().system, get().palette, get().uiMode);
             set({ theme, resolved });
         },
         setSystem: (id) => {
             persist(SYSTEM_KEY, id);
-            apply(get().resolved, id, get().palette);
+            apply(get().resolved, id, get().palette, get().uiMode);
             set({ system: id });
         },
         setPalette: (id) => {
             persist(PALETTE_KEY, id);
-            apply(get().resolved, get().system, id);
+            apply(get().resolved, get().system, id, get().uiMode);
             set({ palette: id });
         },
     };
 });
 
 if (typeof window !== "undefined") {
-    const { resolved, system, palette } = useThemeStore.getState();
-    apply(resolved, system, palette);
+    const { resolved, system, palette, uiMode } = useThemeStore.getState();
+    apply(resolved, system, palette, uiMode);
     // Follow OS changes while the user is on "system".
     media().addEventListener("change", () => {
-        const { theme, system, palette } = useThemeStore.getState();
+        const { theme, system, palette, uiMode } = useThemeStore.getState();
         if (theme !== "system") return;
         const resolved = systemTheme();
-        apply(resolved, system, palette);
+        apply(resolved, system, palette, uiMode);
         useThemeStore.setState({ resolved });
     });
     // Keep other open tabs in sync.
@@ -134,6 +161,10 @@ if (typeof window !== "undefined") {
         if (e.key === PALETTE_KEY) store.setPalette(readStoredPalette());
     });
 }
+
+/** Applies the UI mode (classic / playful) to <html data-ui> and the theme. */
+export const setThemeUiMode = (mode: UiMode) => useThemeStore.getState().setUiMode(mode);
+export const useThemeUiMode = () => useThemeStore((s) => s.uiMode);
 
 export const useTheme = () => {
     const theme = useThemeStore((s) => s.theme);

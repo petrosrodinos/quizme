@@ -27,6 +27,10 @@ export class UpdatePreferencesDto {
     @ApiProperty({ required: false }) @IsOptional() @IsBoolean() leaderboard_opt_in?: boolean;
     @ApiProperty({ required: false }) @IsOptional() @IsBoolean() achievement_popups?: boolean;
     @ApiProperty({ required: false, enum: ['en', 'el'], description: 'UI, email and notification language' }) @IsOptional() @IsIn(['en', 'el']) language?: 'en' | 'el';
+    @ApiProperty({ required: false, enum: ['classic', 'playful'], description: 'UI mode: classic desktop UI or mobile-first playful UI' })
+    @IsOptional()
+    @IsIn(['classic', 'playful'])
+    ui_mode?: 'classic' | 'playful';
 
     @ApiProperty({
         required: false,

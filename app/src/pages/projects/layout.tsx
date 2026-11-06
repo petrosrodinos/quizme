@@ -1,5 +1,5 @@
 import { Suspense, useEffect, useMemo, useRef } from "react";
-import { Link, NavLink, Outlet, useParams } from "react-router-dom";
+import { Link, matchPath, NavLink, Outlet, useLocation, useParams } from "react-router-dom";
 import { ArrowLeft, CalendarDays, FolderX, Target } from "lucide-react";
 import { useProjectHeader } from "@/features/projects/hooks/use-project-header";
 import { Main } from "@/components/layout/main";
@@ -16,6 +16,11 @@ import { getMemberRoleLabel } from "@/config/constants/dropdowns/projects/member
 import { usePageMetadata } from "@/hooks/use-page-metadata";
 import { buildProjectContext } from "./hooks/use-project-context";
 import { useTranslation } from "react-i18next";
+import { useIsPlayful } from "@/hooks/use-ui-mode";
+import { PlayfulProjectHeader } from "./components/playful-project-header";
+
+/** Lesson-style child routes that render full-screen in the playful UI. */
+const IMMERSIVE = ["/projects/:projectId/quizzes/:quizId/take", "/projects/:projectId/attempts/:attemptId", "/projects/:projectId/flashcards/review"];
 
 const sections = (id: string) => [
     { key: "overview", to: Routes.projects.detail(id), end: true },
@@ -44,6 +49,9 @@ export default function ProjectLayout() {
     const tabs = useMemo(() => sections(projectId ?? ""), [projectId]);
     const context = useMemo(() => (project ? buildProjectContext(project) : null), [project]);
     usePageMetadata({ title: project?.title });
+    const playful = useIsPlayful();
+    const { pathname } = useLocation();
+    const immersive = playful && IMMERSIVE.some((p) => matchPath(p, pathname));
 
     useEffect(() => {
         const nav = navRef.current;
@@ -92,6 +100,17 @@ export default function ProjectLayout() {
     }
 
     const days = daysUntil(project.exam_date);
+
+    if (playful) {
+        return (
+            <div className="min-w-0">
+                {!immersive && <PlayfulProjectHeader project={project} />}
+                <Suspense fallback={<PageSkeleton />}>
+                    <Outlet context={context} />
+                </Suspense>
+            </div>
+        );
+    }
 
     return (
         <div className="min-w-0">

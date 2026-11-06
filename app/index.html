@@ -3,13 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/mascot/mascot-wave.webp" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="description" content="QuizMe — your AI-powered personal learning system: tutor, adaptive quizzes, flashcards and exam coach." />
     <meta name="theme-color" content="#faf9f5" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500&family=Nunito:wght@400;600;700;800;900&display=swap"
       rel="stylesheet"
     />
     <title>QuizMe</title>
@@ -22,7 +26,11 @@
           var r = document.documentElement;
           r.classList.add(dark ? "dark" : "light");
           r.style.colorScheme = dark ? "dark" : "light";
-          if (dark) document.querySelector('meta[name="theme-color"]').setAttribute("content", "#181715");
+          var p = JSON.parse(localStorage.getItem("preferences") || "null");
+          var ui = p && p.state && p.state.ui_mode === "classic" ? "classic" : "playful";
+          r.dataset.ui = ui;
+          var bg = ui === "playful" ? (dark ? "#131f24" : "#ffffff") : dark ? "#181715" : "#faf9f5";
+          document.querySelector('meta[name="theme-color"]').setAttribute("content", bg);
         } catch (e) {}
       })();
     </script>

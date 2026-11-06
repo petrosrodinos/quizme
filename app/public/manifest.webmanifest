@@ -1,0 +1,10 @@
+{
+  "name": "QuizMe",
+  "short_name": "QuizMe",
+  "description": "Your AI-powered personal learning system.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#58cc02",
+  "icons": [{ "src": "/mascot/mascot-wave.webp", "sizes": "512x512", "type": "image/webp", "purpose": "any" }]
+}

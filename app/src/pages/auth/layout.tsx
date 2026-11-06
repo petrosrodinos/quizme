@@ -6,6 +6,8 @@ import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { ThemeSwitch } from "@/components/ui/theme-switch";
 import { useSyncLanguageChoice } from "@/features/preferences/hooks/use-preferences";
 import { Routes } from "@/routes/routes";
+import { Mascot } from "@/components/ui/mascot";
+import { useIsPlayful } from "@/hooks/use-ui-mode";
 
 const highlights = [
     { icon: Sparkles, key: "layout.highlights.materials" },
@@ -18,6 +20,36 @@ const highlights = [
 export default function AuthLayout() {
     const { t } = useTranslation("auth");
     const syncLanguage = useSyncLanguageChoice();
+    const playful = useIsPlayful();
+    if (playful) {
+        return (
+            <div className="grid min-h-svh lg:grid-cols-[1fr_1fr]">
+                <aside className="relative hidden flex-col items-center justify-center overflow-hidden bg-[var(--pf-green)] p-12 text-white lg:flex">
+                    <Link to={Routes.auth.sign_in} className="absolute left-10 top-8 text-3xl font-black tracking-tight">
+                        {environments.APP_NAME.toLowerCase()}
+                    </Link>
+                    <Mascot pose="wave" animated className="size-72" />
+                    <h1 className="mt-6 max-w-md text-center text-4xl font-black leading-tight">{t("layout.playfulHeadline")}</h1>
+                    <p className="mt-4 max-w-md text-center text-lg font-bold text-white/85">{t("layout.description")}</p>
+                    <div className="pointer-events-none absolute -bottom-24 -left-16 size-72 rounded-full bg-white/10" aria-hidden />
+                    <div className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-white/10" aria-hidden />
+                </aside>
+                <main className="relative flex flex-col items-center justify-center bg-background px-5 py-10 sm:px-8">
+                    <div className="absolute right-4 top-4 flex items-center gap-1 sm:right-6 sm:top-6">
+                        <LanguageSwitcher variant="full" onChange={syncLanguage} />
+                        <ThemeSwitch />
+                    </div>
+                    <div className="w-full max-w-[400px]">
+                        <Link to={Routes.auth.sign_in} className="mb-6 flex flex-col items-center gap-1 lg:hidden">
+                            <Mascot pose="wave" animated className="size-28" />
+                            <span className="text-3xl font-black tracking-tight text-[var(--pf-green)]">{environments.APP_NAME.toLowerCase()}</span>
+                        </Link>
+                        <Outlet />
+                    </div>
+                </main>
+            </div>
+        );
+    }
     return (
         <div className="grid min-h-svh lg:grid-cols-[1.05fr_1fr]">
             <aside className="relative hidden overflow-hidden bg-[#181715] p-12 text-[#faf9f5] lg:flex lg:flex-col lg:justify-between">

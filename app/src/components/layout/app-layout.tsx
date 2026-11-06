@@ -11,11 +11,14 @@ import { GamificationEventsProvider } from "@/components/providers/gamification-
 import { EmailVerificationBanner } from "@/components/layout/email-verification-banner";
 import { useMe } from "@/features/auth/hooks/use-auth";
 import { useTranslation } from "react-i18next";
+import { useIsPlayful } from "@/hooks/use-ui-mode";
+import { PlayfulLayout } from "@/components/layout/playful/playful-layout";
 
-/** Authenticated application shell: sidebar + header + realtime/gamification providers. */
+/** Authenticated application shell: realtime/gamification providers + the classic (sidebar) or playful (mobile-first) chrome. */
 export default function AppLayout() {
     useMe();
     useTranslation(); // re-render the shell when the UI language changes
+    const playful = useIsPlayful();
     return (
         <PreferencesProvider>
             <RealtimeProvider>
@@ -24,16 +27,20 @@ export default function AppLayout() {
                         <a href="#main-content" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground">
                             Skip to content
                         </a>
-                        <SidebarProvider>
-                            <AppSidebar />
-                            <SidebarInset className="min-w-0 bg-background">
-                                <Header />
-                                <EmailVerificationBanner />
-                                <Suspense fallback={<PageSkeleton />}>
-                                    <Outlet />
-                                </Suspense>
-                            </SidebarInset>
-                        </SidebarProvider>
+                        {playful ? (
+                            <PlayfulLayout />
+                        ) : (
+                            <SidebarProvider>
+                                <AppSidebar />
+                                <SidebarInset className="min-w-0 bg-background">
+                                    <Header />
+                                    <EmailVerificationBanner />
+                                    <Suspense fallback={<PageSkeleton />}>
+                                        <Outlet />
+                                    </Suspense>
+                                </SidebarInset>
+                            </SidebarProvider>
+                        )}
                     </TooltipProvider>
                 </GamificationEventsProvider>
             </RealtimeProvider>

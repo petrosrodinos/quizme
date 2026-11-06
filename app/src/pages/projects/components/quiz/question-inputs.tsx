@@ -68,8 +68,10 @@ export const ChoiceInput = ({ question, value, onChange, disabled, correct, keyb
                         aria-checked={isSel}
                         disabled={disabled}
                         onClick={() => toggle(i)}
+                        data-selected={isSel}
+                        data-result={isCorrect ? "correct" : isWrongPick ? "wrong" : undefined}
                         className={cn(
-                            "group flex w-full items-start gap-3 rounded-xl border bg-card px-4 py-3 text-left text-[15px] leading-snug transition-all",
+                            "pf-choice group flex w-full items-start gap-3 rounded-xl border bg-card px-4 py-3 text-left text-[15px] leading-snug transition-all",
                             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-default",
                             !correct && isSel && "border-primary bg-primary/8 ring-1 ring-primary",
                             !correct && !isSel && "border-border hover:border-primary/50 hover:bg-surface",
@@ -126,8 +128,10 @@ export const TrueFalseInput = ({ value, onChange, disabled, correct, keyboard }:
                         aria-checked={isSel}
                         disabled={disabled}
                         onClick={() => onChange({ value: v })}
+                        data-selected={isSel}
+                        data-result={isCorrect ? "correct" : isWrongPick ? "wrong" : undefined}
                         className={cn(
-                            "rounded-xl border bg-card px-4 py-5 text-base font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                            "pf-choice rounded-xl border bg-card px-4 py-5 text-base font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                             !correct && isSel && "border-primary bg-primary/8 ring-1 ring-primary",
                             !correct && !isSel && "border-border hover:border-primary/50 hover:bg-surface",
                             isCorrect && "animate-pop border-success bg-success/10 ring-1 ring-success",

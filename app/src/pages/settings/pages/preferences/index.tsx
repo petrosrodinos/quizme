@@ -15,11 +15,13 @@ import { usePreferences, useSyncLanguageChoice, useUpdatePreferences } from "@/f
 import type { UpdatePreferencesDto, UserPreferences } from "@/features/preferences/interfaces/preferences.interfaces";
 import { SettingsSection, ToggleRow } from "../../components/settings-section";
 import { AiUsageCard } from "./components/ai-usage-card";
+import { UiModePicker } from "../../components/ui-mode-picker";
 
 type BoolKey = keyof typeof PreferenceToggleOptions;
 
 export default function SettingsPreferencesPage() {
     const { t, i18n } = useTranslation("settings");
+    const { t: tp } = useTranslation("playful");
     usePageMetadata({ title: t("preferences.pageTitle") });
     const { isPending } = usePreferences();
     const prefs = usePreferencesStore();
@@ -57,6 +59,9 @@ export default function SettingsPreferencesPage() {
 
     return (
         <div className="space-y-6">
+            <SettingsSection title={tp("profile.uiMode")} description={tp("profile.uiModeDescription")}>
+                <UiModePicker />
+            </SettingsSection>
             <SettingsSection title={t("preferences.language.title")} description={t("preferences.language.description")}>
                 <div className="flex items-center justify-between gap-4">
                     <label htmlFor="language-select" className="inline-flex items-center gap-2 text-sm font-medium">

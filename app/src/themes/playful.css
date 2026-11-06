@@ -1,0 +1,296 @@
+/*
+ * Playful UI mode (html[data-ui="playful"]) — mobile-first, Duolingo/Babbel-like skin layered over the
+ * shadcn components. Colours/fonts come from the "playful" design system (design-systems.ts); this file
+ * adds the chunky structural look: 3D "ridge" buttons, 2px outlined cards, fat progress bars, big touch
+ * targets. Unlayered on purpose so it beats Tailwind utilities. Classic mode is untouched.
+ */
+
+html[data-ui="playful"] {
+  --pf-green: #58cc02;
+  --pf-green-ridge: #46a302;
+  --pf-blue: #1cb0f6;
+  --pf-blue-ridge: #1899d6;
+  --pf-orange: #ff9600;
+  --pf-orange-ridge: #cd7900;
+  --pf-red: #ff4b4b;
+  --pf-red-ridge: #ea2b2b;
+  --pf-yellow: #ffc800;
+  --pf-yellow-ridge: #e5a400;
+  --pf-purple: #ce82ff;
+  --pf-purple-ridge: #a568cc;
+  --pf-gray-ridge: #e5e5e5;
+  --pf-ridge: var(--pf-green-ridge);
+  --success: #58cc02;
+  --warning: #ff9600;
+  --destructive: #ff4b4b;
+  --accent-amber: #ffc800;
+  --accent-teal: #1cb0f6;
+  --chart-2: #1cb0f6;
+  --chart-3: #ff9600;
+  --chart-5: #ce82ff;
+}
+html[data-ui="playful"].dark {
+  --pf-gray-ridge: #37464f;
+  --muted-foreground: #9fb2bd;
+}
+
+html[data-ui="playful"] body {
+  font-weight: 600;
+}
+html[data-ui="playful"] :is(h1, h2, h3) {
+  font-weight: 800;
+}
+
+/* ---------- Buttons: ridge shadow that "presses" on tap ---------- */
+html[data-ui="playful"] [data-slot="button"] {
+  border-radius: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  transition: transform 80ms ease, box-shadow 80ms ease, filter 120ms ease, background-color 120ms ease;
+}
+html[data-ui="playful"] [data-slot="button"]:is([data-variant="default"], [data-variant="destructive"], [data-variant="secondary"], [data-variant="outline"]) {
+  text-transform: uppercase;
+  font-size: 0.8125rem;
+}
+html[data-ui="playful"] [data-slot="button"][data-size="default"] { min-height: 2.75rem; padding-inline: 1.25rem; }
+html[data-ui="playful"] [data-slot="button"][data-size="lg"] { min-height: 3.25rem; font-size: 0.9375rem; }
+html[data-ui="playful"] [data-slot="button"][data-size="sm"] { min-height: 2.25rem; border-radius: 0.75rem; }
+html[data-ui="playful"] [data-slot="button"][data-size="icon"] { border-radius: 0.875rem; }
+
+html[data-ui="playful"] [data-slot="button"][data-variant="default"] {
+  background: var(--primary);
+  box-shadow: 0 4px 0 0 var(--pf-ridge);
+  margin-bottom: 4px;
+}
+html[data-ui="playful"] [data-slot="button"][data-variant="destructive"] {
+  background: var(--pf-red);
+  color: #fff;
+  box-shadow: 0 4px 0 0 var(--pf-red-ridge);
+  margin-bottom: 4px;
+}
+html[data-ui="playful"] [data-slot="button"]:is([data-variant="outline"], [data-variant="secondary"]) {
+  background: var(--card);
+  color: var(--foreground);
+  border: 2px solid var(--pf-gray-ridge);
+  box-shadow: 0 4px 0 0 var(--pf-gray-ridge);
+  margin-bottom: 4px;
+}
+html[data-ui="playful"] [data-slot="button"]:is([data-variant="outline"], [data-variant="secondary"]):hover {
+  background: var(--muted);
+}
+html[data-ui="playful"] [data-slot="button"]:is([data-variant="default"], [data-variant="destructive"]):hover {
+  filter: brightness(1.06);
+}
+html[data-ui="playful"] [data-slot="button"]:is([data-variant="default"], [data-variant="destructive"], [data-variant="outline"], [data-variant="secondary"]):active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 0 0 0 transparent;
+}
+html[data-ui="playful"] [data-slot="button"]:disabled {
+  opacity: 1;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  box-shadow: 0 4px 0 0 var(--pf-gray-ridge);
+  border-color: transparent;
+}
+html[data-ui="playful"] [data-slot="button"][data-variant="ghost"]:disabled,
+html[data-ui="playful"] [data-slot="button"][data-variant="link"]:disabled {
+  background: transparent;
+  box-shadow: none;
+  opacity: 0.5;
+}
+html[data-ui="playful"] [data-slot="button"][data-variant="ghost"] { border-radius: 0.875rem; }
+html[data-ui="playful"] [data-slot="button"][data-variant="link"] { color: var(--pf-blue); text-transform: uppercase; font-size: 0.8125rem; }
+
+/* Colour helpers for the playful components */
+html[data-ui="playful"] .pf-btn-blue[data-slot="button"] { background: var(--pf-blue) !important; color: #fff; box-shadow: 0 4px 0 0 var(--pf-blue-ridge) !important; }
+html[data-ui="playful"] .pf-btn-orange[data-slot="button"] { background: var(--pf-orange) !important; color: #fff; box-shadow: 0 4px 0 0 var(--pf-orange-ridge) !important; }
+html[data-ui="playful"] .pf-btn-red[data-slot="button"] { background: var(--pf-red) !important; color: #fff; box-shadow: 0 4px 0 0 var(--pf-red-ridge) !important; }
+html[data-ui="playful"] .pf-btn-white[data-slot="button"] { background: #fff !important; color: var(--pf-green-ridge); box-shadow: 0 4px 0 0 rgb(0 0 0 / 0.2) !important; }
+
+/* ---------- Cards & surfaces ---------- */
+html[data-ui="playful"] [data-slot="card"],
+html[data-ui="playful"] main .rounded-xl.border,
+html[data-ui="playful"] main .rounded-lg.border.bg-card {
+  border-width: 2px;
+  border-color: var(--pf-gray-ridge);
+  border-radius: 1.25rem;
+  box-shadow: none;
+}
+html[data-ui="playful"] :is([data-slot="input"], [data-slot="textarea"], [data-slot="select-trigger"]) {
+  border-width: 2px;
+  border-radius: 0.875rem;
+  background: var(--muted);
+  min-height: 2.75rem;
+  font-weight: 600;
+  box-shadow: none;
+}
+html[data-ui="playful"] :is([data-slot="input"], [data-slot="textarea"], [data-slot="select-trigger"]):focus-visible,
+html[data-ui="playful"] [data-slot="select-trigger"]:focus {
+  border-color: var(--pf-blue);
+  --tw-ring-color: transparent;
+}
+
+html[data-ui="playful"] [data-slot="progress"] {
+  height: 1rem;
+  background: var(--pf-gray-ridge);
+}
+html[data-ui="playful"] [data-slot="progress-indicator"] {
+  border-radius: 9999px;
+  background: var(--pf-green);
+  position: relative;
+}
+html[data-ui="playful"] [data-slot="progress-indicator"]::after {
+  content: "";
+  position: absolute;
+  inset: 3px 8px auto 8px;
+  height: 4px;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.35);
+}
+
+html[data-ui="playful"] [data-slot="badge"] {
+  border-radius: 9999px;
+  font-weight: 800;
+}
+
+html[data-ui="playful"] [data-slot="tabs-list"] {
+  height: auto;
+  border-radius: 1rem;
+  padding: 4px;
+  gap: 4px;
+  background: var(--muted);
+}
+html[data-ui="playful"] [data-slot="tabs-trigger"] {
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.875rem;
+  font-weight: 800;
+}
+html[data-ui="playful"] [data-slot="tabs-trigger"][data-state="active"] {
+  color: var(--pf-blue);
+  box-shadow: 0 2px 0 0 var(--pf-gray-ridge);
+}
+
+/* Dialogs / sheets become rounder; on phones dialogs dock to the bottom like native sheets. */
+html[data-ui="playful"] [role="dialog"],
+html[data-ui="playful"] [role="alertdialog"] {
+  border-radius: 1.5rem;
+  border-width: 2px;
+}
+@media (max-width: 639px) {
+  html[data-ui="playful"] [role="dialog"][data-state].fixed.left-\[50\%\],
+  html[data-ui="playful"] [role="alertdialog"][data-state].fixed.left-\[50\%\] {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: none;
+    width: 100%;
+    transform: none;
+    translate: none;
+    border-radius: 1.5rem 1.5rem 0 0;
+    max-height: 92dvh;
+    overflow-y: auto;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* Page content containers: tighter on phones, room for the bottom tab bar. */
+html[data-ui="playful"] #main-content {
+  padding-bottom: calc(6rem + env(safe-area-inset-bottom));
+}
+@media (min-width: 1024px) {
+  html[data-ui="playful"] #main-content { padding-bottom: 3rem; }
+}
+
+/* ---------- Learning path ---------- */
+.pf-node {
+  --node: var(--pf-green);
+  --node-ridge: var(--pf-green-ridge);
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 4.75rem;
+  height: 4.25rem;
+  border-radius: 50%;
+  background: var(--node);
+  color: #fff;
+  box-shadow: 0 7px 0 0 var(--node-ridge);
+  transition: transform 80ms ease, box-shadow 80ms ease;
+}
+.pf-node:active:not([data-locked="true"]) {
+  transform: translateY(6px);
+  box-shadow: 0 1px 0 0 var(--node-ridge);
+}
+.pf-node[data-locked="true"] {
+  --node: var(--pf-gray-ridge);
+  --node-ridge: color-mix(in srgb, var(--pf-gray-ridge) 70%, #000);
+  color: var(--muted-foreground);
+}
+.pf-node[data-state="done"] {
+  --node: var(--pf-yellow);
+  --node-ridge: var(--pf-yellow-ridge);
+}
+.pf-node-ring {
+  position: absolute;
+  inset: -10px;
+  border-radius: 9999px;
+  border: 6px solid var(--pf-gray-ridge);
+}
+.pf-node-ring > span {
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+  background: conic-gradient(var(--pf-green) calc(var(--p, 0) * 1%), transparent 0);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 6px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 6px));
+}
+
+@keyframes pf-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.pf-bounce { animation: pf-bounce 1.6s ease-in-out infinite; }
+
+@keyframes pf-float {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+}
+.pf-float { animation: pf-float 3.2s ease-in-out infinite; }
+
+@keyframes pf-sheet-up {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.pf-sheet-up { animation: pf-sheet-up 220ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+/* Answer choices (lesson player) */
+html[data-ui="playful"] .pf-choice {
+  border: 2px solid var(--pf-gray-ridge);
+  border-radius: 1rem;
+  box-shadow: 0 4px 0 0 var(--pf-gray-ridge);
+  background: var(--card);
+  transition: transform 80ms ease, box-shadow 80ms ease, border-color 120ms ease, background-color 120ms ease;
+}
+html[data-ui="playful"] .pf-choice:active { transform: translateY(2px); box-shadow: 0 2px 0 0 var(--pf-gray-ridge); }
+html[data-ui="playful"] .pf-choice[data-selected="true"] {
+  border-color: #84d8ff;
+  background: color-mix(in srgb, var(--pf-blue) 12%, var(--card));
+  box-shadow: 0 4px 0 0 #84d8ff;
+  color: var(--pf-blue-ridge);
+}
+html[data-ui="playful"] .pf-choice[data-result="correct"] {
+  border-color: var(--pf-green);
+  background: color-mix(in srgb, var(--pf-green) 14%, var(--card));
+  box-shadow: 0 4px 0 0 var(--pf-green-ridge);
+  color: var(--pf-green-ridge);
+}
+html[data-ui="playful"] .pf-choice[data-result="wrong"] {
+  color: var(--pf-red-ridge);
+  border-color: var(--pf-red);
+  background: color-mix(in srgb, var(--pf-red) 12%, var(--card));
+  box-shadow: 0 4px 0 0 var(--pf-red-ridge);
+}
+
+/* Hide the classic chrome bits that playful mode replaces. */
+html[data-ui="playful"] .classic-only { display: none !important; }
+html:not([data-ui="playful"]) .playful-only { display: none !important; }
