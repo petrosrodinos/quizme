@@ -13,7 +13,7 @@ export const formatPassages = (passages: Passage[], maxCharsEach = 2400): string
 const GROUNDING_RULES = `Rules:
 - Use ONLY the numbered source passages. Never invent facts that are not supported by them.
 - If the sources do not contain the information, say so plainly.
-- Write in the same language as the source material unless asked otherwise.`;
+- The output language is set by the "Language:" instruction at the end of this prompt; follow it even when the source passages are in a different language.`;
 
 export const QUESTION_SYSTEM = `You are an expert exam writer creating high-quality assessment items from a student's own study material.
 ${GROUNDING_RULES}

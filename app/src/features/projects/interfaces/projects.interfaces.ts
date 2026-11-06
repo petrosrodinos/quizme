@@ -17,6 +17,13 @@ export interface Project extends ProjectHeader {
     cards_due?: number;
 }
 
+/** A language a project can be created in. Served by the API so new languages need no app change. */
+export interface ProjectLanguage {
+    code: string;
+    name: string;
+    native_name: string;
+}
+
 export interface ProjectQuery {
     view?: ProjectView;
     search?: string;
@@ -26,6 +33,7 @@ export interface CreateProjectDto {
     title: string;
     description?: string;
     subject?: string;
+    language?: string;
     exam_date?: string | null;
     target_score?: number;
     difficulty?: string;

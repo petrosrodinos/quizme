@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,8 @@ import { ProjectStatusFormOptions } from "@/config/constants/dropdowns/projects/
 import type { CreateProjectDto, Project } from "@/features/projects/interfaces/projects.interfaces";
 import { projectFormSchema, type ProjectFormValues } from "../validation-schemas/project.schema";
 import { TagsInput } from "./tags-input";
+import { useProjectLanguages } from "@/features/projects/hooks/use-projects";
+import i18n from "@/i18n";
 import { useTranslation } from "react-i18next";
 
 interface ProjectFormDialogProps {
@@ -22,10 +24,14 @@ interface ProjectFormDialogProps {
     onSubmit: (dto: CreateProjectDto) => void;
 }
 
+/** New projects default to the interface language when it is also a content language, otherwise English. */
+const defaultLanguage = () => (i18n.language ?? "en").split("-")[0] || "en";
+
 const toDefaults = (p?: Project | null): ProjectFormValues => ({
     title: p?.title ?? "",
     description: p?.description ?? "",
     subject: p?.subject ?? "",
+    language: p?.language ?? defaultLanguage(),
     exam_date: p?.exam_date ? p.exam_date.slice(0, 10) : "",
     target_score: p?.target_score ?? 80,
     difficulty: p?.difficulty ?? "INTERMEDIATE",
@@ -37,6 +43,7 @@ const toDefaults = (p?: Project | null): ProjectFormValues => ({
 
 export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSubmit }: ProjectFormDialogProps) => {
     const { t } = useTranslation("projects");
+    const { data: languages = [] } = useProjectLanguages();
     const form = useForm<ProjectFormValues>({
         resolver: zodResolver(projectFormSchema) as unknown as Resolver<ProjectFormValues>,
         defaultValues: toDefaults(project),
@@ -51,6 +58,7 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
             title: v.title.trim(),
             description: v.description?.trim() || undefined,
             subject: v.subject?.trim() || undefined,
+            language: v.language,
             exam_date: v.exam_date ? new Date(`${v.exam_date}T09:00:00`).toISOString() : null,
             target_score: v.target_score,
             difficulty: v.difficulty,
@@ -110,6 +118,32 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
                                 )}
                             />
                         </div>
+                        <FormField
+                            control={form.control}
+                            name="language"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t("form.fields.language")}</FormLabel>
+                                    <Select value={field.value} onValueChange={field.onChange}>
+                                        <FormControl>
+                                            <SelectTrigger aria-label={t("form.fields.language")}>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent>
+                                            {languages.map((l) => (
+                                                <SelectItem key={l.code} value={l.code}>
+                                                    {l.native_name}
+                                                    {l.native_name !== l.name && <span className="ml-2 text-muted-foreground">{l.name}</span>}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormDescription>{project ? t("form.fields.languageHintEdit") : t("form.fields.languageHint")}</FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
                         <FormField
                             control={form.control}
                             name="description"

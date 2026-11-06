@@ -5,6 +5,7 @@ export const projectFormSchema = z.object({
     title: z.string().trim().min(1, { error: () => tr("projects:form.errors.titleRequired") }).max(160, { error: () => tr("projects:form.errors.titleMax") }),
     description: z.string().max(4000).optional(),
     subject: z.string().max(80).optional(),
+    language: z.string().min(1),
     exam_date: z.string().optional(),
     target_score: z.coerce.number().int().min(1, { error: () => tr("projects:form.errors.targetRange") }).max(100, { error: () => tr("projects:form.errors.targetRange") }),
     difficulty: z.string().min(1),

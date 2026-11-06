@@ -65,7 +65,8 @@
     "restore": "Failed to restore project.",
     "duplicate": "Failed to duplicate project.",
     "cover": "Failed to upload cover image.",
-    "overview": "Failed to load project overview."
+    "overview": "Failed to load project overview.",
+    "loadLanguages": "Couldn't load languages"
   },
   "page": {
     "metaTitle": "Projects",
@@ -161,7 +162,10 @@
       "status": "Status",
       "dailyMinutes": "Daily study (minutes)",
       "weeklyDays": "Study days per week",
-      "tags": "Tags"
+      "tags": "Tags",
+      "language": "Project language",
+      "languageHint": "Questions, flashcards, summaries and AI tutor replies for this project will be written in this language.",
+      "languageHintEdit": "Applies to newly generated content and tutor replies. Existing content is not translated."
     },
     "cancel": "Cancel",
     "save": "Save changes",

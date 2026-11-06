@@ -1,3 +1,5 @@
+import { CONTENT_LANGUAGES, resolveContentLanguage } from '@/shared/i18n/languages';
+import { normalizeLang } from '@/shared/i18n/translate';
 import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { MemberRole, Prisma, Project } from 'generated/prisma';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
@@ -37,10 +39,13 @@ export class ProjectsService {
     }
 
     async create(userId: string, dto: CreateProjectDto) {
-        const lang = await this.i18n.languageOf(userId);
+        // Project language defaults to the creator's interface language; it drives all generated content and the AI tutor.
+        const language = dto.language ?? resolveContentLanguage(await this.i18n.languageOf(userId));
+        const lang = normalizeLang(language);
         const project = await this.prisma.project.create({
             data: {
                 ...dto,
+                language,
                 exam_date: dto.exam_date ? new Date(dto.exam_date) : null,
                 tags: this.cleanTags(dto.tags),
                 owner_id: userId,
@@ -122,7 +127,13 @@ export class ProjectsService {
                 tags: dto.tags ? this.cleanTags(dto.tags) : undefined,
             },
         });
+        if (dto.language !== undefined) this.i18n.forgetProject(projectId);
         return this.serialize(project, access.role);
+    }
+
+    /** Languages a project can be created in (drives the web app's language selector). */
+    languages() {
+        return CONTENT_LANGUAGES.map(({ code, name, nativeName }) => ({ code, name, native_name: nativeName }));
     }
 
     async setArchived(userId: string, projectId: string, archived: boolean, ip?: string) {
@@ -175,6 +186,7 @@ export class ProjectsService {
                 title: this.i18n.t(lang, 'project.copy', { title: src.title }).slice(0, 160),
                 description: src.description,
                 subject: src.subject,
+                language: src.language,
                 exam_date: src.exam_date,
                 target_score: src.target_score,
                 difficulty: src.difficulty,

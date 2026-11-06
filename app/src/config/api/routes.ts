@@ -48,6 +48,7 @@ export const ApiRoutes = {
     },
     projects: {
         prefix: "/projects",
+        languages: "/projects/languages",
         detail: (id: string) => `/projects/${id}`,
         archive: (id: string) => `/projects/${id}/archive`,
         unarchive: (id: string) => `/projects/${id}/unarchive`,

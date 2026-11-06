@@ -15865,6 +15865,7 @@ export namespace Prisma {
     description: string | null
     cover_image_key: string | null
     subject: string | null
+    language: string | null
     exam_date: Date | null
     target_score: number | null
     difficulty: $Enums.ProjectDifficulty | null
@@ -15884,6 +15885,7 @@ export namespace Prisma {
     description: string | null
     cover_image_key: string | null
     subject: string | null
+    language: string | null
     exam_date: Date | null
     target_score: number | null
     difficulty: $Enums.ProjectDifficulty | null
@@ -15903,6 +15905,7 @@ export namespace Prisma {
     description: number
     cover_image_key: number
     subject: number
+    language: number
     exam_date: number
     target_score: number
     difficulty: number
@@ -15939,6 +15942,7 @@ export namespace Prisma {
     description?: true
     cover_image_key?: true
     subject?: true
+    language?: true
     exam_date?: true
     target_score?: true
     difficulty?: true
@@ -15958,6 +15962,7 @@ export namespace Prisma {
     description?: true
     cover_image_key?: true
     subject?: true
+    language?: true
     exam_date?: true
     target_score?: true
     difficulty?: true
@@ -15977,6 +15982,7 @@ export namespace Prisma {
     description?: true
     cover_image_key?: true
     subject?: true
+    language?: true
     exam_date?: true
     target_score?: true
     difficulty?: true
@@ -16084,6 +16090,7 @@ export namespace Prisma {
     description: string | null
     cover_image_key: string | null
     subject: string | null
+    language: string
     exam_date: Date | null
     target_score: number
     difficulty: $Enums.ProjectDifficulty
@@ -16123,6 +16130,7 @@ export namespace Prisma {
     description?: boolean
     cover_image_key?: boolean
     subject?: boolean
+    language?: boolean
     exam_date?: boolean
     target_score?: boolean
     difficulty?: boolean
@@ -16163,6 +16171,7 @@ export namespace Prisma {
     description?: boolean
     cover_image_key?: boolean
     subject?: boolean
+    language?: boolean
     exam_date?: boolean
     target_score?: boolean
     difficulty?: boolean
@@ -16184,6 +16193,7 @@ export namespace Prisma {
     description?: boolean
     cover_image_key?: boolean
     subject?: boolean
+    language?: boolean
     exam_date?: boolean
     target_score?: boolean
     difficulty?: boolean
@@ -16205,6 +16215,7 @@ export namespace Prisma {
     description?: boolean
     cover_image_key?: boolean
     subject?: boolean
+    language?: boolean
     exam_date?: boolean
     target_score?: boolean
     difficulty?: boolean
@@ -16218,7 +16229,7 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
-  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "owner_id" | "title" | "description" | "cover_image_key" | "subject" | "exam_date" | "target_score" | "difficulty" | "tags" | "progress" | "status" | "daily_minutes_goal" | "weekly_days_target" | "archived_at" | "created_at" | "updated_at", ExtArgs["result"]["project"]>
+  export type ProjectOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "owner_id" | "title" | "description" | "cover_image_key" | "subject" | "language" | "exam_date" | "target_score" | "difficulty" | "tags" | "progress" | "status" | "daily_minutes_goal" | "weekly_days_target" | "archived_at" | "created_at" | "updated_at", ExtArgs["result"]["project"]>
   export type ProjectInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     owner?: boolean | UserDefaultArgs<ExtArgs>
     members?: boolean | Project$membersArgs<ExtArgs>
@@ -16278,6 +16289,7 @@ export namespace Prisma {
       description: string | null
       cover_image_key: string | null
       subject: string | null
+      language: string
       exam_date: Date | null
       target_score: number
       difficulty: $Enums.ProjectDifficulty
@@ -16737,6 +16749,7 @@ export namespace Prisma {
     readonly description: FieldRef<"Project", 'String'>
     readonly cover_image_key: FieldRef<"Project", 'String'>
     readonly subject: FieldRef<"Project", 'String'>
+    readonly language: FieldRef<"Project", 'String'>
     readonly exam_date: FieldRef<"Project", 'DateTime'>
     readonly target_score: FieldRef<"Project", 'Int'>
     readonly difficulty: FieldRef<"Project", 'ProjectDifficulty'>
@@ -62997,6 +63010,7 @@ export namespace Prisma {
     description: 'description',
     cover_image_key: 'cover_image_key',
     subject: 'subject',
+    language: 'language',
     exam_date: 'exam_date',
     target_score: 'target_score',
     difficulty: 'difficulty',
@@ -64811,6 +64825,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Project"> | string | null
     cover_image_key?: StringNullableFilter<"Project"> | string | null
     subject?: StringNullableFilter<"Project"> | string | null
+    language?: StringFilter<"Project"> | string
     exam_date?: DateTimeNullableFilter<"Project"> | Date | string | null
     target_score?: IntFilter<"Project"> | number
     difficulty?: EnumProjectDifficultyFilter<"Project"> | $Enums.ProjectDifficulty
@@ -64850,6 +64865,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     cover_image_key?: SortOrderInput | SortOrder
     subject?: SortOrderInput | SortOrder
+    language?: SortOrder
     exam_date?: SortOrderInput | SortOrder
     target_score?: SortOrder
     difficulty?: SortOrder
@@ -64892,6 +64908,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Project"> | string | null
     cover_image_key?: StringNullableFilter<"Project"> | string | null
     subject?: StringNullableFilter<"Project"> | string | null
+    language?: StringFilter<"Project"> | string
     exam_date?: DateTimeNullableFilter<"Project"> | Date | string | null
     target_score?: IntFilter<"Project"> | number
     difficulty?: EnumProjectDifficultyFilter<"Project"> | $Enums.ProjectDifficulty
@@ -64931,6 +64948,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     cover_image_key?: SortOrderInput | SortOrder
     subject?: SortOrderInput | SortOrder
+    language?: SortOrder
     exam_date?: SortOrderInput | SortOrder
     target_score?: SortOrder
     difficulty?: SortOrder
@@ -64959,6 +64977,7 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Project"> | string | null
     cover_image_key?: StringNullableWithAggregatesFilter<"Project"> | string | null
     subject?: StringNullableWithAggregatesFilter<"Project"> | string | null
+    language?: StringWithAggregatesFilter<"Project"> | string
     exam_date?: DateTimeNullableWithAggregatesFilter<"Project"> | Date | string | null
     target_score?: IntWithAggregatesFilter<"Project"> | number
     difficulty?: EnumProjectDifficultyWithAggregatesFilter<"Project"> | $Enums.ProjectDifficulty
@@ -69107,6 +69126,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -69146,6 +69166,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -69183,6 +69204,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -69222,6 +69244,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -69260,6 +69283,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -69279,6 +69303,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -69299,6 +69324,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -73991,6 +74017,7 @@ export namespace Prisma {
     description?: SortOrder
     cover_image_key?: SortOrder
     subject?: SortOrder
+    language?: SortOrder
     exam_date?: SortOrder
     target_score?: SortOrder
     difficulty?: SortOrder
@@ -74018,6 +74045,7 @@ export namespace Prisma {
     description?: SortOrder
     cover_image_key?: SortOrder
     subject?: SortOrder
+    language?: SortOrder
     exam_date?: SortOrder
     target_score?: SortOrder
     difficulty?: SortOrder
@@ -74037,6 +74065,7 @@ export namespace Prisma {
     description?: SortOrder
     cover_image_key?: SortOrder
     subject?: SortOrder
+    language?: SortOrder
     exam_date?: SortOrder
     target_score?: SortOrder
     difficulty?: SortOrder
@@ -81501,6 +81530,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -81538,6 +81568,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -82321,6 +82352,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Project"> | string | null
     cover_image_key?: StringNullableFilter<"Project"> | string | null
     subject?: StringNullableFilter<"Project"> | string | null
+    language?: StringFilter<"Project"> | string
     exam_date?: DateTimeNullableFilter<"Project"> | Date | string | null
     target_score?: IntFilter<"Project"> | number
     difficulty?: EnumProjectDifficultyFilter<"Project"> | $Enums.ProjectDifficulty
@@ -85385,6 +85417,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -85423,6 +85456,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -85556,6 +85590,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -85594,6 +85629,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -85717,6 +85753,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -85755,6 +85792,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -85807,6 +85845,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -85845,6 +85884,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -85937,6 +85977,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -85975,6 +86016,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -86159,6 +86201,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -86197,6 +86240,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -86336,6 +86380,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -86374,6 +86419,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -86526,6 +86572,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -86564,6 +86611,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -86645,6 +86693,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -86683,6 +86732,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -87072,6 +87122,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -87110,6 +87161,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -87539,6 +87591,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -87577,6 +87630,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -87752,6 +87806,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -87790,6 +87845,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -88076,6 +88132,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -88114,6 +88171,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -88282,6 +88340,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -88320,6 +88379,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -89350,6 +89410,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -89388,6 +89449,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -89498,6 +89560,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -89536,6 +89599,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -89588,6 +89652,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -89626,6 +89691,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -89812,6 +89878,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -89850,6 +89917,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -90554,6 +90622,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -90592,6 +90661,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -90819,6 +90889,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -90857,6 +90928,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -91086,6 +91158,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -91124,6 +91197,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -91231,6 +91305,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -91269,6 +91344,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -91366,6 +91442,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -91404,6 +91481,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -91567,6 +91645,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -91605,6 +91684,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -91895,6 +91975,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -91933,6 +92014,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -92072,6 +92154,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -92110,6 +92193,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -92227,6 +92311,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -92265,6 +92350,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -92404,6 +92490,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -92442,6 +92529,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -92478,6 +92566,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -92516,6 +92605,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -92568,6 +92658,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -92606,6 +92697,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -92891,6 +92983,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -92929,6 +93022,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -93068,6 +93162,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -93106,6 +93201,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -93752,6 +93848,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -93790,6 +93887,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -93908,6 +94006,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -93946,6 +94045,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -94250,6 +94350,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -94288,6 +94389,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -94468,6 +94570,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -94506,6 +94609,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -95019,6 +95123,7 @@ export namespace Prisma {
     description?: string | null
     cover_image_key?: string | null
     subject?: string | null
+    language?: string
     exam_date?: Date | string | null
     target_score?: number
     difficulty?: $Enums.ProjectDifficulty
@@ -95310,6 +95415,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -95347,6 +95453,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty
@@ -95384,6 +95491,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     cover_image_key?: NullableStringFieldUpdateOperationsInput | string | null
     subject?: NullableStringFieldUpdateOperationsInput | string | null
+    language?: StringFieldUpdateOperationsInput | string
     exam_date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     target_score?: IntFieldUpdateOperationsInput | number
     difficulty?: EnumProjectDifficultyFieldUpdateOperationsInput | $Enums.ProjectDifficulty

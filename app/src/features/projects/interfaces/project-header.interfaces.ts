@@ -3,6 +3,8 @@ export interface ProjectHeader {
     id: string;
     title: string;
     subject: string | null;
+    /** Language of generated content and AI tutor replies (see GET /projects/languages). */
+    language?: string;
     description: string | null;
     exam_date: string | null;
     target_score: number;

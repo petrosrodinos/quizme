@@ -216,6 +216,7 @@ exports.Prisma.ProjectScalarFieldEnum = {
   description: 'description',
   cover_image_key: 'cover_image_key',
   subject: 'subject',
+  language: 'language',
   exam_date: 'exam_date',
   target_score: 'target_score',
   difficulty: 'difficulty',

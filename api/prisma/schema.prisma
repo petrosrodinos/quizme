@@ -381,6 +381,7 @@ model Project {
   description        String?
   cover_image_key    String?
   subject            String?
+  language           String            @default("en")
   exam_date          DateTime?
   target_score       Int               @default(80)
   difficulty         ProjectDifficulty @default(INTERMEDIATE)

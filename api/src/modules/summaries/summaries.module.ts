@@ -14,6 +14,7 @@ import { sha256 } from '@/shared/utils/hash.utils';
 import { AiService } from '../ai/ai.service';
 import { KnowledgeService } from '../knowledge/knowledge.service';
 import { I18nService } from '@/shared/i18n/i18n.service';
+import { normalizeLang } from '@/shared/i18n/translate';
 
 
 export class CreateSummaryDto {
@@ -92,7 +93,7 @@ export class SummariesService implements OnModuleInit {
             if (direct) {
                 const cited = [...new Set([...content.matchAll(/\[(\d+)\]/g)].map((m) => Number(m[1])))].filter((n) => n >= 1 && n <= passages.length).sort((a, b) => a - b);
                 if (cited.length) {
-                    content += `\n\n---\n**${this.i18n.t(await this.i18n.languageOf(s.created_by), 'summary.sources')}**\n${cited
+                    content += `\n\n---\n**${this.i18n.t(normalizeLang(await this.i18n.contentLanguageOf(s.project_id, s.created_by)), 'summary.sources')}**\n${cited
                         .map((n) => {
                             const p = passages[n - 1];
                             return `[${n}] ${p.documentTitle}${p.section ? ` · ${p.section}` : ''}${p.pageStart ? ` · p.${p.pageStart}` : ''}`;

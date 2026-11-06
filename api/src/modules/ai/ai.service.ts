@@ -33,6 +33,8 @@ import {
 import { AiCallContext, Passage, SummaryLevelName, TextAction } from './ai.types';
 import { I18nService } from '@/shared/i18n/i18n.service';
 import { Lang } from '@/shared/i18n/messages';
+import { normalizeLang } from '@/shared/i18n/translate';
+import { contentLanguageName, ContentLanguageCode } from '@/shared/i18n/languages';
 
 export interface TutorReply {
     answer: string;
@@ -61,16 +63,34 @@ export class AiService {
         this.dailyTokenLimit = Number(config.get('AI_DAILY_TOKEN_LIMIT') ?? 2_000_000);
     }
 
-    /** The student's interface language, used for explanations/feedback (generated study content keeps the source language). */
-    private async uiLanguage(ctx: AiCallContext): Promise<Lang> {
-        return this.i18n.languageOf(ctx.userId);
+    /**
+     * Language every generated output must be written in: the project's language (set at project creation), or the
+     * user's interface language when the call is not tied to a project.
+     */
+    private async outputLanguage(ctx: AiCallContext): Promise<ContentLanguageCode> {
+        return this.i18n.contentLanguageOf(ctx.projectId, ctx.userId);
     }
 
-    private languageInstruction(lang: Lang, kind: 'reply' | 'feedback' | 'content'): string {
-        const name = lang === 'el' ? 'Greek (Ελληνικά)' : 'English';
-        if (kind === 'reply') return `\n\nLanguage: reply in the language the student writes in; if unclear, use ${name} (their interface language). Keep technical terms from the sources where helpful.`;
-        if (kind === 'feedback') return `\n\nLanguage: write every human-readable field (explanation, expected_answer, concepts, statements, suggestions) in ${name}, the student's interface language.`;
-        return `\n\nLanguage: write the response in ${name}, the student's interface language (quote source wording verbatim where needed).`;
+    /** Catalogue (UI-string) language matching a content language — falls back to English for languages without UI translations. */
+    private catalogueLang(code: ContentLanguageCode): Lang {
+        return normalizeLang(code);
+    }
+
+    private languageInstruction(code: ContentLanguageCode, kind: 'reply' | 'feedback' | 'content'): string {
+        const name = contentLanguageName(code);
+        if (kind === 'reply') {
+            return `
+
+Language: ALWAYS reply in ${name}, the language of this study project — even if the student writes in another language or the sources are in another language. Keep technical terms from the sources where helpful (original wording in parentheses is fine).`;
+        }
+        if (kind === 'feedback') {
+            return `
+
+Language: write every human-readable field (explanation, expected_answer, concepts, statements, suggestions) in ${name}, the language of this study project. Keep JSON keys and enum values (e.g. verdict) exactly as specified.`;
+        }
+        return `
+
+Language: write ALL human-readable output in ${name}, the language of this study project (question prompts, options, answers, explanations, flashcard text, topic names, summaries, notes). If the source material is in another language, express its concepts in ${name}; keep verbatim quotes (e.g. supporting_quote) in the source's original wording, and keep proper nouns, formulas and standard notation as they are. Keep JSON keys and enum values exactly as specified.`;
     }
 
     get providerInfo() {
@@ -217,7 +237,8 @@ export class AiService {
         opts: { passages: Passage[]; count: number; types: string[]; difficulty: string; focusConcepts?: string[]; avoid?: string[]; instructions?: string },
     ): Promise<GeneratedQuestion[]> {
         await this.assertBudget(ctx.userId);
-        const res = await this.object(ctx, 'fast', P.QUESTION_SYSTEM, P.questionPrompt(opts), QuestionBatchSchema, {
+        const system = `${P.QUESTION_SYSTEM}${this.languageInstruction(await this.outputLanguage(ctx), 'content')}`;
+        const res = await this.object(ctx, 'fast', system, P.questionPrompt(opts), QuestionBatchSchema, {
             temperature: 0.6,
             maxTokens: Math.min(16_000, 900 * opts.count + 800),
         });
@@ -226,7 +247,8 @@ export class AiService {
 
     async generateFlashcards(ctx: AiCallContext, passages: Passage[], count: number, instructions?: string): Promise<GeneratedFlashcard[]> {
         await this.assertBudget(ctx.userId);
-        const res = await this.object(ctx, 'fast', P.FLASHCARD_SYSTEM, P.flashcardPrompt(passages, count, instructions), FlashcardBatchSchema, {
+        const system = `${P.FLASHCARD_SYSTEM}${this.languageInstruction(await this.outputLanguage(ctx), 'content')}`;
+        const res = await this.object(ctx, 'fast', system, P.flashcardPrompt(passages, count, instructions), FlashcardBatchSchema, {
             temperature: 0.4,
             maxTokens: Math.min(12_000, 220 * count + 600),
         });
@@ -236,7 +258,8 @@ export class AiService {
     async buildTopicTree(ctx: AiCallContext, projectTitle: string, sections: { title: string; text: string }[]): Promise<TopicTree | null> {
         if (!this.llm.isLlmAvailable) return null;
         try {
-            return await this.object(ctx, 'fast', P.TOPIC_SYSTEM, P.topicPrompt(projectTitle, sections), TopicTreeSchema, { temperature: 0.2, maxTokens: 6000 });
+            const system = `${P.TOPIC_SYSTEM}${this.languageInstruction(await this.outputLanguage(ctx), 'content')}`;
+            return await this.object(ctx, 'fast', system, P.topicPrompt(projectTitle, sections), TopicTreeSchema, { temperature: 0.2, maxTokens: 6000 });
         } catch {
             return null;
         }
@@ -245,11 +268,12 @@ export class AiService {
     /** Hierarchical (map/reduce) summarization so arbitrarily large material never hits the context limit. */
     async summarize(ctx: AiCallContext, level: SummaryLevelName, title: string, passages: Passage[]): Promise<{ content: string; model: string }> {
         await this.assertBudget(ctx.userId);
+        const SUMMARY_SYSTEM = `${P.SUMMARY_SYSTEM}${this.languageInstruction(await this.outputLanguage(ctx), 'content')}`;
         const totalChars = passages.reduce((s, p) => s + p.content.length, 0);
         const reduceTier: ModelTier = level === 'ONE_MINUTE' ? 'fast' : 'smart';
         const maxTokens = level === 'DETAILED' || level === 'STUDY_GUIDE' ? 6000 : level === 'ONE_MINUTE' ? 600 : 3000;
         if (totalChars <= 40_000) {
-            const res = await this.text(ctx, reduceTier, P.SUMMARY_SYSTEM, { prompt: P.summaryDirectPrompt(level, title, passages) }, maxTokens);
+            const res = await this.text(ctx, reduceTier, SUMMARY_SYSTEM, { prompt: P.summaryDirectPrompt(level, title, passages) }, maxTokens);
             return { content: res.text, model: res.usage.model };
         }
         const groups: Passage[][] = [];
@@ -269,26 +293,26 @@ export class AiService {
         for (let i = 0; i < groups.length; i += 4) {
             const batch = groups.slice(i, i + 4);
             const results = await Promise.all(
-                batch.map((g) => this.text({ ...ctx, task: `${ctx.task}:map` }, 'fast', P.SUMMARY_SYSTEM, { prompt: P.summaryMapPrompt(g) }, 1800)),
+                batch.map((g) => this.text({ ...ctx, task: `${ctx.task}:map` }, 'fast', SUMMARY_SYSTEM, { prompt: P.summaryMapPrompt(g) }, 1800)),
             );
             notes.push(...results.map((r) => r.text));
         }
         let merged = notes.join('\n\n---\n\n');
         if (merged.length > 60_000) {
-            const res = await this.text({ ...ctx, task: `${ctx.task}:compress` }, 'fast', P.SUMMARY_SYSTEM, {
+            const res = await this.text({ ...ctx, task: `${ctx.task}:compress` }, 'fast', SUMMARY_SYSTEM, {
                 prompt: `Condense these notes, preserving every key concept, definition and formula:\n${merged.slice(0, 120_000)}`,
             }, 6000);
             merged = res.text;
         }
-        const res = await this.text(ctx, reduceTier, P.SUMMARY_SYSTEM, { prompt: P.summaryReducePrompt(level, title, merged) }, maxTokens);
+        const res = await this.text(ctx, reduceTier, SUMMARY_SYSTEM, { prompt: P.summaryReducePrompt(level, title, merged) }, maxTokens);
         return { content: res.text, model: res.usage.model };
     }
 
     async tutorReply(ctx: AiCallContext, mode: 'TUTOR' | 'SOCRATIC', passages: Passage[], history: ChatTurn[], question: string): Promise<TutorReply> {
-        const lang = await this.uiLanguage(ctx);
-        if (!this.llm.isLlmAvailable) return this.localTutorReply(question, passages, lang);
+        const code = await this.outputLanguage(ctx);
+        if (!this.llm.isLlmAvailable) return this.localTutorReply(question, passages, this.catalogueLang(code));
         await this.assertBudget(ctx.userId);
-        const langRule = this.languageInstruction(lang, 'reply');
+        const langRule = this.languageInstruction(code, 'reply');
         const sources = passages.length ? `Source passages:\n${P.formatPassages(passages, 1800)}` : 'Source passages: (none found for this question)';
         if (mode === 'SOCRATIC') {
             const res = await this.text(
@@ -340,8 +364,8 @@ export class AiService {
         if (!this.llm.isLlmAvailable) return this.localEvaluation(opts);
         try {
             await this.assertBudget(ctx.userId);
-            const lang = await this.uiLanguage(ctx);
-            return await this.object(ctx, 'fast', `${P.EVALUATION_SYSTEM}${this.languageInstruction(lang, 'feedback')}`, P.evaluationPrompt(opts), EvaluationSchema, { temperature: 0.1, maxTokens: 1500 });
+            const code = await this.outputLanguage(ctx);
+            return await this.object(ctx, 'fast', `${P.EVALUATION_SYSTEM}${this.languageInstruction(code, 'feedback')}`, P.evaluationPrompt(opts), EvaluationSchema, { temperature: 0.1, maxTokens: 1500 });
         } catch (error) {
             if (error instanceof HttpException && error.getStatus() === HttpStatus.TOO_MANY_REQUESTS) throw error;
             this.logger.warn(`Falling back to local evaluation: ${error?.message}`);
@@ -376,9 +400,9 @@ export class AiService {
             return { content: sentences.length ? sentences.map((s) => `- ${s}`).join('\n') : 'AI provider not configured.', model: 'local', cached: false };
         }
         await this.assertBudget(ctx.userId);
-        const lang = await this.uiLanguage(ctx);
+        const lang = await this.outputLanguage(ctx);
         const key = sha256(stableStringify({ t: 'text_action', action, text: text.trim(), extra, lang, m: this.llm.modelFor('fast') }));
-        // "translate" targets the requested language; every other action answers in the interface language.
+        // "translate" targets the requested language; every other action answers in the project language.
         const system = action === 'translate' ? P.TEXT_ACTION_SYSTEM : `${P.TEXT_ACTION_SYSTEM}${this.languageInstruction(lang, 'content')}`;
         const { value, hit } = await this.cached(key, 'text_action', 30, async () => {
             const res = await this.text(ctx, 'fast', system, { prompt: P.textActionPrompt(action, text, passages, extra) }, 1500);
@@ -391,7 +415,7 @@ export class AiService {
     async wordLookup(ctx: AiCallContext, word: string, context: string, language?: string): Promise<WordLookup & { cached: boolean }> {
         this.requireLlm();
         await this.assertBudget(ctx.userId);
-        const lang = await this.uiLanguage(ctx);
+        const lang = await this.outputLanguage(ctx);
         const key = sha256(stableStringify({ t: 'word', word: word.toLowerCase().trim(), context: context.trim().slice(0, 300), language: language || null, lang }));
         const { value, hit } = await this.cached(key, 'word_lookup', 90, () =>
             this.object(ctx, 'fast', `${P.WORD_SYSTEM}${this.languageInstruction(lang, 'content')} The "word" field stays as given.`, P.wordPrompt(word, context, language), WordLookupSchema, { temperature: 0.1, maxTokens: 600 }),
@@ -402,7 +426,8 @@ export class AiService {
 
     async recallPrompts(ctx: AiCallContext, passages: Passage[], count: number, mode: 'ACTIVE_RECALL' | 'TEACH_BACK') {
         await this.assertBudget(ctx.userId);
-        const res = await this.object(ctx, 'fast', P.RECALL_SYSTEM, P.recallPrompt(passages, count, mode), RecallPromptSchema, { temperature: 0.5, maxTokens: 2500 });
+        const system = `${P.RECALL_SYSTEM}${this.languageInstruction(await this.outputLanguage(ctx), 'content')}`;
+        const res = await this.object(ctx, 'fast', system, P.recallPrompt(passages, count, mode), RecallPromptSchema, { temperature: 0.5, maxTokens: 2500 });
         return res.prompts;
     }
 }

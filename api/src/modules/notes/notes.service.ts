@@ -9,6 +9,7 @@ import { AiService } from '../ai/ai.service';
 import { FlashcardsService } from '../flashcards/flashcards.service';
 import { QuizzesService } from '../quizzes/quizzes.service';
 import { I18nService } from '@/shared/i18n/i18n.service';
+import { normalizeLang } from '@/shared/i18n/translate';
 
 
 export class CreateNoteDto {
@@ -125,7 +126,8 @@ export class NotesService {
             .join('\n\n')
             .slice(0, 12_000);
         if (text.trim().length < 30) throw new BadRequestException('Selected notes do not contain enough text');
-        const { t } = await this.i18n.forUser(userId);
+        const projectLang = normalizeLang(await this.i18n.contentLanguageOf(projectId, userId));
+        const t = (key: string) => this.i18n.t(projectLang, key);
         if (dto.target === 'flashcards') return { kind: 'flashcards', ...(await this.flashcards.generate(userId, projectId, { note_ids: notes.map((n) => n.id), count: Math.min(30, notes.length * 4) })) };
         if (dto.target === 'quiz') {
             const quiz = await this.quizzes.create(userId, projectId, { mode: 'SELECTION', selection_text: text, count: Math.min(15, Math.max(5, notes.length * 2)), title: t('quiz.title.fromNotes') });

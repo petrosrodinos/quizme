@@ -5,18 +5,33 @@ import {
     deleteProject,
     duplicateProject,
     getProjectOverview,
+    getProjectLanguages,
     getProjects,
     setProjectArchived,
     updateProject,
     uploadProjectCover,
 } from "../services/projects.services";
-import type { ProjectQuery } from "../interfaces/projects.interfaces";
+import type { ProjectLanguage, ProjectQuery } from "../interfaces/projects.interfaces";
 import { tr } from "@/lib/i18n-options";
 
 export const useProjects = (query: ProjectQuery) =>
     useQuery({
         queryKey: ["projects", query],
         queryFn: () => getProjects(query),
+    });
+
+/** Languages offered by the project form; static fallback keeps the selector usable while loading / offline. */
+const FALLBACK_LANGUAGES: ProjectLanguage[] = [
+    { code: "en", name: "English", native_name: "English" },
+    { code: "el", name: "Greek", native_name: "Ελληνικά" },
+];
+
+export const useProjectLanguages = () =>
+    useQuery({
+        queryKey: ["project-languages"],
+        queryFn: getProjectLanguages,
+        staleTime: Infinity,
+        placeholderData: FALLBACK_LANGUAGES,
     });
 
 export const useProjectOverview = (id: string | undefined) =>

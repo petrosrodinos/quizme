@@ -13,6 +13,7 @@ import { KnowledgeService } from '../knowledge/knowledge.service';
 import { Passage } from '../ai/ai.types';
 import { LearnerProfileService } from './learner-profile.service';
 import { I18nService } from '@/shared/i18n/i18n.service';
+import { normalizeLang } from '@/shared/i18n/translate';
 
 import { AttemptQueryType, CreateQuizDto, SubmitAnswerDto } from './dto/quizzes.dto';
 
@@ -77,7 +78,7 @@ export class QuizzesService implements OnModuleInit {
             selection_document_id: dto.selection_document_id,
             instructions: dto.instructions,
         };
-        const title = dto.title?.trim() || (await this.defaultTitle(userId, mode));
+        const title = dto.title?.trim() || (await this.defaultTitle(projectId, userId, mode));
         const quiz = await this.prisma.quiz.create({
             data: {
                 project_id: projectId,
@@ -95,8 +96,8 @@ export class QuizzesService implements OnModuleInit {
         return { ...quiz, job_id: job.id };
     }
 
-    private async defaultTitle(userId: string, mode: QuizMode) {
-        const lang = await this.i18n.languageOf(userId);
+    private async defaultTitle(projectId: string, userId: string, mode: QuizMode) {
+        const lang = normalizeLang(await this.i18n.contentLanguageOf(projectId, userId));
         return this.i18n.t(lang, `quiz.title.${mode}`, { date: this.i18n.formatDate(lang, new Date()) });
     }
 

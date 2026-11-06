@@ -21,6 +21,12 @@ export class ProjectsController {
         return this.projects.create(userId, dto);
     }
 
+    @Get('languages')
+    @ApiOperation({ summary: 'Languages a project (its generated content and AI tutor) can use' })
+    languages() {
+        return this.projects.languages();
+    }
+
     @Get()
     @ApiOperation({ summary: 'List projects the user is a member of' })
     list(@CurrentUser('id') userId: string, @Query(new ZodValidationPipe(ProjectQuerySchema)) query: ProjectQueryType) {

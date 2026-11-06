@@ -1,11 +1,14 @@
 import axiosInstance from "@/config/api/axios";
 import { ApiRoutes } from "@/config/api/routes";
 import { withApiError } from "@/lib/api-error";
-import type { CreateProjectDto, Project, ProjectOverview, ProjectQuery, UpdateProjectDto } from "../interfaces/projects.interfaces";
+import type { CreateProjectDto, Project, ProjectLanguage, ProjectOverview, ProjectQuery, UpdateProjectDto } from "../interfaces/projects.interfaces";
 import { tr } from "@/lib/i18n-options";
 
 export const getProjects = (query: ProjectQuery) =>
     withApiError(async () => (await axiosInstance.get<Project[]>(ApiRoutes.projects.prefix, { params: query })).data, tr("projects:errors.loadList"));
+
+export const getProjectLanguages = () =>
+    withApiError(async () => (await axiosInstance.get<ProjectLanguage[]>(ApiRoutes.projects.languages)).data, tr("projects:errors.loadLanguages"));
 
 export const getProject = (id: string) =>
     withApiError(async () => (await axiosInstance.get<Project>(ApiRoutes.projects.detail(id))).data, tr("projects:errors.load"));

@@ -1,7 +1,8 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
-import { ArrayMaxSize, IsArray, IsDateString, IsEnum, IsInt, IsOptional, IsString, Max, MaxLength, Min, MinLength } from 'class-validator';
+import { ArrayMaxSize, IsArray, IsDateString, IsEnum, IsIn, IsInt, IsOptional, IsString, Max, MaxLength, Min, MinLength } from 'class-validator';
 import { ProjectDifficulty, ProjectStatus } from 'generated/prisma';
 import { z } from 'zod';
+import { CONTENT_LANGUAGE_CODES } from '@/shared/i18n/languages';
 
 export class CreateProjectDto {
     @ApiProperty({ example: 'Biology — Final Exam' })
@@ -21,6 +22,11 @@ export class CreateProjectDto {
     @IsString()
     @MaxLength(80)
     subject?: string;
+
+    @ApiProperty({ required: false, enum: CONTENT_LANGUAGE_CODES, example: 'en', description: 'Language of all generated content and AI tutor replies for this project' })
+    @IsOptional()
+    @IsIn(CONTENT_LANGUAGE_CODES)
+    language?: string;
 
     @ApiProperty({ required: false, example: '2027-06-20' })
     @IsOptional()
