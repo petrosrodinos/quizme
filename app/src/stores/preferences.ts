@@ -14,7 +14,7 @@ export const DefaultPreferences: UserPreferences = {
     leaderboard_opt_in: false,
     achievement_popups: true,
     language: "en",
-    ui_mode: "playful",
+    ui_mode: "classic",
     notification_prefs: {},
 };
 

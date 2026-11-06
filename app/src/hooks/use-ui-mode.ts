@@ -4,7 +4,7 @@ import { useUpdatePreferences } from "@/features/preferences/hooks/use-preferenc
 import { UiModes, type UiMode } from "@/features/preferences/interfaces/preferences.interfaces";
 
 /** Current UI mode ("playful" mobile-first UI or the original "classic" UI). */
-export const useUiMode = (): UiMode => usePreferencesStore((s) => (s.ui_mode === UiModes.CLASSIC ? UiModes.CLASSIC : UiModes.PLAYFUL));
+export const useUiMode = (): UiMode => usePreferencesStore((s) => (s.ui_mode === UiModes.PLAYFUL ? UiModes.PLAYFUL : UiModes.CLASSIC));
 
 export const useIsPlayful = () => useUiMode() === UiModes.PLAYFUL;
 

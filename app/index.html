@@ -27,7 +27,7 @@
           r.classList.add(dark ? "dark" : "light");
           r.style.colorScheme = dark ? "dark" : "light";
           var p = JSON.parse(localStorage.getItem("preferences") || "null");
-          var ui = p && p.state && p.state.ui_mode === "classic" ? "classic" : "playful";
+          var ui = p && p.state && p.state.ui_mode === "playful" ? "playful" : "classic";
           r.dataset.ui = ui;
           var bg = ui === "playful" ? (dark ? "#131f24" : "#ffffff") : dark ? "#181715" : "#faf9f5";
           document.querySelector('meta[name="theme-color"]').setAttribute("content", bg);

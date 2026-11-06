@@ -49,9 +49,9 @@ const readStoredUiMode = (): UiMode => {
     try {
         const raw = localStorage.getItem("preferences");
         const mode = raw ? JSON.parse(raw)?.state?.ui_mode : undefined;
-        return mode === "classic" ? "classic" : "playful";
+        return mode === "playful" ? "playful" : "classic";
     } catch {
-        return "playful";
+        return "classic";
     }
 };
 
