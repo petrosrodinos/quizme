@@ -1,38 +1,15 @@
-import type { RoleType } from "@/features/user/interfaces/user.interface";
+import type { ElementType } from "react";
 
-interface Team {
-  name: string;
-  logo: React.ElementType;
-  plan: string;
+export interface NavLink {
+    title: string;
+    url: string;
+    icon?: ElementType;
+    badge?: string;
+    /** Match nested paths as active (e.g. /projects/123 under /projects). */
+    matchPrefix?: boolean;
 }
 
-interface BaseNavItem {
-  title: string;
-  badge?: string;
-  icon?: React.ElementType;
+export interface NavGroup {
+    title: string;
+    items: NavLink[];
 }
-
-type NavLink = BaseNavItem & {
-  url: string;
-  items?: never;
-};
-
-type NavCollapsible = BaseNavItem & {
-  items: (BaseNavItem & { url: string })[];
-  url?: never;
-};
-
-type NavItem = NavCollapsible | NavLink;
-
-interface NavGroup {
-  access?: RoleType[];
-  title: string;
-  items: NavItem[];
-}
-
-interface SidebarData {
-  teams: Team[];
-  navGroups: NavGroup[];
-}
-
-export type { NavCollapsible, NavGroup, NavItem, NavLink, SidebarData };

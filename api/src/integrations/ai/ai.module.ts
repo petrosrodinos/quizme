@@ -1,10 +1,9 @@
-import { Module } from '@nestjs/common';
-import { AiService } from './services/ai.service';
-import { AiConfig } from './utils/ai.config';
+import { Global, Module } from '@nestjs/common';
+import { LlmProviderService } from './services/llm-provider.service';
 
+@Global()
 @Module({
-    imports: [],
-    providers: [AiService, AiConfig],
-    exports: [AiService],
+    providers: [LlmProviderService],
+    exports: [LlmProviderService],
 })
 export class AiIntegrationModule { }

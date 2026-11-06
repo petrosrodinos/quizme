@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "types": ["node", "jest"],
+    "types": ["node", "jest", "multer"],
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
@@ -10,6 +10,7 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
+    "rootDir": "./src",
     "baseUrl": "./",
     "ignoreDeprecations": "6.0",
     "strict": false,
@@ -24,5 +25,6 @@
       "@/*": ["src/*"],
       "generated/*": ["src/generated/*"]
     }
-  }
+  },
+  "include": ["src/**/*"]
 }

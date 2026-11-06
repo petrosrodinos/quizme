@@ -1,13 +1,15 @@
-const APP_NAME = "Appointmy";
-const LANDING_URL = import.meta.env.VITE_LANDING_URL;
-const APP_URL = import.meta.env.VITE_APP_URL;
-const API_URL = `${import.meta.env.VITE_API_URL}/`;
-const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+const trimSlash = (value: string | undefined, fallback: string) => (value || fallback).replace(/\/+$/, "");
+
+const APP_NAME = "QuizMe";
+const API_URL = trimSlash(import.meta.env.VITE_API_URL, "http://localhost:3000/api");
+const SOCKET_URL = trimSlash(import.meta.env.VITE_SOCKET_URL, API_URL.replace(/\/api$/, ""));
+const APP_URL = trimSlash(import.meta.env.VITE_APP_URL, window.location.origin);
+const GOOGLE_CLIENT_ID: string = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
 
 export const environments = {
     APP_NAME,
-    LANDING_URL,
-    APP_URL,
     API_URL,
-    GOOGLE_MAPS_API_KEY,
-}
+    SOCKET_URL,
+    APP_URL,
+    GOOGLE_CLIENT_ID,
+};

@@ -1,5 +1,5 @@
 {
-  "name": "lifehub-api",
+  "name": "quizme-api",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -22,16 +22,17 @@
     "start:local": "npx dotenv run -f .env.local -- nest start  --watch",
     "start:dev": "npx dotenv run -f .env.development -- nest start --watch",
     "start:staging": "npx dotenv run -f .env.staging -- nest start --watch",
-    "start:prod": "npx dotenv run -f .env.production -- node dist/main",
+    "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "test:e2e": "node --test test/api.e2e.test.mjs",
     "debug:dev": "npx dotenv run -f .env.development -- node --inspect-brk -r tsconfig-paths/register -r ts-node/register ./node_modules/@nestjs/cli/bin/nest.js start --watch"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^4.0.97",
     "@ai-sdk/openai": "^4.0.101",
     "@apollo/server": "^5.5.1",
     "@bull-board/api": "^9.10.5",
@@ -52,8 +53,11 @@
     "@nestjs/mapped-types": "^12.0.0",
     "@nestjs/passport": "^12.0.0",
     "@nestjs/platform-express": "^12.2.0",
+    "@nestjs/platform-socket.io": "^12.3.3",
     "@nestjs/schedule": "^12.0.2",
     "@nestjs/swagger": "^12.0.3",
+    "@nestjs/throttler": "^6.7.1",
+    "@nestjs/websockets": "^12.3.3",
     "@prisma/adapter-pg": "^7.10.1",
     "@prisma/client": "^7.10.1",
     "@types/node-telegram-bot-api": "^0.64.15",
@@ -72,10 +76,12 @@
     "graphql": "^16.11.0",
     "graphql-fields": "^2.0.3",
     "handlebars": "^4.7.10",
+    "helmet": "^8.3.0",
     "ioredis": "^6.0.0",
     "jsonwebtoken": "^9.0.3",
     "latest": "^0.2.0",
     "luxon": "^3.7.2",
+    "mammoth": "^1.13.0",
     "node-telegram-bot-api": "^2.1.0",
     "nodemailer": "^10.2.1",
     "otp-generator": "^4.0.1",
@@ -84,10 +90,12 @@
     "reflect-metadata": "^0.2.2",
     "resend": "^6.34.1",
     "rxjs": "^7.8.2",
+    "socket.io": "^4.8.4",
     "stripe": "^23.0.1",
     "swagger-ui-express": "^5.0.1",
     "twilio": "^6.2.0",
     "twitter-api-v2": "^1.29.1",
+    "unpdf": "^1.9.1",
     "uuid": "^14.0.3",
     "zod": "^4.6.7"
   },
@@ -101,6 +109,7 @@
     "@types/express-session": "^1.19.0",
     "@types/jest": "^30.0.0",
     "@types/luxon": "^3.7.6",
+    "@types/multer": "^2.3.0",
     "@types/node": "^26.6.5",
     "@types/nodemailer": "^8.0.2",
     "@types/otp-generator": "^4.0.2",
@@ -138,12 +147,28 @@
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+      "^.+\\.(t|j)s$": [
+        "ts-jest",
+        {
+          "tsconfig": {
+            "isolatedModules": true,
+            "module": "commonjs",
+            "esModuleInterop": true,
+            "experimentalDecorators": true,
+            "emitDecoratorMetadata": true
+          },
+          "diagnostics": false
+        }
+      ]
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1",
+      "^generated/(.*)$": "<rootDir>/generated/$1"
+    }
   }
 }

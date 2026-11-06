@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// QuizMe — AI Study & Exam Preparation Platform
+// Domain-grouped Prisma schema. See docs/ARCHITECTURE.md for design notes.
 
 generator client {
   provider = "prisma-client-js"
@@ -13,6 +10,10 @@ datasource db {
   provider = "postgresql"
 }
 
+// ─────────────────────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────────────────────
+
 enum AuthRole {
   USER
   ADMIN
@@ -20,33 +21,258 @@ enum AuthRole {
   SUPPORT
 }
 
-enum DocumentType {
-  LOGO
-  BANNER
-  IMAGE
-  VIDEO
-  AUDIO
-  PDF
-  DOCUMENT
-  OTHER
+enum ProjectDifficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
 }
 
+enum ProjectStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  REVIEWING
+  EXAM_READY
+  COMPLETED
+}
+
+enum MemberRole {
+  OWNER
+  ADMIN
+  EDITOR
+  CONTRIBUTOR
+  VIEWER
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  REVOKED
+  EXPIRED
+}
+
+enum ShareResourceType {
+  PROJECT
+  DOCUMENT
+  DECK
+  QUIZ
+  NOTE
+  STUDY_PLAN
+}
+
+enum ShareTargetType {
+  USER
+  LINK
+  ORGANIZATION
+}
+
+enum SharePermission {
+  VIEW
+  EDIT
+}
+
+enum DocumentFileType {
+  PDF
+  DOCX
+  TXT
+  MARKDOWN
+}
+
+enum DocumentStatus {
+  UPLOADED
+  PROCESSING
+  EXTRACTING
+  CHUNKING
+  INDEXING
+  READY
+  FAILED
+}
+
+enum QuestionType {
+  MCQ
+  MULTI_SELECT
+  TRUE_FALSE
+  FREE_TEXT
+  FILL_BLANK
+  MATCHING
+  ORDERING
+}
+
+enum ContentOrigin {
+  AI
+  MANUAL
+  IMPORTED
+}
+
+enum QuizMode {
+  PRACTICE
+  ADAPTIVE
+  REVIEW
+  EXAM
+  SELECTION
+  SHARED
+}
+
+enum GenerationStatus {
+  PENDING
+  GENERATING
+  READY
+  FAILED
+}
+
+enum AttemptStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
+enum CardStatus {
+  NEW
+  LEARNING
+  KNOWN
+  NEEDS_REVIEW
+}
+
+enum ReviewRating {
+  AGAIN
+  HARD
+  GOOD
+  EASY
+}
+
+enum NoteType {
+  NOTE
+  HIGHLIGHT
+  ANNOTATION
+  BOOKMARK
+  QUESTION
+}
+
+enum SummaryLevel {
+  ONE_MINUTE
+  FIVE_MINUTE
+  DETAILED
+  CHEAT_SHEET
+  STUDY_GUIDE
+}
+
+enum ChatMode {
+  TUTOR
+  SOCRATIC
+}
+
+enum ChatRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+enum RecallMode {
+  ACTIVE_RECALL
+  TEACH_BACK
+}
+
+enum StudyActivityType {
+  FLASHCARDS
+  QUIZ
+  EXAM
+  RECALL
+  TEACH_BACK
+  TUTOR
+  READING
+  DAILY_SESSION
+  ROOM
+}
+
+enum JobStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum AchievementRarity {
+  COMMON
+  UNCOMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
+
+enum GameStatus {
+  LOBBY
+  IN_PROGRESS
+  FINISHED
+}
+
+enum OrgRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+// ─────────────────────────────────────────────────────────────
+// Identity & access
+// ─────────────────────────────────────────────────────────────
+
 model User {
-  id       String  @id @default(uuid())
-  email    String  @unique
-  phone    String? @unique
-  password String
+  id                String    @id @default(uuid())
+  email             String    @unique
+  phone             String?   @unique
+  password          String?
+  full_name         String?
+  avatar_url        String?
+  google_id         String?   @unique
+  role              AuthRole  @default(USER)
+  timezone          String    @default("UTC")
+  email_verified_at DateTime?
+  last_login_at     DateTime?
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
 
-  role       AuthRole
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  password_reset_tokens     PasswordResetToken[]
+  email_verification_tokens EmailVerificationToken[]
+  sessions                  Session[]
+  owned_projects            Project[]                @relation("ProjectOwner")
+  memberships               ProjectMember[]
+  preferences               UserPreferences?
+  gamification              UserGamification?
+  xp_events                 XpEvent[]
+  achievements              UserAchievement[]
+  daily_activity            DailyActivity[]
+  notifications             Notification[]
+  card_states               CardState[]
+  review_logs               ReviewLog[]
+  attempts                  QuizAttempt[]
+  responses                 QuestionResponse[]
+  notes                     Note[]
+  chat_threads              ChatThread[]
+  recall_attempts           RecallAttempt[]
+  study_sessions            StudySession[]
+  topic_mastery             TopicMastery[]
+  org_memberships           OrganizationMember[]
+  room_messages             StudyRoomMessage[]
+  game_players              GamePlayer[]
 
-  password_reset_tokens PasswordResetToken[]
-
-  @@index([email])
-  @@index([phone])
-  @@index([id])
   @@map("users")
+}
+
+model Session {
+  id           String    @id @default(uuid())
+  user_id      String
+  user_agent   String?
+  ip_address   String?
+  created_at   DateTime  @default(now())
+  last_used_at DateTime  @default(now())
+  expires_at   DateTime
+  revoked_at   DateTime?
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("sessions")
 }
 
 model PasswordResetToken {
@@ -64,18 +290,951 @@ model PasswordResetToken {
   @@map("password_reset_tokens")
 }
 
-model Document {
-  id         String       @id @default(uuid())
-  user_uuid  String
-  filename   String
-  mimetype   String
-  size       Int
-  url        String
-  path       String
-  type       DocumentType @default(LOGO)
-  created_at DateTime     @default(now())
+model EmailVerificationToken {
+  id         String    @id @default(uuid())
+  token_hash String    @unique
+  user_id    String
+  expires_at DateTime
+  used_at    DateTime?
+  created_at DateTime  @default(now())
 
-  @@index([user_uuid])
-  @@index([id])
-  @@map("documents")
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@map("email_verification_tokens")
+}
+
+model UserPreferences {
+  user_id            String   @id
+  sound_enabled      Boolean  @default(true)
+  volume             Int      @default(70)
+  sound_feedback     Boolean  @default(true)
+  sound_celebrations Boolean  @default(true)
+  sound_timers       Boolean  @default(true)
+  animations_enabled Boolean  @default(true)
+  haptics_enabled    Boolean  @default(true)
+  focus_mode         Boolean  @default(false)
+  leaderboard_opt_in Boolean  @default(false)
+  achievement_popups Boolean  @default(true)
+  // notification preferences: { study_reminders, flashcards_due, invitations, collaboration, quiz_completion, goals, exams, streak_risk, achievements, email }
+  notification_prefs Json     @default("{}")
+  updated_at         DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("user_preferences")
+}
+
+model Organization {
+  id         String   @id @default(uuid())
+  name       String
+  slug       String   @unique
+  created_by String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  members OrganizationMember[]
+  shares  Share[]
+
+  @@map("organizations")
+}
+
+model OrganizationMember {
+  organization_id String
+  user_id         String
+  role            OrgRole  @default(MEMBER)
+  created_at      DateTime @default(now())
+
+  organization Organization @relation(fields: [organization_id], references: [id], onDelete: Cascade)
+  user         User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([organization_id, user_id])
+  @@index([user_id])
+  @@map("organization_members")
+}
+
+model AuditLog {
+  id            String   @id @default(uuid())
+  user_id       String?
+  action        String
+  resource_type String?
+  resource_id   String?
+  ip_address    String?
+  metadata      Json?
+  created_at    DateTime @default(now())
+
+  @@index([user_id, created_at])
+  @@index([resource_type, resource_id])
+  @@map("audit_logs")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Projects & collaboration
+// ─────────────────────────────────────────────────────────────
+
+model Project {
+  id                 String            @id @default(uuid())
+  owner_id           String
+  title              String
+  description        String?
+  cover_image_key    String?
+  subject            String?
+  exam_date          DateTime?
+  target_score       Int               @default(80)
+  difficulty         ProjectDifficulty @default(INTERMEDIATE)
+  tags               String[]          @default([])
+  progress           Int               @default(0)
+  status             ProjectStatus     @default(NOT_STARTED)
+  daily_minutes_goal Int               @default(30)
+  weekly_days_target Int               @default(5)
+  archived_at        DateTime?
+  created_at         DateTime          @default(now())
+  updated_at         DateTime          @updatedAt
+
+  owner           User                @relation("ProjectOwner", fields: [owner_id], references: [id], onDelete: Cascade)
+  members         ProjectMember[]
+  invitations     ProjectInvitation[]
+  documents       StudyDocument[]
+  chunks          DocumentChunk[]
+  topics          Topic[]
+  questions       Question[]
+  quizzes         Quiz[]
+  decks           FlashcardDeck[]
+  flashcards      Flashcard[]
+  notes           Note[]
+  summaries       Summary[]
+  chat_threads    ChatThread[]
+  recall_attempts RecallAttempt[]
+  study_sessions  StudySession[]
+  study_plans     StudyPlan[]
+  rooms           StudyRoom[]
+  games           MultiplayerGame[]
+  xp_events       XpEvent[]
+
+  @@index([owner_id])
+  @@index([archived_at])
+  @@map("projects")
+}
+
+model ProjectMember {
+  id          String     @id @default(uuid())
+  project_id  String
+  user_id     String
+  role        MemberRole @default(VIEWER)
+  can_copy    Boolean    @default(true)
+  can_reshare Boolean    @default(false)
+  invited_by  String?
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt
+
+  project Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([project_id, user_id])
+  @@index([user_id])
+  @@map("project_members")
+}
+
+model ProjectInvitation {
+  id          String           @id @default(uuid())
+  project_id  String
+  email       String
+  role        MemberRole       @default(VIEWER)
+  token_hash  String           @unique
+  invited_by  String
+  status      InvitationStatus @default(PENDING)
+  expires_at  DateTime
+  accepted_at DateTime?
+  created_at  DateTime         @default(now())
+
+  project Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+
+  @@index([project_id])
+  @@index([email])
+  @@map("project_invitations")
+}
+
+model Share {
+  id              String            @id @default(uuid())
+  resource_type   ShareResourceType
+  resource_id     String
+  project_id      String
+  created_by      String
+  target_type     ShareTargetType
+  target_user_id  String?
+  organization_id String?
+  link_token      String?           @unique
+  permission      SharePermission   @default(VIEW)
+  can_copy        Boolean           @default(true)
+  can_reshare     Boolean           @default(false)
+  expires_at      DateTime?
+  revoked_at      DateTime?
+  created_at      DateTime          @default(now())
+
+  organization Organization? @relation(fields: [organization_id], references: [id], onDelete: Cascade)
+
+  @@index([resource_type, resource_id])
+  @@index([target_user_id])
+  @@index([project_id])
+  @@map("shares")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Documents & knowledge layer
+// ─────────────────────────────────────────────────────────────
+
+model StudyDocument {
+  id              String           @id @default(uuid())
+  project_id      String
+  uploaded_by     String
+  filename        String
+  mime_type       String
+  file_type       DocumentFileType
+  size_bytes      Int
+  storage_key     String
+  checksum_sha256 String
+  status          DocumentStatus   @default(UPLOADED)
+  progress        Int              @default(0)
+  error_message   String?
+  page_count      Int?
+  word_count      Int?
+  chunk_count     Int              @default(0)
+  outline         Json?
+  embedding_model String?
+  processed_at    DateTime?
+  created_at      DateTime         @default(now())
+  updated_at      DateTime         @updatedAt
+
+  project   Project         @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  chunks    DocumentChunk[]
+  summaries Summary[]
+  notes     Note[]
+
+  @@unique([project_id, checksum_sha256])
+  @@index([project_id])
+  @@map("study_documents")
+}
+
+model DocumentChunk {
+  id              String   @id @default(uuid())
+  document_id     String
+  project_id      String
+  topic_id        String?
+  chunk_index     Int
+  content         String
+  section_path    String[] @default([])
+  page_start      Int?
+  page_end        Int?
+  token_count     Int
+  keywords        String[] @default([])
+  content_hash    String
+  embedding       Float[]  @default([])
+  embedding_model String?
+  created_at      DateTime @default(now())
+
+  document StudyDocument @relation(fields: [document_id], references: [id], onDelete: Cascade)
+  project  Project       @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  topic    Topic?        @relation(fields: [topic_id], references: [id], onDelete: SetNull)
+
+  @@index([project_id])
+  @@index([document_id, chunk_index])
+  @@index([topic_id])
+  @@map("document_chunks")
+}
+
+model Topic {
+  id          String   @id @default(uuid())
+  project_id  String
+  parent_id   String?
+  name        String
+  description String?
+  order_index Int      @default(0)
+  keywords    String[] @default([])
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  project    Project         @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  parent     Topic?          @relation("TopicTree", fields: [parent_id], references: [id], onDelete: Cascade)
+  children   Topic[]         @relation("TopicTree")
+  chunks     DocumentChunk[]
+  questions  Question[]
+  flashcards Flashcard[]
+  mastery    TopicMastery[]
+  notes      Note[]
+
+  @@unique([project_id, parent_id, name])
+  @@index([project_id])
+  @@map("topics")
+}
+
+model TopicMastery {
+  user_id           String
+  topic_id          String
+  project_id        String
+  mastery           Int       @default(0)
+  correct           Int       @default(0)
+  total             Int       @default(0)
+  mastered_at       DateTime?
+  last_practiced_at DateTime?
+  updated_at        DateTime  @updatedAt
+
+  user  User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  topic Topic @relation(fields: [topic_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, topic_id])
+  @@index([user_id, project_id])
+  @@map("topic_mastery")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Questions, quizzes & attempts
+// ─────────────────────────────────────────────────────────────
+
+model Question {
+  id               String        @id @default(uuid())
+  project_id       String
+  topic_id         String?
+  document_id      String?
+  chunk_id         String?
+  type             QuestionType
+  difficulty       Int           @default(2)
+  prompt           String
+  // type-specific payload: options/correct/pairs/items/answer
+  data             Json
+  explanation      String?
+  concept          String?
+  source_ref       Json?
+  tags             String[]      @default([])
+  origin           ContentOrigin @default(AI)
+  generation_model String?
+  generated_at     DateTime?
+  content_hash     String
+  in_bank          Boolean       @default(true)
+  archived_at      DateTime?
+  version          Int           @default(1)
+  original         Json?
+  created_by       String?
+  updated_by       String?
+  created_at       DateTime      @default(now())
+  updated_at       DateTime      @updatedAt
+
+  project   Project            @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  topic     Topic?             @relation(fields: [topic_id], references: [id], onDelete: SetNull)
+  quizzes   QuizQuestion[]
+  responses QuestionResponse[]
+  versions  QuestionVersion[]
+
+  @@unique([project_id, content_hash])
+  @@index([project_id, type])
+  @@index([topic_id])
+  @@index([concept])
+  @@map("questions")
+}
+
+model QuestionVersion {
+  id          String   @id @default(uuid())
+  question_id String
+  version     Int
+  snapshot    Json
+  edited_by   String?
+  created_at  DateTime @default(now())
+
+  question Question @relation(fields: [question_id], references: [id], onDelete: Cascade)
+
+  @@index([question_id])
+  @@map("question_versions")
+}
+
+model Quiz {
+  id             String           @id @default(uuid())
+  project_id     String
+  created_by     String
+  title          String
+  mode           QuizMode         @default(PRACTICE)
+  status         GenerationStatus @default(PENDING)
+  config         Json             @default("{}")
+  time_limit_sec Int?
+  target_score   Int?
+  error_message  String?
+  is_shared      Boolean          @default(false)
+  created_at     DateTime         @default(now())
+  updated_at     DateTime         @updatedAt
+
+  project   Project           @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  questions QuizQuestion[]
+  attempts  QuizAttempt[]
+  games     MultiplayerGame[]
+
+  @@index([project_id, created_at])
+  @@map("quizzes")
+}
+
+model QuizQuestion {
+  quiz_id     String
+  question_id String
+  order_index Int
+
+  quiz     Quiz     @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [question_id], references: [id], onDelete: Cascade)
+
+  @@id([quiz_id, question_id])
+  @@index([quiz_id, order_index])
+  @@map("quiz_questions")
+}
+
+model QuizAttempt {
+  id              String        @id @default(uuid())
+  quiz_id         String
+  user_id         String
+  project_id      String
+  attempt_number  Int
+  status          AttemptStatus @default(IN_PROGRESS)
+  started_at      DateTime      @default(now())
+  completed_at    DateTime?
+  deadline_at     DateTime?
+  score           Float         @default(0)
+  max_score       Float         @default(0)
+  percentage      Float         @default(0)
+  correct_count   Int           @default(0)
+  incorrect_count Int           @default(0)
+  time_spent_sec  Int           @default(0)
+  avg_difficulty  Float?
+  current_combo   Int           @default(0)
+  best_combo      Int           @default(0)
+  xp_earned       Int           @default(0)
+  analysis        Json?
+
+  quiz      Quiz               @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
+  user      User               @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  responses QuestionResponse[]
+
+  @@index([user_id, project_id, started_at])
+  @@index([quiz_id])
+  @@map("quiz_attempts")
+}
+
+model QuestionResponse {
+  id            String   @id @default(uuid())
+  attempt_id    String?
+  question_id   String
+  user_id       String
+  project_id    String
+  answer        Json
+  is_correct    Boolean
+  score         Float    @default(0)
+  feedback      Json?
+  time_spent_ms Int      @default(0)
+  difficulty    Int      @default(2)
+  answered_at   DateTime @default(now())
+
+  attempt  QuizAttempt? @relation(fields: [attempt_id], references: [id], onDelete: Cascade)
+  question Question     @relation(fields: [question_id], references: [id], onDelete: Cascade)
+  user     User         @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([attempt_id, question_id])
+  @@index([user_id, project_id, answered_at])
+  @@index([question_id])
+  @@map("question_responses")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Flashcards & spaced repetition
+// ─────────────────────────────────────────────────────────────
+
+model FlashcardDeck {
+  id          String   @id @default(uuid())
+  project_id  String
+  name        String
+  description String?
+  created_by  String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  project Project     @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  cards   Flashcard[]
+
+  @@index([project_id])
+  @@map("flashcard_decks")
+}
+
+model Flashcard {
+  id               String        @id @default(uuid())
+  project_id       String
+  deck_id          String?
+  topic_id         String?
+  chunk_id         String?
+  front            String
+  back             String
+  tags             String[]      @default([])
+  category         String?
+  difficulty       Int           @default(2)
+  origin           ContentOrigin @default(AI)
+  source_ref       Json?
+  generation_model String?
+  content_hash     String
+  version          Int           @default(1)
+  original         Json?
+  created_by       String?
+  updated_by       String?
+  created_at       DateTime      @default(now())
+  updated_at       DateTime      @updatedAt
+
+  project Project        @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  deck    FlashcardDeck? @relation(fields: [deck_id], references: [id], onDelete: SetNull)
+  topic   Topic?         @relation(fields: [topic_id], references: [id], onDelete: SetNull)
+  states  CardState[]
+  logs    ReviewLog[]
+
+  @@unique([project_id, content_hash])
+  @@index([project_id])
+  @@index([deck_id])
+  @@map("flashcards")
+}
+
+model CardState {
+  user_id          String
+  card_id          String
+  project_id       String
+  status           CardStatus    @default(NEW)
+  ease             Float         @default(2.5)
+  interval_days    Float         @default(0)
+  repetitions      Int           @default(0)
+  lapses           Int           @default(0)
+  learning_step    Int           @default(0)
+  due_at           DateTime      @default(now())
+  last_reviewed_at DateTime?
+  last_rating      ReviewRating?
+
+  user User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  card Flashcard @relation(fields: [card_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, card_id])
+  @@index([user_id, project_id, due_at])
+  @@map("card_states")
+}
+
+model ReviewLog {
+  id            String       @id @default(uuid())
+  user_id       String
+  card_id       String
+  project_id    String
+  rating        ReviewRating
+  prev_interval Float
+  new_interval  Float
+  time_spent_ms Int          @default(0)
+  reviewed_at   DateTime     @default(now())
+
+  user User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  card Flashcard @relation(fields: [card_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, project_id, reviewed_at])
+  @@index([card_id])
+  @@map("review_logs")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Notes, summaries, tutor, recall
+// ─────────────────────────────────────────────────────────────
+
+model Note {
+  id             String   @id @default(uuid())
+  project_id     String
+  user_id        String
+  type           NoteType @default(NOTE)
+  title          String?
+  content        String   @default("")
+  document_id    String?
+  page           Int?
+  chunk_id       String?
+  selection_text String?
+  topic_id       String?
+  question_id    String?
+  flashcard_id   String?
+  color          String?
+  tags           String[] @default([])
+  is_shared      Boolean  @default(false)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  project  Project        @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  user     User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  document StudyDocument? @relation(fields: [document_id], references: [id], onDelete: SetNull)
+  topic    Topic?         @relation(fields: [topic_id], references: [id], onDelete: SetNull)
+
+  @@index([project_id, user_id])
+  @@index([document_id])
+  @@map("notes")
+}
+
+model Summary {
+  id            String           @id @default(uuid())
+  project_id    String
+  document_id   String?
+  level         SummaryLevel
+  status        GenerationStatus @default(PENDING)
+  content       String           @default("")
+  source_hash   String
+  model         String?
+  error_message String?
+  created_by    String
+  created_at    DateTime         @default(now())
+  updated_at    DateTime         @updatedAt
+
+  project  Project        @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  document StudyDocument? @relation(fields: [document_id], references: [id], onDelete: Cascade)
+
+  @@index([project_id, level])
+  @@map("summaries")
+}
+
+model ChatThread {
+  id         String   @id @default(uuid())
+  project_id String
+  user_id    String
+  title      String   @default("New conversation")
+  mode       ChatMode @default(TUTOR)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  project  Project       @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  user     User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  messages ChatMessage[]
+
+  @@index([project_id, user_id])
+  @@map("chat_threads")
+}
+
+model ChatMessage {
+  id         String   @id @default(uuid())
+  thread_id  String
+  role       ChatRole
+  content    String
+  citations  Json?
+  grounded   Boolean  @default(true)
+  model      String?
+  created_at DateTime @default(now())
+
+  thread ChatThread @relation(fields: [thread_id], references: [id], onDelete: Cascade)
+
+  @@index([thread_id, created_at])
+  @@map("chat_messages")
+}
+
+model RecallAttempt {
+  id         String     @id @default(uuid())
+  user_id    String
+  project_id String
+  topic_id   String?
+  mode       RecallMode
+  prompt     String
+  answer     String
+  evaluation Json
+  score      Int
+  created_at DateTime   @default(now())
+
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, project_id])
+  @@map("recall_attempts")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Study planning & activity
+// ─────────────────────────────────────────────────────────────
+
+model StudySession {
+  id           String            @id @default(uuid())
+  user_id      String
+  project_id   String?
+  type         StudyActivityType
+  started_at   DateTime          @default(now())
+  ended_at     DateTime?
+  duration_sec Int               @default(0)
+  items_done   Int               @default(0)
+  metadata     Json?
+
+  user    User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  project Project? @relation(fields: [project_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, started_at])
+  @@index([project_id])
+  @@map("study_sessions")
+}
+
+model StudyPlan {
+  id           String   @id @default(uuid())
+  project_id   String
+  user_id      String
+  plan         Json
+  generated_at DateTime @default(now())
+
+  project Project @relation(fields: [project_id], references: [id], onDelete: Cascade)
+
+  @@unique([project_id, user_id])
+  @@map("study_plans")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Gamification
+// ─────────────────────────────────────────────────────────────
+
+model UserGamification {
+  user_id            String   @id
+  total_xp           Int      @default(0)
+  level              Int      @default(1)
+  current_streak     Int      @default(0)
+  longest_streak     Int      @default(0)
+  streak_freezes     Int      @default(0)
+  last_goal_date     String?
+  daily_goal_type    String   @default("REGULAR")
+  daily_goal_minutes Int      @default(20)
+  daily_goal_xp      Int      @default(100)
+  updated_at         DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("user_gamification")
+}
+
+model XpEvent {
+  id          String   @id @default(uuid())
+  user_id     String
+  project_id  String?
+  source_type String
+  source_id   String?
+  amount      Int
+  multiplier  Float    @default(1)
+  created_at  DateTime @default(now())
+
+  user    User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  project Project? @relation(fields: [project_id], references: [id], onDelete: SetNull)
+
+  @@index([user_id, created_at])
+  @@index([project_id, created_at])
+  @@index([user_id, source_type, source_id])
+  @@map("xp_events")
+}
+
+model Achievement {
+  id          String            @id @default(uuid())
+  key         String            @unique
+  title       String
+  description String
+  icon        String
+  category    String
+  rarity      AchievementRarity @default(COMMON)
+  criteria    Json
+  hidden      Boolean           @default(false)
+  order_index Int               @default(0)
+
+  users UserAchievement[]
+
+  @@map("achievements")
+}
+
+model UserAchievement {
+  user_id        String
+  achievement_id String
+  progress       Int       @default(0)
+  unlocked_at    DateTime?
+
+  user        User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievement_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, achievement_id])
+  @@map("user_achievements")
+}
+
+model DailyActivity {
+  user_id            String
+  date               String
+  xp_earned          Int     @default(0)
+  minutes_studied    Int     @default(0)
+  questions_answered Int     @default(0)
+  questions_correct  Int     @default(0)
+  cards_reviewed     Int     @default(0)
+  goal_met           Boolean @default(false)
+  freeze_used        Boolean @default(false)
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([user_id, date])
+  @@map("daily_activity")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Notifications
+// ─────────────────────────────────────────────────────────────
+
+model Notification {
+  id         String    @id @default(uuid())
+  user_id    String
+  type       String
+  title      String
+  body       String?
+  link       String?
+  data       Json?
+  read_at    DateTime?
+  created_at DateTime  @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id, read_at, created_at])
+  @@map("notifications")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Collaborative study
+// ─────────────────────────────────────────────────────────────
+
+model StudyRoom {
+  id           String    @id @default(uuid())
+  project_id   String
+  name         String
+  created_by   String
+  timer_state  Json?
+  shared_notes String    @default("")
+  closed_at    DateTime?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+
+  project  Project            @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  messages StudyRoomMessage[]
+  games    MultiplayerGame[]
+
+  @@index([project_id])
+  @@map("study_rooms")
+}
+
+model StudyRoomMessage {
+  id         String   @id @default(uuid())
+  room_id    String
+  user_id    String
+  content    String
+  is_ai      Boolean  @default(false)
+  created_at DateTime @default(now())
+
+  room StudyRoom @relation(fields: [room_id], references: [id], onDelete: Cascade)
+  user User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([room_id, created_at])
+  @@map("study_room_messages")
+}
+
+model MultiplayerGame {
+  id                   String     @id @default(uuid())
+  project_id           String
+  quiz_id              String
+  room_id              String?
+  host_id              String
+  status               GameStatus @default(LOBBY)
+  current_index        Int        @default(-1)
+  question_started_at  DateTime?
+  seconds_per_question Int        @default(20)
+  created_at           DateTime   @default(now())
+  finished_at          DateTime?
+
+  project Project      @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  quiz    Quiz         @relation(fields: [quiz_id], references: [id], onDelete: Cascade)
+  room    StudyRoom?   @relation(fields: [room_id], references: [id], onDelete: SetNull)
+  players GamePlayer[]
+  answers GameAnswer[]
+
+  @@index([project_id])
+  @@map("multiplayer_games")
+}
+
+model GamePlayer {
+  game_id   String
+  user_id   String
+  score     Int      @default(0)
+  correct   Int      @default(0)
+  joined_at DateTime @default(now())
+
+  game MultiplayerGame @relation(fields: [game_id], references: [id], onDelete: Cascade)
+  user User            @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@id([game_id, user_id])
+  @@map("game_players")
+}
+
+model GameAnswer {
+  id          String   @id @default(uuid())
+  game_id     String
+  user_id     String
+  question_id String
+  answer      Json
+  is_correct  Boolean
+  points      Int
+  time_ms     Int
+  created_at  DateTime @default(now())
+
+  game MultiplayerGame @relation(fields: [game_id], references: [id], onDelete: Cascade)
+
+  @@unique([game_id, user_id, question_id])
+  @@map("game_answers")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Platform: jobs, AI usage, caching
+// ─────────────────────────────────────────────────────────────
+
+model Job {
+  id           String    @id @default(uuid())
+  type         String
+  payload      Json
+  status       JobStatus @default(PENDING)
+  attempts     Int       @default(0)
+  max_attempts Int       @default(3)
+  priority     Int       @default(0)
+  run_at       DateTime  @default(now())
+  locked_at    DateTime?
+  locked_by    String?
+  last_error   String?
+  result       Json?
+  user_id      String?
+  project_id   String?
+  resource_id  String?
+  dedupe_key   String?
+  created_at   DateTime  @default(now())
+  updated_at   DateTime  @updatedAt
+  completed_at DateTime?
+
+  @@index([status, run_at, priority])
+  @@index([resource_id])
+  @@index([dedupe_key, status])
+  @@map("jobs")
+}
+
+model AiUsage {
+  id            String   @id @default(uuid())
+  user_id       String?
+  project_id    String?
+  task          String
+  provider      String
+  model         String
+  input_tokens  Int      @default(0)
+  output_tokens Int      @default(0)
+  cost_usd      Float    @default(0)
+  cached        Boolean  @default(false)
+  latency_ms    Int      @default(0)
+  success       Boolean  @default(true)
+  created_at    DateTime @default(now())
+
+  @@index([user_id, created_at])
+  @@index([project_id, created_at])
+  @@map("ai_usage")
+}
+
+model AiCache {
+  key        String    @id
+  task       String
+  response   Json
+  hits       Int       @default(0)
+  created_at DateTime  @default(now())
+  expires_at DateTime?
+
+  @@index([expires_at])
+  @@map("ai_cache")
 }

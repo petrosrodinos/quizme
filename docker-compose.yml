@@ -1,0 +1,36 @@
+# Production-like stack. Provide secrets via api/.env.production (see api/.env.template).
+#   docker compose up --build
+services:
+  api:
+    build: ./api
+    env_file: ./api/.env.production
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  # Optional dedicated background worker (set WORKER_ENABLED=false on `api` when using it)
+  worker:
+    build: ./api
+    env_file: ./api/.env.production
+    environment:
+      NODE_ENV: production
+      PORT: 3001
+      WORKER_ENABLED: "true"
+    profiles: ["worker"]
+    restart: unless-stopped
+
+  app:
+    build:
+      context: ./app
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3000/api}
+        VITE_SOCKET_URL: ${VITE_SOCKET_URL:-http://localhost:3000}
+        VITE_APP_URL: ${VITE_APP_URL:-http://localhost:8080}
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+    restart: unless-stopped

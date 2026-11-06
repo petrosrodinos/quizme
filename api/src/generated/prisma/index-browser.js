@@ -125,9 +125,26 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   phone: 'phone',
   password: 'password',
+  full_name: 'full_name',
+  avatar_url: 'avatar_url',
+  google_id: 'google_id',
   role: 'role',
+  timezone: 'timezone',
+  email_verified_at: 'email_verified_at',
+  last_login_at: 'last_login_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
+};
+
+exports.Prisma.SessionScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  user_agent: 'user_agent',
+  ip_address: 'ip_address',
+  created_at: 'created_at',
+  last_used_at: 'last_used_at',
+  expires_at: 'expires_at',
+  revoked_at: 'revoked_at'
 };
 
 exports.Prisma.PasswordResetTokenScalarFieldEnum = {
@@ -139,21 +156,616 @@ exports.Prisma.PasswordResetTokenScalarFieldEnum = {
   created_at: 'created_at'
 };
 
-exports.Prisma.DocumentScalarFieldEnum = {
+exports.Prisma.EmailVerificationTokenScalarFieldEnum = {
   id: 'id',
-  user_uuid: 'user_uuid',
-  filename: 'filename',
-  mimetype: 'mimetype',
-  size: 'size',
-  url: 'url',
-  path: 'path',
-  type: 'type',
+  token_hash: 'token_hash',
+  user_id: 'user_id',
+  expires_at: 'expires_at',
+  used_at: 'used_at',
   created_at: 'created_at'
+};
+
+exports.Prisma.UserPreferencesScalarFieldEnum = {
+  user_id: 'user_id',
+  sound_enabled: 'sound_enabled',
+  volume: 'volume',
+  sound_feedback: 'sound_feedback',
+  sound_celebrations: 'sound_celebrations',
+  sound_timers: 'sound_timers',
+  animations_enabled: 'animations_enabled',
+  haptics_enabled: 'haptics_enabled',
+  focus_mode: 'focus_mode',
+  leaderboard_opt_in: 'leaderboard_opt_in',
+  achievement_popups: 'achievement_popups',
+  notification_prefs: 'notification_prefs',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.OrganizationScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  slug: 'slug',
+  created_by: 'created_by',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.OrganizationMemberScalarFieldEnum = {
+  organization_id: 'organization_id',
+  user_id: 'user_id',
+  role: 'role',
+  created_at: 'created_at'
+};
+
+exports.Prisma.AuditLogScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  action: 'action',
+  resource_type: 'resource_type',
+  resource_id: 'resource_id',
+  ip_address: 'ip_address',
+  metadata: 'metadata',
+  created_at: 'created_at'
+};
+
+exports.Prisma.ProjectScalarFieldEnum = {
+  id: 'id',
+  owner_id: 'owner_id',
+  title: 'title',
+  description: 'description',
+  cover_image_key: 'cover_image_key',
+  subject: 'subject',
+  exam_date: 'exam_date',
+  target_score: 'target_score',
+  difficulty: 'difficulty',
+  tags: 'tags',
+  progress: 'progress',
+  status: 'status',
+  daily_minutes_goal: 'daily_minutes_goal',
+  weekly_days_target: 'weekly_days_target',
+  archived_at: 'archived_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.ProjectMemberScalarFieldEnum = {
+  id: 'id',
+  project_id: 'project_id',
+  user_id: 'user_id',
+  role: 'role',
+  can_copy: 'can_copy',
+  can_reshare: 'can_reshare',
+  invited_by: 'invited_by',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.ProjectInvitationScalarFieldEnum = {
+  id: 'id',
+  project_id: 'project_id',
+  email: 'email',
+  role: 'role',
+  token_hash: 'token_hash',
+  invited_by: 'invited_by',
+  status: 'status',
+  expires_at: 'expires_at',
+  accepted_at: 'accepted_at',
+  created_at: 'created_at'
+};
+
+exports.Prisma.ShareScalarFieldEnum = {
+  id: 'id',
+  resource_type: 'resource_type',
+  resource_id: 'resource_id',
+  project_id: 'project_id',
+  created_by: 'created_by',
+  target_type: 'target_type',
+  target_user_id: 'target_user_id',
+  organization_id: 'organization_id',
+  link_token: 'link_token',
+  permission: 'permission',
+  can_copy: 'can_copy',
+  can_reshare: 'can_reshare',
+  expires_at: 'expires_at',
+  revoked_at: 'revoked_at',
+  created_at: 'created_at'
+};
+
+exports.Prisma.StudyDocumentScalarFieldEnum = {
+  id: 'id',
+  project_id: 'project_id',
+  uploaded_by: 'uploaded_by',
+  filename: 'filename',
+  mime_type: 'mime_type',
+  file_type: 'file_type',
+  size_bytes: 'size_bytes',
+  storage_key: 'storage_key',
+  checksum_sha256: 'checksum_sha256',
+  status: 'status',
+  progress: 'progress',
+  error_message: 'error_message',
+  page_count: 'page_count',
+  word_count: 'word_count',
+  chunk_count: 'chunk_count',
+  outline: 'outline',
+  embedding_model: 'embedding_model',
+  processed_at: 'processed_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.DocumentChunkScalarFieldEnum = {
+  id: 'id',
+  document_id: 'document_id',
+  project_id: 'project_id',
+  topic_id: 'topic_id',
+  chunk_index: 'chunk_index',
+  content: 'content',
+  section_path: 'section_path',
+  page_start: 'page_start',
+  page_end: 'page_end',
+  token_count: 'token_count',
+  keywords: 'keywords',
+  content_hash: 'content_hash',
+  embedding: 'embedding',
+  embedding_model: 'embedding_model',
+  created_at: 'created_at'
+};
+
+exports.Prisma.TopicScalarFieldEnum = {
+  id: 'id',
+  project_id: 'project_id',
+  parent_id: 'parent_id',
+  name: 'name',
+  description: 'description',
+  order_index: 'order_index',
+  keywords: 'keywords',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.TopicMasteryScalarFieldEnum = {
+  user_id: 'user_id',
+  topic_id: 'topic_id',
+  project_id: 'project_id',
+  mastery: 'mastery',
+  correct: 'correct',
+  total: 'total',
+  mastered_at: 'mastered_at',
+  last_practiced_at: 'last_practiced_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.QuestionScalarFieldEnum = {
+  id: 'id',
+  project_id: 'project_id',
+  topic_id: 'topic_id',
+  document_id: 'document_id',
+  chunk_id: 'chunk_id',
+  type: 'type',
+  difficulty: 'difficulty',
+  prompt: 'prompt',
+  data: 'data',
+  explanation: 'explanation',
+  concept: 'concept',
+  source_ref: 'source_ref',
+  tags: 'tags',
+  origin: 'origin',
+  generation_model: 'generation_model',
+  generated_at: 'generated_at',
+  content_hash: 'content_hash',
+  in_bank: 'in_bank',
+  archived_at: 'archived_at',
+  version: 'version',
+  original: 'original',
+  created_by: 'created_by',
+  updated_by: 'updated_by',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.QuestionVersionScalarFieldEnum = {
+  id: 'id',
+  question_id: 'question_id',
+  version: 'version',
+  snapshot: 'snapshot',
+  edited_by: 'edited_by',
+  created_at: 'created_at'
+};
+
+exports.Prisma.QuizScalarFieldEnum = {
+  id: 'id',
+  project_id: 'project_id',
+  created_by: 'created_by',
+  title: 'title',
+  mode: 'mode',
+  status: 'status',
+  config: 'config',
+  time_limit_sec: 'time_limit_sec',
+  target_score: 'target_score',
+  error_message: 'error_message',
+  is_shared: 'is_shared',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.QuizQuestionScalarFieldEnum = {
+  quiz_id: 'quiz_id',
+  question_id: 'question_id',
+  order_index: 'order_index'
+};
+
+exports.Prisma.QuizAttemptScalarFieldEnum = {
+  id: 'id',
+  quiz_id: 'quiz_id',
+  user_id: 'user_id',
+  project_id: 'project_id',
+  attempt_number: 'attempt_number',
+  status: 'status',
+  started_at: 'started_at',
+  completed_at: 'completed_at',
+  deadline_at: 'deadline_at',
+  score: 'score',
+  max_score: 'max_score',
+  percentage: 'percentage',
+  correct_count: 'correct_count',
+  incorrect_count: 'incorrect_count',
+  time_spent_sec: 'time_spent_sec',
+  avg_difficulty: 'avg_difficulty',
+  current_combo: 'current_combo',
+  best_combo: 'best_combo',
+  xp_earned: 'xp_earned',
+  analysis: 'analysis'
+};
+
+exports.Prisma.QuestionResponseScalarFieldEnum = {
+  id: 'id',
+  attempt_id: 'attempt_id',
+  question_id: 'question_id',
+  user_id: 'user_id',
+  project_id: 'project_id',
+  answer: 'answer',
+  is_correct: 'is_correct',
+  score: 'score',
+  feedback: 'feedback',
+  time_spent_ms: 'time_spent_ms',
+  difficulty: 'difficulty',
+  answered_at: 'answered_at'
+};
+
+exports.Prisma.FlashcardDeckScalarFieldEnum = {
+  id: 'id',
+  project_id: 'project_id',
+  name: 'name',
+  description: 'description',
+  created_by: 'created_by',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.FlashcardScalarFieldEnum = {
+  id: 'id',
+  project_id: 'project_id',
+  deck_id: 'deck_id',
+  topic_id: 'topic_id',
+  chunk_id: 'chunk_id',
+  front: 'front',
+  back: 'back',
+  tags: 'tags',
+  category: 'category',
+  difficulty: 'difficulty',
+  origin: 'origin',
+  source_ref: 'source_ref',
+  generation_model: 'generation_model',
+  content_hash: 'content_hash',
+  version: 'version',
+  original: 'original',
+  created_by: 'created_by',
+  updated_by: 'updated_by',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.CardStateScalarFieldEnum = {
+  user_id: 'user_id',
+  card_id: 'card_id',
+  project_id: 'project_id',
+  status: 'status',
+  ease: 'ease',
+  interval_days: 'interval_days',
+  repetitions: 'repetitions',
+  lapses: 'lapses',
+  learning_step: 'learning_step',
+  due_at: 'due_at',
+  last_reviewed_at: 'last_reviewed_at',
+  last_rating: 'last_rating'
+};
+
+exports.Prisma.ReviewLogScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  card_id: 'card_id',
+  project_id: 'project_id',
+  rating: 'rating',
+  prev_interval: 'prev_interval',
+  new_interval: 'new_interval',
+  time_spent_ms: 'time_spent_ms',
+  reviewed_at: 'reviewed_at'
+};
+
+exports.Prisma.NoteScalarFieldEnum = {
+  id: 'id',
+  project_id: 'project_id',
+  user_id: 'user_id',
+  type: 'type',
+  title: 'title',
+  content: 'content',
+  document_id: 'document_id',
+  page: 'page',
+  chunk_id: 'chunk_id',
+  selection_text: 'selection_text',
+  topic_id: 'topic_id',
+  question_id: 'question_id',
+  flashcard_id: 'flashcard_id',
+  color: 'color',
+  tags: 'tags',
+  is_shared: 'is_shared',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.SummaryScalarFieldEnum = {
+  id: 'id',
+  project_id: 'project_id',
+  document_id: 'document_id',
+  level: 'level',
+  status: 'status',
+  content: 'content',
+  source_hash: 'source_hash',
+  model: 'model',
+  error_message: 'error_message',
+  created_by: 'created_by',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.ChatThreadScalarFieldEnum = {
+  id: 'id',
+  project_id: 'project_id',
+  user_id: 'user_id',
+  title: 'title',
+  mode: 'mode',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.ChatMessageScalarFieldEnum = {
+  id: 'id',
+  thread_id: 'thread_id',
+  role: 'role',
+  content: 'content',
+  citations: 'citations',
+  grounded: 'grounded',
+  model: 'model',
+  created_at: 'created_at'
+};
+
+exports.Prisma.RecallAttemptScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  project_id: 'project_id',
+  topic_id: 'topic_id',
+  mode: 'mode',
+  prompt: 'prompt',
+  answer: 'answer',
+  evaluation: 'evaluation',
+  score: 'score',
+  created_at: 'created_at'
+};
+
+exports.Prisma.StudySessionScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  project_id: 'project_id',
+  type: 'type',
+  started_at: 'started_at',
+  ended_at: 'ended_at',
+  duration_sec: 'duration_sec',
+  items_done: 'items_done',
+  metadata: 'metadata'
+};
+
+exports.Prisma.StudyPlanScalarFieldEnum = {
+  id: 'id',
+  project_id: 'project_id',
+  user_id: 'user_id',
+  plan: 'plan',
+  generated_at: 'generated_at'
+};
+
+exports.Prisma.UserGamificationScalarFieldEnum = {
+  user_id: 'user_id',
+  total_xp: 'total_xp',
+  level: 'level',
+  current_streak: 'current_streak',
+  longest_streak: 'longest_streak',
+  streak_freezes: 'streak_freezes',
+  last_goal_date: 'last_goal_date',
+  daily_goal_type: 'daily_goal_type',
+  daily_goal_minutes: 'daily_goal_minutes',
+  daily_goal_xp: 'daily_goal_xp',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.XpEventScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  project_id: 'project_id',
+  source_type: 'source_type',
+  source_id: 'source_id',
+  amount: 'amount',
+  multiplier: 'multiplier',
+  created_at: 'created_at'
+};
+
+exports.Prisma.AchievementScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  title: 'title',
+  description: 'description',
+  icon: 'icon',
+  category: 'category',
+  rarity: 'rarity',
+  criteria: 'criteria',
+  hidden: 'hidden',
+  order_index: 'order_index'
+};
+
+exports.Prisma.UserAchievementScalarFieldEnum = {
+  user_id: 'user_id',
+  achievement_id: 'achievement_id',
+  progress: 'progress',
+  unlocked_at: 'unlocked_at'
+};
+
+exports.Prisma.DailyActivityScalarFieldEnum = {
+  user_id: 'user_id',
+  date: 'date',
+  xp_earned: 'xp_earned',
+  minutes_studied: 'minutes_studied',
+  questions_answered: 'questions_answered',
+  questions_correct: 'questions_correct',
+  cards_reviewed: 'cards_reviewed',
+  goal_met: 'goal_met',
+  freeze_used: 'freeze_used'
+};
+
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  type: 'type',
+  title: 'title',
+  body: 'body',
+  link: 'link',
+  data: 'data',
+  read_at: 'read_at',
+  created_at: 'created_at'
+};
+
+exports.Prisma.StudyRoomScalarFieldEnum = {
+  id: 'id',
+  project_id: 'project_id',
+  name: 'name',
+  created_by: 'created_by',
+  timer_state: 'timer_state',
+  shared_notes: 'shared_notes',
+  closed_at: 'closed_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.StudyRoomMessageScalarFieldEnum = {
+  id: 'id',
+  room_id: 'room_id',
+  user_id: 'user_id',
+  content: 'content',
+  is_ai: 'is_ai',
+  created_at: 'created_at'
+};
+
+exports.Prisma.MultiplayerGameScalarFieldEnum = {
+  id: 'id',
+  project_id: 'project_id',
+  quiz_id: 'quiz_id',
+  room_id: 'room_id',
+  host_id: 'host_id',
+  status: 'status',
+  current_index: 'current_index',
+  question_started_at: 'question_started_at',
+  seconds_per_question: 'seconds_per_question',
+  created_at: 'created_at',
+  finished_at: 'finished_at'
+};
+
+exports.Prisma.GamePlayerScalarFieldEnum = {
+  game_id: 'game_id',
+  user_id: 'user_id',
+  score: 'score',
+  correct: 'correct',
+  joined_at: 'joined_at'
+};
+
+exports.Prisma.GameAnswerScalarFieldEnum = {
+  id: 'id',
+  game_id: 'game_id',
+  user_id: 'user_id',
+  question_id: 'question_id',
+  answer: 'answer',
+  is_correct: 'is_correct',
+  points: 'points',
+  time_ms: 'time_ms',
+  created_at: 'created_at'
+};
+
+exports.Prisma.JobScalarFieldEnum = {
+  id: 'id',
+  type: 'type',
+  payload: 'payload',
+  status: 'status',
+  attempts: 'attempts',
+  max_attempts: 'max_attempts',
+  priority: 'priority',
+  run_at: 'run_at',
+  locked_at: 'locked_at',
+  locked_by: 'locked_by',
+  last_error: 'last_error',
+  result: 'result',
+  user_id: 'user_id',
+  project_id: 'project_id',
+  resource_id: 'resource_id',
+  dedupe_key: 'dedupe_key',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  completed_at: 'completed_at'
+};
+
+exports.Prisma.AiUsageScalarFieldEnum = {
+  id: 'id',
+  user_id: 'user_id',
+  project_id: 'project_id',
+  task: 'task',
+  provider: 'provider',
+  model: 'model',
+  input_tokens: 'input_tokens',
+  output_tokens: 'output_tokens',
+  cost_usd: 'cost_usd',
+  cached: 'cached',
+  latency_ms: 'latency_ms',
+  success: 'success',
+  created_at: 'created_at'
+};
+
+exports.Prisma.AiCacheScalarFieldEnum = {
+  key: 'key',
+  task: 'task',
+  response: 'response',
+  hits: 'hits',
+  created_at: 'created_at',
+  expires_at: 'expires_at'
 };
 
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.JsonNullValueInput = {
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -165,6 +777,12 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
 exports.AuthRole = exports.$Enums.AuthRole = {
   USER: 'USER',
   ADMIN: 'ADMIN',
@@ -172,21 +790,246 @@ exports.AuthRole = exports.$Enums.AuthRole = {
   SUPPORT: 'SUPPORT'
 };
 
-exports.DocumentType = exports.$Enums.DocumentType = {
-  LOGO: 'LOGO',
-  BANNER: 'BANNER',
-  IMAGE: 'IMAGE',
-  VIDEO: 'VIDEO',
-  AUDIO: 'AUDIO',
-  PDF: 'PDF',
+exports.OrgRole = exports.$Enums.OrgRole = {
+  OWNER: 'OWNER',
+  ADMIN: 'ADMIN',
+  MEMBER: 'MEMBER'
+};
+
+exports.ProjectDifficulty = exports.$Enums.ProjectDifficulty = {
+  BEGINNER: 'BEGINNER',
+  INTERMEDIATE: 'INTERMEDIATE',
+  ADVANCED: 'ADVANCED',
+  EXPERT: 'EXPERT'
+};
+
+exports.ProjectStatus = exports.$Enums.ProjectStatus = {
+  NOT_STARTED: 'NOT_STARTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  REVIEWING: 'REVIEWING',
+  EXAM_READY: 'EXAM_READY',
+  COMPLETED: 'COMPLETED'
+};
+
+exports.MemberRole = exports.$Enums.MemberRole = {
+  OWNER: 'OWNER',
+  ADMIN: 'ADMIN',
+  EDITOR: 'EDITOR',
+  CONTRIBUTOR: 'CONTRIBUTOR',
+  VIEWER: 'VIEWER'
+};
+
+exports.InvitationStatus = exports.$Enums.InvitationStatus = {
+  PENDING: 'PENDING',
+  ACCEPTED: 'ACCEPTED',
+  DECLINED: 'DECLINED',
+  REVOKED: 'REVOKED',
+  EXPIRED: 'EXPIRED'
+};
+
+exports.ShareResourceType = exports.$Enums.ShareResourceType = {
+  PROJECT: 'PROJECT',
   DOCUMENT: 'DOCUMENT',
-  OTHER: 'OTHER'
+  DECK: 'DECK',
+  QUIZ: 'QUIZ',
+  NOTE: 'NOTE',
+  STUDY_PLAN: 'STUDY_PLAN'
+};
+
+exports.ShareTargetType = exports.$Enums.ShareTargetType = {
+  USER: 'USER',
+  LINK: 'LINK',
+  ORGANIZATION: 'ORGANIZATION'
+};
+
+exports.SharePermission = exports.$Enums.SharePermission = {
+  VIEW: 'VIEW',
+  EDIT: 'EDIT'
+};
+
+exports.DocumentFileType = exports.$Enums.DocumentFileType = {
+  PDF: 'PDF',
+  DOCX: 'DOCX',
+  TXT: 'TXT',
+  MARKDOWN: 'MARKDOWN'
+};
+
+exports.DocumentStatus = exports.$Enums.DocumentStatus = {
+  UPLOADED: 'UPLOADED',
+  PROCESSING: 'PROCESSING',
+  EXTRACTING: 'EXTRACTING',
+  CHUNKING: 'CHUNKING',
+  INDEXING: 'INDEXING',
+  READY: 'READY',
+  FAILED: 'FAILED'
+};
+
+exports.QuestionType = exports.$Enums.QuestionType = {
+  MCQ: 'MCQ',
+  MULTI_SELECT: 'MULTI_SELECT',
+  TRUE_FALSE: 'TRUE_FALSE',
+  FREE_TEXT: 'FREE_TEXT',
+  FILL_BLANK: 'FILL_BLANK',
+  MATCHING: 'MATCHING',
+  ORDERING: 'ORDERING'
+};
+
+exports.ContentOrigin = exports.$Enums.ContentOrigin = {
+  AI: 'AI',
+  MANUAL: 'MANUAL',
+  IMPORTED: 'IMPORTED'
+};
+
+exports.QuizMode = exports.$Enums.QuizMode = {
+  PRACTICE: 'PRACTICE',
+  ADAPTIVE: 'ADAPTIVE',
+  REVIEW: 'REVIEW',
+  EXAM: 'EXAM',
+  SELECTION: 'SELECTION',
+  SHARED: 'SHARED'
+};
+
+exports.GenerationStatus = exports.$Enums.GenerationStatus = {
+  PENDING: 'PENDING',
+  GENERATING: 'GENERATING',
+  READY: 'READY',
+  FAILED: 'FAILED'
+};
+
+exports.AttemptStatus = exports.$Enums.AttemptStatus = {
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  ABANDONED: 'ABANDONED'
+};
+
+exports.CardStatus = exports.$Enums.CardStatus = {
+  NEW: 'NEW',
+  LEARNING: 'LEARNING',
+  KNOWN: 'KNOWN',
+  NEEDS_REVIEW: 'NEEDS_REVIEW'
+};
+
+exports.ReviewRating = exports.$Enums.ReviewRating = {
+  AGAIN: 'AGAIN',
+  HARD: 'HARD',
+  GOOD: 'GOOD',
+  EASY: 'EASY'
+};
+
+exports.NoteType = exports.$Enums.NoteType = {
+  NOTE: 'NOTE',
+  HIGHLIGHT: 'HIGHLIGHT',
+  ANNOTATION: 'ANNOTATION',
+  BOOKMARK: 'BOOKMARK',
+  QUESTION: 'QUESTION'
+};
+
+exports.SummaryLevel = exports.$Enums.SummaryLevel = {
+  ONE_MINUTE: 'ONE_MINUTE',
+  FIVE_MINUTE: 'FIVE_MINUTE',
+  DETAILED: 'DETAILED',
+  CHEAT_SHEET: 'CHEAT_SHEET',
+  STUDY_GUIDE: 'STUDY_GUIDE'
+};
+
+exports.ChatMode = exports.$Enums.ChatMode = {
+  TUTOR: 'TUTOR',
+  SOCRATIC: 'SOCRATIC'
+};
+
+exports.ChatRole = exports.$Enums.ChatRole = {
+  USER: 'USER',
+  ASSISTANT: 'ASSISTANT',
+  SYSTEM: 'SYSTEM'
+};
+
+exports.RecallMode = exports.$Enums.RecallMode = {
+  ACTIVE_RECALL: 'ACTIVE_RECALL',
+  TEACH_BACK: 'TEACH_BACK'
+};
+
+exports.StudyActivityType = exports.$Enums.StudyActivityType = {
+  FLASHCARDS: 'FLASHCARDS',
+  QUIZ: 'QUIZ',
+  EXAM: 'EXAM',
+  RECALL: 'RECALL',
+  TEACH_BACK: 'TEACH_BACK',
+  TUTOR: 'TUTOR',
+  READING: 'READING',
+  DAILY_SESSION: 'DAILY_SESSION',
+  ROOM: 'ROOM'
+};
+
+exports.AchievementRarity = exports.$Enums.AchievementRarity = {
+  COMMON: 'COMMON',
+  UNCOMMON: 'UNCOMMON',
+  RARE: 'RARE',
+  EPIC: 'EPIC',
+  LEGENDARY: 'LEGENDARY'
+};
+
+exports.GameStatus = exports.$Enums.GameStatus = {
+  LOBBY: 'LOBBY',
+  IN_PROGRESS: 'IN_PROGRESS',
+  FINISHED: 'FINISHED'
+};
+
+exports.JobStatus = exports.$Enums.JobStatus = {
+  PENDING: 'PENDING',
+  RUNNING: 'RUNNING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED'
 };
 
 exports.Prisma.ModelName = {
   User: 'User',
+  Session: 'Session',
   PasswordResetToken: 'PasswordResetToken',
-  Document: 'Document'
+  EmailVerificationToken: 'EmailVerificationToken',
+  UserPreferences: 'UserPreferences',
+  Organization: 'Organization',
+  OrganizationMember: 'OrganizationMember',
+  AuditLog: 'AuditLog',
+  Project: 'Project',
+  ProjectMember: 'ProjectMember',
+  ProjectInvitation: 'ProjectInvitation',
+  Share: 'Share',
+  StudyDocument: 'StudyDocument',
+  DocumentChunk: 'DocumentChunk',
+  Topic: 'Topic',
+  TopicMastery: 'TopicMastery',
+  Question: 'Question',
+  QuestionVersion: 'QuestionVersion',
+  Quiz: 'Quiz',
+  QuizQuestion: 'QuizQuestion',
+  QuizAttempt: 'QuizAttempt',
+  QuestionResponse: 'QuestionResponse',
+  FlashcardDeck: 'FlashcardDeck',
+  Flashcard: 'Flashcard',
+  CardState: 'CardState',
+  ReviewLog: 'ReviewLog',
+  Note: 'Note',
+  Summary: 'Summary',
+  ChatThread: 'ChatThread',
+  ChatMessage: 'ChatMessage',
+  RecallAttempt: 'RecallAttempt',
+  StudySession: 'StudySession',
+  StudyPlan: 'StudyPlan',
+  UserGamification: 'UserGamification',
+  XpEvent: 'XpEvent',
+  Achievement: 'Achievement',
+  UserAchievement: 'UserAchievement',
+  DailyActivity: 'DailyActivity',
+  Notification: 'Notification',
+  StudyRoom: 'StudyRoom',
+  StudyRoomMessage: 'StudyRoomMessage',
+  MultiplayerGame: 'MultiplayerGame',
+  GamePlayer: 'GamePlayer',
+  GameAnswer: 'GameAnswer',
+  Job: 'Job',
+  AiUsage: 'AiUsage',
+  AiCache: 'AiCache'
 };
 
 /**

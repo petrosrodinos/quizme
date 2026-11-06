@@ -4,6 +4,7 @@ import { DayPicker } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- generic passthrough props for react-day-picker
 export type CalendarProps = React.ComponentProps<any>;
 
 function Calendar({ className, classNames, showOutsideDays = true, ...props }: CalendarProps) {

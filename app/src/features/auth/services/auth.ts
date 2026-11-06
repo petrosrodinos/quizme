@@ -1,87 +1,50 @@
-import { formatAuthUser } from "../utils/auth.utils";
 import axiosInstance from "@/config/api/axios";
-import type { SignInUser, SignUpUser } from "../interfaces/auth.interface";
 import { ApiRoutes } from "@/config/api/routes";
-import type { LoggedInUser } from "@/features/user/interfaces/user.interface";
+import { withApiError } from "@/lib/api-error";
+import type {
+    ActiveSession,
+    AuthSession,
+    AuthUser,
+    ChangePasswordDto,
+    MessageResponse,
+    ResetPasswordDto,
+    SignInDto,
+    SignUpDto,
+} from "../interfaces/auth.interface";
 
-export const signIn = async (
-    { email, password }: SignInUser,
-): Promise<LoggedInUser> => {
-    try {
-        const response = await axiosInstance.post(ApiRoutes.auth.email.login, {
-            email,
-            password,
-        });
+export const signIn = (dto: SignInDto) =>
+    withApiError(async () => (await axiosInstance.post<AuthSession>(ApiRoutes.auth.login, dto)).data, "Failed to sign in. Please try again.");
 
-        const auth_response = response.data;
-        return formatAuthUser(auth_response);
+export const signUp = (dto: SignUpDto) =>
+    withApiError(async () => (await axiosInstance.post<AuthSession>(ApiRoutes.auth.register, dto)).data, "Failed to create your account.");
 
-    } catch (error) {
-        throw new Error("Failed to sign in. Please try again.");
-    }
-};
+export const signInWithGoogle = (id_token: string, timezone?: string) =>
+    withApiError(async () => (await axiosInstance.post<AuthSession>(ApiRoutes.auth.google, { id_token, timezone })).data, "Google sign-in failed.");
 
-export const signUp = async ({ email, password }: SignUpUser): Promise<LoggedInUser> => {
-    try {
-        const response = await axiosInstance.post(ApiRoutes.auth.email.register, {
-            email,
-            password,
-        });
+export const signOut = () => withApiError(async () => (await axiosInstance.post(ApiRoutes.auth.logout)).data, "Failed to sign out.");
 
-        const auth_response = response.data;
-        return formatAuthUser(auth_response);
-    } catch (error) {
-        throw new Error("Failed to sign up. Please try again.");
-    }
-};
+export const getMe = () => withApiError(async () => (await axiosInstance.get<AuthUser>(ApiRoutes.auth.me)).data, "Failed to load your account.");
 
-export const refreshAccountToken = async (): Promise<LoggedInUser> => {
-    try {
-        const response = await axiosInstance.post(ApiRoutes.auth.email.refresh_token);
-        return formatAuthUser(response.data);
-    } catch (error: any) {
-        throw new Error(error.response.data.message || "Failed to refresh account token. Please try again.");
-    }
-};
+export const forgotPassword = (email: string) =>
+    withApiError(async () => (await axiosInstance.post<MessageResponse>(ApiRoutes.auth.forgot_password, { email })).data, "Failed to send reset email.");
 
-export const adminLoginToAccount = async (account_uuid: string): Promise<LoggedInUser> => {
-    try {
-        const response = await axiosInstance.post(ApiRoutes.auth.email.admin_login_to_account(account_uuid));
-        return formatAuthUser(response.data);
-    } catch (error: any) {
-        throw new Error(error.response.data.message || "Failed to admin login to account. Please try again.");
-    }
-};
+export const resetPassword = (dto: ResetPasswordDto) =>
+    withApiError(async () => (await axiosInstance.post<MessageResponse>(ApiRoutes.auth.reset_password, dto)).data, "Failed to reset password.");
 
-// export const forgotPassword = async (email: string) => {
-//     try {
+export const verifyEmail = (token: string) =>
+    withApiError(async () => (await axiosInstance.post<MessageResponse>(ApiRoutes.auth.verify_email, { token })).data, "Failed to verify email.");
 
-//     } catch (error) {
-//         console.error("Error sending reset password email:", error);
-//         throw error;
-//     }
-// };
+export const resendVerification = () =>
+    withApiError(async () => (await axiosInstance.post<MessageResponse>(ApiRoutes.auth.resend_verification)).data, "Failed to resend verification email.");
 
-// export const resetPassword = async (password: string) => {
-//     try {
+export const changePassword = (dto: ChangePasswordDto) =>
+    withApiError(async () => (await axiosInstance.post(ApiRoutes.auth.change_password, dto)).data, "Failed to change password.");
 
-//     } catch (error) {
-//         console.error("Error resetting password:", error);
-//         throw error;
-//     }
-// };
+export const getSessions = () =>
+    withApiError(async () => (await axiosInstance.get<ActiveSession[]>(ApiRoutes.auth.sessions)).data, "Failed to load sessions.");
 
-// export const updatePassword = async (
-//     email: string,
-//     old_password: string,
-//     password: string,
-// ) => {
-//     try {
+export const revokeSession = (id: string) =>
+    withApiError(async () => (await axiosInstance.delete(ApiRoutes.auth.session(id))).data, "Failed to revoke session.");
 
-//     } catch (error) {
-//         console.error("Error updating password:", error);
-//         throw error;
-//     }
-// };
-
-
+export const revokeOtherSessions = () =>
+    withApiError(async () => (await axiosInstance.post<{ revoked: number }>(ApiRoutes.auth.revoke_other_sessions)).data, "Failed to revoke sessions.");
