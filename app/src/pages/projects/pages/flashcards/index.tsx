@@ -355,6 +355,7 @@ export default function ProjectFlashcardsPage() {
                 onSubmit={(dto) => generate.mutate({ projectId, dto }, { onSuccess: () => setGenerateOpen(false) })}
             />
             <DeckDialog
+                projectId={projectId}
                 open={deckDialog.open}
                 deck={deckDialog.deck}
                 onOpenChange={(open) => setDeckDialog((s) => ({ ...s, open }))}

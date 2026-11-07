@@ -55,6 +55,7 @@ export interface ReviewConfig {
 }
 
 export interface CreateQuizDto {
+    lesson_id?: string;
     title?: string;
     mode?: QuizMode;
     count?: number;
@@ -84,6 +85,7 @@ export interface AttemptLite {
 export interface Quiz {
     id: string;
     project_id: string;
+    lesson_id?: string | null;
     created_by: string;
     title: string;
     mode: QuizMode;

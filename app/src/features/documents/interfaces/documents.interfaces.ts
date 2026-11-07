@@ -27,6 +27,7 @@ export interface OutlineNode {
 export interface StudyDocument {
     id: string;
     project_id: string;
+    lesson_id?: string | null;
     uploaded_by: string;
     filename: string;
     mime_type: string;

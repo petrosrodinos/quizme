@@ -49,6 +49,7 @@ const ProjectFlashcards = lazy(() => import("@/pages/projects/pages/flashcards")
 const FlashcardsReview = lazy(() => import("@/pages/projects/pages/flashcards-review"));
 const ProjectQuestions = lazy(() => import("@/pages/projects/pages/questions"));
 const ProjectNotes = lazy(() => import("@/pages/projects/pages/notes"));
+const ProjectCurriculum = lazy(() => import("@/pages/projects/pages/curriculum"));
 const ProjectTopics = lazy(() => import("@/pages/projects/pages/topics"));
 const ProjectSummaries = lazy(() => import("@/pages/projects/pages/summaries"));
 const ProjectRecall = lazy(() => import("@/pages/projects/pages/recall"));
@@ -124,6 +125,7 @@ export default function AppRoutes() {
                         <Route path={pp.flashcards_review} element={<FlashcardsReview />} />
                         <Route path={pp.questions} element={<ProjectQuestions />} />
                         <Route path={pp.notes} element={<ProjectNotes />} />
+                        <Route path={pp.curriculum} element={<ProjectCurriculum />} />
                         <Route path={pp.topics} element={<ProjectTopics />} />
                         <Route path={pp.summaries} element={<ProjectSummaries />} />
                         <Route path={pp.recall} element={<ProjectRecall />} />

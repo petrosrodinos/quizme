@@ -1,0 +1,111 @@
+{
+  "page": {
+    "title": "Curriculum",
+    "description": "Organise this course into units and lessons. Each lesson can hold its own documents, quizzes and flashcard decks.",
+    "addUnit": "Add unit"
+  },
+  "empty": {
+    "title": "No units yet",
+    "description": "Start with a unit (for example “Unit 1”), then add lessons and file your material under them.",
+    "action": "Create first unit"
+  },
+  "unsorted": {
+    "title": "Unsorted material",
+    "description": "Not filed under any lesson yet",
+    "none": "Everything is filed under a lesson."
+  },
+  "unit": {
+    "label": "Unit {{number}}",
+    "lessons_one": "{{count}} lesson",
+    "lessons_other": "{{count}} lessons",
+    "addLesson": "Add lesson",
+    "noLessons": "No lessons in this unit yet.",
+    "actionsFor": "Actions for {{name}}",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "collapse": "Collapse {{name}}",
+    "expand": "Expand {{name}}"
+  },
+  "lesson": {
+    "label": "Lesson {{number}}",
+    "open": "Open {{name}}",
+    "moveTo": "Move to {{name}}",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "actionsFor": "Actions for {{name}}"
+  },
+  "counts": {
+    "documents_one": "{{count}} document",
+    "documents_other": "{{count}} documents",
+    "quizzes_one": "{{count}} quiz",
+    "quizzes_other": "{{count}} quizzes",
+    "decks_one": "{{count}} deck",
+    "decks_other": "{{count}} decks",
+    "empty": "Empty"
+  },
+  "types": {
+    "documents": "Documents",
+    "quizzes": "Quizzes",
+    "decks": "Flashcard decks"
+  },
+  "form": {
+    "addUnit": "Add unit",
+    "renameUnit": "Edit unit",
+    "addLesson": "Add lesson to {{name}}",
+    "renameLesson": "Edit lesson",
+    "title": "Title",
+    "description": "Description (optional)"
+  },
+  "delete": {
+    "unitTitle": "Delete “{{name}}”?",
+    "unitDescription": "Its lessons are removed too. Documents, quizzes and decks are kept and move back to Unsorted.",
+    "lessonTitle": "Delete “{{name}}”?",
+    "lessonDescription": "Documents, quizzes and decks in this lesson are kept and move back to Unsorted."
+  },
+  "sheet": {
+    "empty": "Nothing in this lesson yet.",
+    "addMaterial": "Add material",
+    "pickDocument": "Add a document…",
+    "pickQuiz": "Add a quiz…",
+    "pickDeck": "Add a deck…",
+    "noneToAdd": "Nothing available to add",
+    "removeItem": "Remove {{name}} from this lesson",
+    "otherLesson": "in another lesson"
+  },
+  "validation": {
+    "titleRequired": "Please enter a title"
+  },
+  "errors": {
+    "load": "Could not load the curriculum.",
+    "loadLesson": "Could not load the lesson.",
+    "createUnit": "Could not create the unit.",
+    "updateUnit": "Could not update the unit.",
+    "deleteUnit": "Could not delete the unit.",
+    "createLesson": "Could not create the lesson.",
+    "updateLesson": "Could not update the lesson.",
+    "deleteLesson": "Could not delete the lesson.",
+    "reorder": "Could not reorder.",
+    "assign": "Could not update the lesson material."
+  },
+  "toasts": {
+    "unitAdded": "Unit added",
+    "unitAddFailed": "Couldn’t add unit",
+    "unitDeleted": "Unit deleted",
+    "lessonAdded": "Lesson added",
+    "lessonAddFailed": "Couldn’t add lesson",
+    "lessonDeleted": "Lesson deleted",
+    "updateFailed": "Couldn’t save changes",
+    "deleteFailed": "Couldn’t delete",
+    "reorderFailed": "Couldn’t reorder",
+    "assignFailed": "Couldn’t update lesson material"
+  },
+  "dnd": {
+    "handle": "Drag to reorder (or focus and press Space, then use the arrow keys)"
+  },
+  "picker": {
+    "label": "Lesson",
+    "none": "Unsorted (no lesson)",
+    "placeholder": "Choose a lesson",
+    "all": "All lessons"
+  }
+}

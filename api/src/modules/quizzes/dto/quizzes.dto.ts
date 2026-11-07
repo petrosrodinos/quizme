@@ -34,6 +34,8 @@ export class ReviewConfigDto {
 }
 
 export class CreateQuizDto {
+    @ApiProperty({ required: false, description: 'Lesson to file this quiz under' }) @IsOptional() @IsUUID() lesson_id?: string;
+
     @ApiProperty({ required: false }) @IsOptional() @IsString() @MaxLength(160) title?: string;
 
     @ApiProperty({ enum: QuizMode, default: QuizMode.PRACTICE })

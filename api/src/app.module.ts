@@ -24,6 +24,7 @@ import { ProjectsModule } from './modules/projects/projects.module';
 import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 import { DocumentsModule } from './modules/documents/documents.module';
 import { TopicsModule } from './modules/topics/topics.module';
+import { CurriculumModule } from './modules/curriculum/curriculum.module';
 import { QuestionsModule } from './modules/questions/questions.module';
 import { QuizzesModule } from './modules/quizzes/quizzes.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
@@ -65,6 +66,7 @@ import { ExportsModule } from './modules/exports/exports.module';
         KnowledgeModule,
         DocumentsModule,
         TopicsModule,
+        CurriculumModule,
         QuestionsModule,
         QuizzesModule,
         NotificationsModule,

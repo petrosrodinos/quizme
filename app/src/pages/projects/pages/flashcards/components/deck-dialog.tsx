@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { LessonSelect } from "@/pages/projects/components/lesson-select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -11,6 +12,7 @@ import { deckFormSchema, type DeckFormValues } from "../validation-schemas/flash
 import { useTranslation } from "react-i18next";
 
 interface DeckDialogProps {
+    projectId: string;
     open: boolean;
     onOpenChange: (open: boolean) => void;
     deck: Deck | null;
@@ -18,12 +20,16 @@ interface DeckDialogProps {
     onSubmit: (dto: DeckDto) => void;
 }
 
-export const DeckDialog = ({ open, onOpenChange, deck, isPending, onSubmit }: DeckDialogProps) => {
+export const DeckDialog = ({ projectId, open, onOpenChange, deck, isPending, onSubmit }: DeckDialogProps) => {
     const { t } = useTranslation("flashcards");
     const form = useForm<DeckFormValues>({ resolver: zodResolver(deckFormSchema), defaultValues: { name: "", description: "" } });
 
+    const [lessonId, setLessonId] = useState<string | undefined>();
+
     useEffect(() => {
-        if (open) form.reset({ name: deck?.name ?? "", description: deck?.description ?? "" });
+        if (!open) return;
+        form.reset({ name: deck?.name ?? "", description: deck?.description ?? "" });
+        setLessonId(deck?.lesson_id ?? undefined);
     }, [open, deck, form]);
 
     return (
@@ -33,7 +39,7 @@ export const DeckDialog = ({ open, onOpenChange, deck, isPending, onSubmit }: De
                     <DialogTitle className="font-display text-2xl font-normal">{deck ? t("decks.renameTitle") : t("decks.newTitle")}</DialogTitle>
                 </DialogHeader>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit((v) => onSubmit({ name: v.name.trim(), description: v.description?.trim() || undefined }))} className="space-y-4" noValidate>
+                    <form onSubmit={form.handleSubmit((v) => onSubmit({ name: v.name.trim(), description: v.description?.trim() || undefined, lesson_id: lessonId ?? (deck ? null : undefined) }))} className="space-y-4" noValidate>
                         <FormField
                             control={form.control}
                             name="name"
@@ -60,6 +66,7 @@ export const DeckDialog = ({ open, onOpenChange, deck, isPending, onSubmit }: De
                                 </FormItem>
                             )}
                         />
+                        <LessonSelect projectId={projectId} value={lessonId} onChange={setLessonId} />
                         <DialogFooter>
                             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isPending}>
                                 {t("common:actions.cancel")}

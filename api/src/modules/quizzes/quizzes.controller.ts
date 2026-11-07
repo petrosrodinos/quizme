@@ -22,8 +22,8 @@ export class QuizzesController {
     }
 
     @Get('projects/:projectId/quizzes')
-    list(@CurrentUser('id') userId: string, @Param('projectId', ParseUUIDPipe) projectId: string) {
-        return this.quizzes.list(userId, projectId);
+    list(@CurrentUser('id') userId: string, @Param('projectId', ParseUUIDPipe) projectId: string, @Query('lessonId') lessonId?: string) {
+        return this.quizzes.list(userId, projectId, lessonId);
     }
 
     @Get('projects/:projectId/attempts')

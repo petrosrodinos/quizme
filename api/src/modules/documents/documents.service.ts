@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable, Logger, OnModuleInit, PayloadTooLargeException } from '@nestjs/common';
+import { resolveLessonId } from '../curriculum/lesson.util';
 import { ConfigService } from '@nestjs/config';
 import { DocumentStatus, Prisma, StudyDocument } from 'generated/prisma';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
@@ -49,8 +50,9 @@ export class DocumentsService implements OnModuleInit {
         return rest;
     }
 
-    async upload(userId: string, projectId: string, uploads: Express.Multer.File[]) {
+    async upload(userId: string, projectId: string, uploads: Express.Multer.File[], lessonIdInput?: string) {
         await this.access.assert(userId, projectId, 'CONTRIBUTE');
+        const lessonId = await resolveLessonId(this.prisma, projectId, lessonIdInput);
         if (!uploads?.length) throw new BadRequestException('No files uploaded');
         if (uploads.length > MAX_FILES_PER_UPLOAD) throw new BadRequestException(`Upload at most ${MAX_FILES_PER_UPLOAD} files at once`);
 
@@ -88,6 +90,7 @@ export class DocumentsService implements OnModuleInit {
                     size_bytes: file.size,
                     storage_key: key,
                     checksum_sha256: checksum,
+                    lesson_id: lessonId,
                 },
             });
             await this.jobs.enqueue(JobTypes.PROCESS_DOCUMENT, { documentId: doc.id }, { userId, projectId, resourceId: doc.id, dedupeKey: `doc:${doc.id}`, priority: 5 });
@@ -99,9 +102,10 @@ export class DocumentsService implements OnModuleInit {
         return { results };
     }
 
-    async list(userId: string, projectId: string) {
+    async list(userId: string, projectId: string, lessonId?: string) {
         await this.access.assert(userId, projectId, 'VIEW');
-        const docs = await this.prisma.studyDocument.findMany({ where: { project_id: projectId }, orderBy: { created_at: 'desc' } });
+        const lessonFilter = lessonId === 'none' ? { lesson_id: null } : lessonId ? { lesson_id: lessonId } : {};
+        const docs = await this.prisma.studyDocument.findMany({ where: { project_id: projectId, ...lessonFilter }, orderBy: { created_at: 'desc' } });
         return docs.map((d) => this.serialize(d));
     }
 

@@ -139,6 +139,16 @@ export const ApiRoutes = {
     exports: {
         project: (projectId: string) => `/projects/${projectId}/export`,
     },
+    curriculum: {
+        tree: (projectId: string) => `/projects/${projectId}/curriculum`,
+        order: (projectId: string) => `/projects/${projectId}/curriculum/order`,
+        unassign: (projectId: string) => `/projects/${projectId}/curriculum/unassign`,
+        units: (projectId: string) => `/projects/${projectId}/units`,
+        unit: (id: string) => `/units/${id}`,
+        lessons: (unitId: string) => `/units/${unitId}/lessons`,
+        lesson: (id: string) => `/lessons/${id}`,
+        items: (lessonId: string) => `/lessons/${lessonId}/items`,
+    },
     topics: {
         by_project: (projectId: string) => `/projects/${projectId}/topics`,
         rebuild: (projectId: string) => `/projects/${projectId}/topics/rebuild`,

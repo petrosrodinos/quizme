@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, HttpCode, Param, ParseUUIDPipe, Post, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Param, ParseUUIDPipe, Post, Query, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
@@ -29,13 +29,13 @@ export class DocumentsController {
     @ApiConsumes('multipart/form-data')
     @ApiOperation({ summary: 'Upload one or more study documents (PDF, DOCX, TXT, MD); processing runs in the background' })
     @UseInterceptors(FilesInterceptor('files', MAX_FILES_PER_UPLOAD, { limits: { fileSize: HARD_LIMIT_BYTES, files: MAX_FILES_PER_UPLOAD } }))
-    upload(@CurrentUser('id') userId: string, @Param('projectId', ParseUUIDPipe) projectId: string, @UploadedFiles() files: Express.Multer.File[]) {
-        return this.documents.upload(userId, projectId, files);
+    upload(@CurrentUser('id') userId: string, @Param('projectId', ParseUUIDPipe) projectId: string, @UploadedFiles() files: Express.Multer.File[], @Body('lessonId') lessonId?: string) {
+        return this.documents.upload(userId, projectId, files, lessonId);
     }
 
     @Get('projects/:projectId/documents')
-    list(@CurrentUser('id') userId: string, @Param('projectId', ParseUUIDPipe) projectId: string) {
-        return this.documents.list(userId, projectId);
+    list(@CurrentUser('id') userId: string, @Param('projectId', ParseUUIDPipe) projectId: string, @Query('lessonId') lessonId?: string) {
+        return this.documents.list(userId, projectId, lessonId);
     }
 
     @Get('documents/:id')

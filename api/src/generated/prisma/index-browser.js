@@ -231,6 +231,27 @@ exports.Prisma.ProjectScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
+exports.Prisma.UnitScalarFieldEnum = {
+  id: 'id',
+  project_id: 'project_id',
+  title: 'title',
+  description: 'description',
+  order_index: 'order_index',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.LessonScalarFieldEnum = {
+  id: 'id',
+  project_id: 'project_id',
+  unit_id: 'unit_id',
+  title: 'title',
+  description: 'description',
+  order_index: 'order_index',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.ProjectMemberScalarFieldEnum = {
   id: 'id',
   project_id: 'project_id',
@@ -277,6 +298,7 @@ exports.Prisma.ShareScalarFieldEnum = {
 exports.Prisma.StudyDocumentScalarFieldEnum = {
   id: 'id',
   project_id: 'project_id',
+  lesson_id: 'lesson_id',
   uploaded_by: 'uploaded_by',
   filename: 'filename',
   mime_type: 'mime_type',
@@ -342,6 +364,7 @@ exports.Prisma.TopicMasteryScalarFieldEnum = {
 exports.Prisma.QuestionScalarFieldEnum = {
   id: 'id',
   project_id: 'project_id',
+  lesson_id: 'lesson_id',
   topic_id: 'topic_id',
   document_id: 'document_id',
   chunk_id: 'chunk_id',
@@ -379,6 +402,7 @@ exports.Prisma.QuestionVersionScalarFieldEnum = {
 exports.Prisma.QuizScalarFieldEnum = {
   id: 'id',
   project_id: 'project_id',
+  lesson_id: 'lesson_id',
   created_by: 'created_by',
   title: 'title',
   mode: 'mode',
@@ -439,6 +463,7 @@ exports.Prisma.QuestionResponseScalarFieldEnum = {
 exports.Prisma.FlashcardDeckScalarFieldEnum = {
   id: 'id',
   project_id: 'project_id',
+  lesson_id: 'lesson_id',
   name: 'name',
   description: 'description',
   created_by: 'created_by',
@@ -499,6 +524,7 @@ exports.Prisma.ReviewLogScalarFieldEnum = {
 exports.Prisma.NoteScalarFieldEnum = {
   id: 'id',
   project_id: 'project_id',
+  lesson_id: 'lesson_id',
   user_id: 'user_id',
   type: 'type',
   title: 'title',
@@ -520,6 +546,7 @@ exports.Prisma.NoteScalarFieldEnum = {
 exports.Prisma.SummaryScalarFieldEnum = {
   id: 'id',
   project_id: 'project_id',
+  lesson_id: 'lesson_id',
   document_id: 'document_id',
   level: 'level',
   status: 'status',
@@ -995,6 +1022,8 @@ exports.Prisma.ModelName = {
   OrganizationMember: 'OrganizationMember',
   AuditLog: 'AuditLog',
   Project: 'Project',
+  Unit: 'Unit',
+  Lesson: 'Lesson',
   ProjectMember: 'ProjectMember',
   ProjectInvitation: 'ProjectInvitation',
   Share: 'Share',

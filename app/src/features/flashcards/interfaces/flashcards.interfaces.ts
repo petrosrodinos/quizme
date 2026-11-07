@@ -84,6 +84,7 @@ export interface FlashcardStats {
 export interface Deck {
     id: string;
     project_id: string;
+    lesson_id?: string | null;
     name: string;
     description: string | null;
     card_count: number;
@@ -117,6 +118,8 @@ export interface FlashcardDto {
 }
 
 export interface DeckDto {
+    /** null moves the deck back to Unsorted (update only). */
+    lesson_id?: string | null;
     name: string;
     description?: string;
 }

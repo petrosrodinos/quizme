@@ -16,9 +16,10 @@ export const getDocumentContent = (id: string, page: number, limit = 30) =>
         tr("documents:errors.content"),
     );
 
-export const uploadDocuments = ({ projectId, files, onProgress }: { projectId: string; files: File[]; onProgress?: (pct: number) => void }) =>
+export const uploadDocuments = ({ projectId, files, lessonId, onProgress }: { projectId: string; files: File[]; lessonId?: string; onProgress?: (pct: number) => void }) =>
     withApiError(async () => {
         const form = new FormData();
+        if (lessonId) form.append("lessonId", lessonId);
         files.forEach((f) => form.append("files", f));
         const res = await axiosInstance.post<{ results: UploadResult[] }>(ApiRoutes.documents.list(projectId), form, {
             headers: { "Content-Type": "multipart/form-data" },

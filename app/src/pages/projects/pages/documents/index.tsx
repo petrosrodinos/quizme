@@ -11,6 +11,7 @@ import { useDeleteDocument, useDocuments, useDownloadDocument, useReprocessDocum
 import type { StudyDocument } from "@/features/documents/interfaces/documents.interfaces";
 import { useProjectContext } from "../../hooks/use-project-context";
 import { UploadPanel } from "./components/upload-panel";
+import { LessonSelect } from "@/pages/projects/components/lesson-select";
 import { DocumentRow } from "./components/document-row";
 import { useTranslation } from "react-i18next";
 
@@ -23,7 +24,9 @@ export default function ProjectDocumentsPage() {
     const reprocess = useReprocessDocument();
     const remove = useDeleteDocument();
     const [deleting, setDeleting] = useState<StudyDocument | null>(null);
+    const [lessonFilter, setLessonFilter] = useState<string | undefined>();
 
+    const visibleDocs = lessonFilter ? docs?.filter((d) => d.lesson_id === lessonFilter) : docs;
     const processing = docs?.filter((d) => d.status !== "READY" && d.status !== "FAILED").length ?? 0;
 
     return (
@@ -50,8 +53,10 @@ export default function ProjectDocumentsPage() {
                 ) : !docs.length ? (
                     <EmptyState icon={FileText} title={t("page.empty.title")} description={t("page.empty.description")} compact />
                 ) : (
+                    <>
+                    <LessonSelect projectId={projectId} value={lessonFilter} onChange={setLessonFilter} allowAll className="sm:max-w-xs" />
                     <ul className="divide-y divide-border rounded-xl border border-border bg-card" aria-label={t("page.listLabel")}>
-                        {docs.map((doc) => (
+                        {visibleDocs?.map((doc) => (
                             <DocumentRow
                                 key={doc.id}
                                 doc={doc}
@@ -64,6 +69,7 @@ export default function ProjectDocumentsPage() {
                             />
                         ))}
                     </ul>
+                    </>
                 )}
             </div>
             <ConfirmationDialog

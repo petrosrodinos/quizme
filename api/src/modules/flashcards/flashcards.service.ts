@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { resolveLessonId } from '../curriculum/lesson.util';
 import { CardState, CardStatus, ContentOrigin, Flashcard, Prisma } from 'generated/prisma';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { JobsService, JobTypes, PermanentJobError } from '@/core/jobs/jobs.service';
@@ -52,9 +53,10 @@ export class FlashcardsService implements OnModuleInit {
 
     // ── Decks ──
 
-    async decks(userId: string, projectId: string) {
+    async decks(userId: string, projectId: string, lessonId?: string) {
         await this.access.assert(userId, projectId, 'VIEW');
-        const decks = await this.prisma.flashcardDeck.findMany({ where: { project_id: projectId }, orderBy: { created_at: 'asc' }, include: { _count: { select: { cards: true } } } });
+        const lessonFilter = lessonId === 'none' ? { lesson_id: null } : lessonId ? { lesson_id: lessonId } : {};
+        const decks = await this.prisma.flashcardDeck.findMany({ where: { project_id: projectId, ...lessonFilter }, orderBy: { created_at: 'asc' }, include: { _count: { select: { cards: true } } } });
         const due = await this.prisma.cardState.groupBy({
             by: ['card_id'],
             where: { user_id: userId, project_id: projectId, due_at: { lte: new Date() } },
@@ -66,12 +68,15 @@ export class FlashcardsService implements OnModuleInit {
 
     async createDeck(userId: string, projectId: string, dto: CreateDeckDto) {
         await this.access.assert(userId, projectId, 'CONTRIBUTE');
-        return this.prisma.flashcardDeck.create({ data: { project_id: projectId, name: dto.name.trim(), description: dto.description, created_by: userId } });
+        const lessonId = await resolveLessonId(this.prisma, projectId, dto.lesson_id);
+        return this.prisma.flashcardDeck.create({ data: { project_id: projectId, name: dto.name.trim(), description: dto.description, created_by: userId, lesson_id: lessonId } });
     }
 
     async updateDeck(userId: string, deckId: string, dto: UpdateDeckDto) {
-        await this.access.assertResource(userId, await this.prisma.flashcardDeck.findUnique({ where: { id: deckId } }), 'EDIT', 'Deck not found');
-        return this.prisma.flashcardDeck.update({ where: { id: deckId }, data: dto });
+        const deck = await this.access.assertResource(userId, await this.prisma.flashcardDeck.findUnique({ where: { id: deckId } }), 'EDIT', 'Deck not found');
+        const { lesson_id, ...rest } = dto;
+        const lessonData = lesson_id === undefined ? {} : { lesson_id: await resolveLessonId(this.prisma, deck.project_id, lesson_id) };
+        return this.prisma.flashcardDeck.update({ where: { id: deckId }, data: { ...rest, ...lessonData } });
     }
 
     async removeDeck(userId: string, deckId: string) {

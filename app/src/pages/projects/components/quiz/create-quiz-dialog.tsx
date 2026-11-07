@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { LessonSelect } from "@/pages/projects/components/lesson-select";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Brain, RotateCcw, Sparkles } from "lucide-react";
@@ -63,6 +64,7 @@ export const CreateQuizDialog = ({ projectId, open, onOpenChange, defaults, canS
     const [documentIds, setDocumentIds] = useState<string[]>([]);
     const [strategy, setStrategy] = useState<ReviewStrategy>(defaults?.review?.strategy ?? "new_questions");
     const [shared, setShared] = useState(false);
+    const [lessonId, setLessonId] = useState<string | undefined>();
 
     useEffect(() => {
         if (!open) return;
@@ -70,6 +72,7 @@ export const CreateQuizDialog = ({ projectId, open, onOpenChange, defaults, canS
         setTopicIds(defaults?.topic_ids ?? []);
         setStrategy(defaults?.review?.strategy ?? "new_questions");
         setTitle(defaults?.title ?? "");
+        setLessonId(undefined);
     }, [open, defaults]);
 
     const readyDocs = useMemo(() => (documents.data ?? []).filter((d) => d.status === "READY"), [documents.data]);
@@ -82,6 +85,7 @@ export const CreateQuizDialog = ({ projectId, open, onOpenChange, defaults, canS
             types,
             difficulty: mode === QuizModes.ADAPTIVE ? "adaptive" : difficulty,
             shared: canShare ? shared : undefined,
+            lesson_id: lessonId,
         };
         if (mode === QuizModes.REVIEW) {
             dto.review = defaults?.review ? { ...defaults.review, strategy } : { source: topicIds.length === 1 ? "topic" : "all_incorrect", topic_id: topicIds.length === 1 ? topicIds[0] : undefined, strategy };
@@ -118,6 +122,8 @@ export const CreateQuizDialog = ({ projectId, open, onOpenChange, defaults, canS
                             })}
                         </TabsList>
                     </Tabs>
+
+                    <LessonSelect projectId={projectId} value={lessonId} onChange={setLessonId} />
 
                     <div className="grid gap-4 sm:grid-cols-[1fr_120px]">
                         <div className="space-y-1.5">

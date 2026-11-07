@@ -26,8 +26,8 @@ export class FlashcardsController {
     constructor(private readonly flashcards: FlashcardsService) { }
 
     @Get('projects/:projectId/decks')
-    decks(@CurrentUser('id') userId: string, @Param('projectId', ParseUUIDPipe) projectId: string) {
-        return this.flashcards.decks(userId, projectId);
+    decks(@CurrentUser('id') userId: string, @Param('projectId', ParseUUIDPipe) projectId: string, @Query('lessonId') lessonId?: string) {
+        return this.flashcards.decks(userId, projectId, lessonId);
     }
 
     @Post('projects/:projectId/decks')

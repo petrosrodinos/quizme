@@ -169,7 +169,7 @@ export class ProjectsService {
     }
 
     /**
-     * Duplicates a project the user can copy: metadata, documents (files + processed chunks/embeddings, no re-processing cost),
+     * Duplicates a project the user can copy: metadata, course structure (units/lessons), documents (files + processed chunks/embeddings, no re-processing cost),
      * topics, question bank, decks & flashcards. Personal progress and other users' notes are not copied.
      */
     async duplicate(userId: string, projectId: string) {
@@ -177,7 +177,10 @@ export class ProjectsService {
         if (!access.canCopy && access.role !== MemberRole.OWNER) throw new ForbiddenException('Copying this project is not allowed');
         const src = await this.prisma.project.findUniqueOrThrow({
             where: { id: projectId },
-            include: { documents: { include: { chunks: true } }, topics: true, questions: true, decks: true, flashcards: true },
+            include: {
+                documents: { include: { chunks: true } }, topics: true, questions: true, decks: true, flashcards: true,
+                units: { orderBy: { order_index: 'asc' }, include: { lessons: { orderBy: { order_index: 'asc' } } } },
+            },
         });
         const lang = await this.i18n.languageOf(userId);
         const copy = await this.prisma.project.create({
@@ -196,6 +199,18 @@ export class ProjectsService {
                 members: { create: { user_id: userId, role: MemberRole.OWNER, can_copy: true, can_reshare: true } },
             },
         });
+        const lessonMap = new Map<string, string>();
+        for (const u of src.units) {
+            const newUnit = await this.prisma.unit.create({
+                data: { project_id: copy.id, title: u.title, description: u.description, order_index: u.order_index },
+            });
+            for (const l of u.lessons) {
+                const newLesson = await this.prisma.lesson.create({
+                    data: { project_id: copy.id, unit_id: newUnit.id, title: l.title, description: l.description, order_index: l.order_index },
+                });
+                lessonMap.set(l.id, newLesson.id);
+            }
+        }
         const topicMap = new Map<string, string>();
         const roots = src.topics.filter((t) => !t.parent_id);
         const children = src.topics.filter((t) => t.parent_id);
@@ -221,9 +236,12 @@ export class ProjectsService {
             } catch {
                 continue;
             }
-            const { id: _id, project_id: _p, chunks, created_at: _c, updated_at: _u, outline, ...docData } = d;
+            const { id: _id, project_id: _p, chunks, created_at: _c, updated_at: _u, outline, lesson_id: docLesson, ...docData } = d;
             const newDoc = await this.prisma.studyDocument.create({
-                data: { ...docData, outline: outline ?? undefined, project_id: copy.id, uploaded_by: userId, storage_key: key },
+                data: {
+                    ...docData, outline: outline ?? undefined, project_id: copy.id, uploaded_by: userId, storage_key: key,
+                    lesson_id: docLesson ? lessonMap.get(docLesson) ?? null : null,
+                },
             });
             docMap.set(d.id, newDoc.id);
             for (let i = 0; i < chunks.length; i += 500) {
@@ -239,7 +257,7 @@ export class ProjectsService {
         }
         const deckMap = new Map<string, string>();
         for (const deck of src.decks) {
-            const created = await this.prisma.flashcardDeck.create({ data: { project_id: copy.id, name: deck.name, description: deck.description, created_by: userId } });
+            const created = await this.prisma.flashcardDeck.create({ data: { project_id: copy.id, name: deck.name, description: deck.description, created_by: userId, lesson_id: deck.lesson_id ? lessonMap.get(deck.lesson_id) ?? null : null } });
             deckMap.set(deck.id, created.id);
         }
         if (!src.decks.length) await this.prisma.flashcardDeck.create({ data: { project_id: copy.id, name: this.i18n.t(lang, 'deck.default'), created_by: userId } });
@@ -250,7 +268,7 @@ export class ProjectsService {
         };
         if (src.questions.length) {
             await this.prisma.question.createMany({
-                data: src.questions.map(({ id: _q, project_id: _p, topic_id, document_id, created_at: _c, updated_at: _u, data, original, source_ref, ...q }) => ({
+                data: src.questions.map(({ id: _q, project_id: _p, topic_id, document_id, lesson_id, created_at: _c, updated_at: _u, data, original, source_ref, ...q }) => ({
                     ...q,
                     data: data as Prisma.InputJsonValue,
                     original: (original ?? undefined) as Prisma.InputJsonValue,
@@ -258,6 +276,7 @@ export class ProjectsService {
                     project_id: copy.id,
                     topic_id: topic_id ? topicMap.get(topic_id) ?? null : null,
                     document_id: document_id ? docMap.get(document_id) ?? null : null,
+                    lesson_id: lesson_id ? lessonMap.get(lesson_id) ?? null : null,
                     chunk_id: null,
                     created_by: userId,
                 })),

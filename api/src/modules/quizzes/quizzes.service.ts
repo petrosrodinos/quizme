@@ -1,4 +1,5 @@
 import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundException, OnModuleInit } from '@nestjs/common';
+import { resolveLessonId } from '../curriculum/lesson.util';
 import { AttemptStatus, GenerationStatus, Prisma, QuestionType, Quiz, QuizMode } from 'generated/prisma';
 import { PrismaService } from '@/core/databases/prisma/prisma.service';
 import { JobsService, JobTypes, PermanentJobError } from '@/core/jobs/jobs.service';
@@ -65,6 +66,7 @@ export class QuizzesService implements OnModuleInit {
         if (mode === QuizMode.REVIEW && !dto.review) throw new BadRequestException('Review quizzes need a review configuration');
         if (mode === QuizMode.SELECTION && !dto.selection_text?.trim()) throw new BadRequestException('Select some text first');
         if (dto.shared) await this.access.assert(userId, projectId, 'CONTRIBUTE');
+        const lessonId = await resolveLessonId(this.prisma, projectId, dto.lesson_id);
         const config: QuizConfig = {
             count: dto.count ?? (mode === QuizMode.EXAM ? 20 : mode === QuizMode.SELECTION ? 5 : 10),
             types: dto.types?.length ? dto.types : mode === QuizMode.EXAM ? ['MCQ', 'TRUE_FALSE', 'FILL_BLANK', 'FREE_TEXT', 'MATCHING', 'ORDERING'] : DEFAULT_TYPES,
@@ -90,6 +92,7 @@ export class QuizzesService implements OnModuleInit {
                 time_limit_sec: dto.time_limit_min ? dto.time_limit_min * 60 : null,
                 target_score: dto.target_score ?? null,
                 is_shared: !!dto.shared,
+                lesson_id: lessonId,
             },
         });
         const job = await this.jobs.enqueue(JobTypes.GENERATE_QUIZ, { quizId: quiz.id }, { userId, projectId, resourceId: quiz.id, priority: 8, maxAttempts: 2 });
@@ -327,10 +330,11 @@ export class QuizzesService implements OnModuleInit {
 
     // ── Quiz reads ──
 
-    async list(userId: string, projectId: string) {
+    async list(userId: string, projectId: string, lessonId?: string) {
         await this.access.assert(userId, projectId, 'VIEW');
+        const lessonFilter = lessonId === 'none' ? { lesson_id: null } : lessonId ? { lesson_id: lessonId } : {};
         const quizzes = await this.prisma.quiz.findMany({
-            where: { project_id: projectId, OR: [{ created_by: userId }, { is_shared: true }] },
+            where: { project_id: projectId, ...lessonFilter, OR: [{ created_by: userId }, { is_shared: true }] },
             orderBy: { created_at: 'desc' },
             take: 100,
             include: {

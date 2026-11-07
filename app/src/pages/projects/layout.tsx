@@ -24,6 +24,7 @@ const IMMERSIVE = ["/projects/:projectId/quizzes/:quizId/take", "/projects/:proj
 
 const sections = (id: string) => [
     { key: "overview", to: Routes.projects.detail(id), end: true },
+    { key: "curriculum", to: Routes.projects.curriculum(id) },
     { key: "documents", to: Routes.projects.documents(id) },
     { key: "tutor", to: Routes.projects.tutor(id) },
     { key: "quizzes", to: Routes.projects.quizzes(id) },

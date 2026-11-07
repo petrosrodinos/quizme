@@ -415,10 +415,52 @@ model Project {
   rooms           StudyRoom[]
   games           MultiplayerGame[]
   xp_events       XpEvent[]
+  units           Unit[]
+  lessons         Lesson[]
 
   @@index([owner_id])
   @@index([archived_at])
   @@map("projects")
+}
+
+model Unit {
+  id          String   @id @default(uuid())
+  project_id  String
+  title       String
+  description String?
+  order_index Int      @default(0)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  project Project  @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+
+  @@index([project_id, order_index])
+  @@map("units")
+}
+
+model Lesson {
+  id          String   @id @default(uuid())
+  project_id  String
+  unit_id     String
+  title       String
+  description String?
+  order_index Int      @default(0)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  project   Project         @relation(fields: [project_id], references: [id], onDelete: Cascade)
+  unit      Unit            @relation(fields: [unit_id], references: [id], onDelete: Cascade)
+  documents StudyDocument[]
+  questions Question[]
+  quizzes   Quiz[]
+  decks     FlashcardDeck[]
+  notes     Note[]
+  summaries Summary[]
+
+  @@index([project_id])
+  @@index([unit_id, order_index])
+  @@map("lessons")
 }
 
 model ProjectMember {
@@ -491,6 +533,7 @@ model Share {
 model StudyDocument {
   id              String           @id @default(uuid())
   project_id      String
+  lesson_id       String?
   uploaded_by     String
   filename        String
   mime_type       String
@@ -514,9 +557,11 @@ model StudyDocument {
   chunks    DocumentChunk[]
   summaries Summary[]
   notes     Note[]
+  lesson    Lesson?         @relation(fields: [lesson_id], references: [id], onDelete: SetNull)
 
   @@unique([project_id, checksum_sha256])
   @@index([project_id])
+  @@index([lesson_id])
   @@map("study_documents")
 }
 
@@ -598,6 +643,7 @@ model TopicMastery {
 model Question {
   id               String        @id @default(uuid())
   project_id       String
+  lesson_id        String?
   topic_id         String?
   document_id      String?
   chunk_id         String?
@@ -628,11 +674,13 @@ model Question {
   quizzes   QuizQuestion[]
   responses QuestionResponse[]
   versions  QuestionVersion[]
+  lesson    Lesson?            @relation(fields: [lesson_id], references: [id], onDelete: SetNull)
 
   @@unique([project_id, content_hash])
   @@index([project_id, type])
   @@index([topic_id])
   @@index([concept])
+  @@index([lesson_id])
   @@map("questions")
 }
 
@@ -653,6 +701,7 @@ model QuestionVersion {
 model Quiz {
   id             String           @id @default(uuid())
   project_id     String
+  lesson_id      String?
   created_by     String
   title          String
   mode           QuizMode         @default(PRACTICE)
@@ -669,8 +718,10 @@ model Quiz {
   questions QuizQuestion[]
   attempts  QuizAttempt[]
   games     MultiplayerGame[]
+  lesson    Lesson?           @relation(fields: [lesson_id], references: [id], onDelete: SetNull)
 
   @@index([project_id, created_at])
+  @@index([lesson_id])
   @@map("quizzes")
 }
 
@@ -749,6 +800,7 @@ model QuestionResponse {
 model FlashcardDeck {
   id          String   @id @default(uuid())
   project_id  String
+  lesson_id   String?
   name        String
   description String?
   created_by  String
@@ -757,8 +809,10 @@ model FlashcardDeck {
 
   project Project     @relation(fields: [project_id], references: [id], onDelete: Cascade)
   cards   Flashcard[]
+  lesson  Lesson?     @relation(fields: [lesson_id], references: [id], onDelete: SetNull)
 
   @@index([project_id])
+  @@index([lesson_id])
   @@map("flashcard_decks")
 }
 
@@ -844,6 +898,7 @@ model ReviewLog {
 model Note {
   id             String   @id @default(uuid())
   project_id     String
+  lesson_id      String?
   user_id        String
   type           NoteType @default(NOTE)
   title          String?
@@ -865,15 +920,18 @@ model Note {
   user     User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
   document StudyDocument? @relation(fields: [document_id], references: [id], onDelete: SetNull)
   topic    Topic?         @relation(fields: [topic_id], references: [id], onDelete: SetNull)
+  lesson   Lesson?        @relation(fields: [lesson_id], references: [id], onDelete: SetNull)
 
   @@index([project_id, user_id])
   @@index([document_id])
+  @@index([lesson_id])
   @@map("notes")
 }
 
 model Summary {
   id            String           @id @default(uuid())
   project_id    String
+  lesson_id     String?
   document_id   String?
   level         SummaryLevel
   status        GenerationStatus @default(PENDING)
@@ -887,8 +945,10 @@ model Summary {
 
   project  Project        @relation(fields: [project_id], references: [id], onDelete: Cascade)
   document StudyDocument? @relation(fields: [document_id], references: [id], onDelete: Cascade)
+  lesson   Lesson?        @relation(fields: [lesson_id], references: [id], onDelete: SetNull)
 
   @@index([project_id, level])
+  @@index([lesson_id])
   @@map("summaries")
 }
 

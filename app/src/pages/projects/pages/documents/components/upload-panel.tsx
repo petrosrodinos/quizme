@@ -9,6 +9,7 @@ import { useUploadDocuments } from "@/features/documents/hooks/use-documents";
 import type { UploadResult } from "@/features/documents/interfaces/documents.interfaces";
 import { useTranslation } from "react-i18next";
 import { translateServerMessage } from "@/lib/api-error";
+import { LessonSelect } from "@/pages/projects/components/lesson-select";
 
 const MAX_BYTES = 50 * 1024 * 1024;
 
@@ -17,12 +18,13 @@ export const UploadPanel = ({ projectId }: { projectId: string }) => {
     const [files, setFiles] = useState<File[]>([]);
     const [progress, setProgress] = useState(0);
     const [results, setResults] = useState<UploadResult[]>([]);
+    const [lessonId, setLessonId] = useState<string | undefined>();
     const upload = useUploadDocuments();
 
     const start = () => {
         setProgress(0);
         upload.mutate(
-            { projectId, files, onProgress: setProgress },
+            { projectId, files, lessonId, onProgress: setProgress },
             {
                 onSuccess: (res) => {
                     setResults(res.results);
@@ -38,6 +40,7 @@ export const UploadPanel = ({ projectId }: { projectId: string }) => {
                 {t("upload.title")}
             </h2>
             <p className="mb-4 text-sm text-muted-foreground">{t("upload.description")}</p>
+            <LessonSelect projectId={projectId} value={lessonId} onChange={setLessonId} className="mb-4 sm:max-w-xs" />
             <FileDropzone
                 accept={DocumentUploadExtensions}
                 maxSizeBytes={MAX_BYTES}

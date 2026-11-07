@@ -4,6 +4,7 @@ import { CardStatus, ReviewRating } from 'generated/prisma';
 import { z } from 'zod';
 
 export class CreateDeckDto {
+    @ApiProperty({ required: false, nullable: true, description: 'Lesson to file this deck under' }) @IsOptional() @IsUUID() lesson_id?: string;
     @ApiProperty() @IsString() @MinLength(1) @MaxLength(120) name: string;
     @ApiProperty({ required: false }) @IsOptional() @IsString() @MaxLength(1000) description?: string;
 }
