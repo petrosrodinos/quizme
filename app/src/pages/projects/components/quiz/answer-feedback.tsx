@@ -54,7 +54,7 @@ export const EvaluationPanel = ({ evaluation }: EvaluationPanelProps) => {
             {typeof evaluation.clarity === "number" && <Badge variant="outline">{t("evaluation.clarity", { value: evaluation.clarity })}</Badge>}
         </div>
         {evaluation.explanation && <p className="text-sm text-muted-foreground">{evaluation.explanation}</p>}
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {!!evaluation.mentioned_concepts?.length && (
                 <ConceptList title={t("evaluation.covered")} items={evaluation.mentioned_concepts} tone="success" />
             )}

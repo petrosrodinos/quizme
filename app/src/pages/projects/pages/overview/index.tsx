@@ -63,7 +63,7 @@ export default function ProjectOverviewPage() {
                 </div>
             )}
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <StatCard label={t("stats.cardsDue")} value={data?.cards_due ?? 0} icon={Layers} tone={(data?.cards_due ?? 0) > 0 ? "primary" : "default"} />
                 <StatCard label={t("stats.quizAccuracy")} value={data?.quiz_accuracy != null ? Math.round(data.quiz_accuracy) : "—"} suffix={data?.quiz_accuracy != null ? "%" : undefined} icon={BookOpenCheck} />
                 <StatCard label={t("stats.studyTime")} value={data?.study_time_week_min ?? 0} suffix={t("stats.minSuffix")} icon={Clock} />
@@ -118,7 +118,7 @@ export default function ProjectOverviewPage() {
                         <h2 id="actions-heading" className="mb-3 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
                             {t("actions.title")}
                         </h2>
-                        <div className="grid gap-2 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                             {can.contribute && (
                                 <Button asChild variant="outline" className="justify-start">
                                     <Link to={Routes.projects.documents(projectId)}>

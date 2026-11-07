@@ -26,7 +26,7 @@ export const DailyGoalPicker: FC<{ goal: DailyGoalProgress }> = ({ goal }) => {
 
     return (
         <div className="space-y-3">
-            <div role="radiogroup" aria-label={t("common:terms.dailyGoal")} className="grid gap-2 sm:grid-cols-5">
+            <div role="radiogroup" aria-label={t("common:terms.dailyGoal")} className="grid grid-cols-1 gap-2 sm:grid-cols-5">
                 {DailyGoalFormOptions.map((o) => (
                     <button
                         key={o.id}

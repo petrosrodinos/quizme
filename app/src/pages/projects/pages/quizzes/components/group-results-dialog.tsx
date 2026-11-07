@@ -18,7 +18,7 @@ export const GroupResultsDialog = ({ quizId, onClose }: GroupResultsDialogProps)
     const { data, isPending } = useQuizResults(quizId ?? undefined);
     return (
         <Dialog open={!!quizId} onOpenChange={(o) => !o && onClose()}>
-            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+            <DialogContent className="sm:max-w-2xl">
                 <DialogHeader>
                     <DialogTitle className="font-display text-2xl font-normal">{data?.quiz.title ?? t("group.title")}</DialogTitle>
                     <DialogDescription>

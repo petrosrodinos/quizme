@@ -67,7 +67,7 @@ export default function ProjectSettingsPage() {
             <PageHeader title={t("page.title")} description={t("page.description")} />
             <div className="space-y-6">
                 <Section title={t("details.title")} description={t("details.description")}>
-                    <dl className="grid gap-4 sm:grid-cols-3">
+                    <dl className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                         <Detail label={t("details.subject")} value={project.subject} />
                         <Detail label={t("details.examDate")} value={project.exam_date ? formatDate(project.exam_date) : null} />
                         <Detail label={t("details.targetScore")} value={formatPercent(project.target_score)} />

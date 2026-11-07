@@ -49,7 +49,7 @@ export const PlanSettingsForm: FC<PlanSettingsFormProps> = ({ project, defaults,
     ];
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(submit)} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <form onSubmit={form.handleSubmit(submit)} className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {fields.map((f) => (
                     <FormField
                         key={f.name}

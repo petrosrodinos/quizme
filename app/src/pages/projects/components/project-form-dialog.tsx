@@ -70,7 +70,7 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
 
     return (
         <Dialog open={open} onOpenChange={(o) => !isPending && onOpenChange(o)}>
-            <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-xl">
+            <DialogContent className="sm:max-w-xl">
                 <DialogHeader>
                     <DialogTitle className="font-display text-2xl font-normal">{project ? t("form.editTitle") : t("form.createTitle")}</DialogTitle>
                     <DialogDescription>{t("form.description")}</DialogDescription>
@@ -90,7 +90,7 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
                                 </FormItem>
                             )}
                         />
-                        <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <FormField
                                 control={form.control}
                                 name="subject"
@@ -157,7 +157,7 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
                                 </FormItem>
                             )}
                         />
-                        <div className="grid gap-4 sm:grid-cols-3">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                             <FormField
                                 control={form.control}
                                 name="target_score"
@@ -220,7 +220,7 @@ export const ProjectFormDialog = ({ open, onOpenChange, project, isPending, onSu
                                 )}
                             />
                         </div>
-                        <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <FormField
                                 control={form.control}
                                 name="daily_minutes_goal"

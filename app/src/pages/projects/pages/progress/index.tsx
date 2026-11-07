@@ -78,7 +78,7 @@ export default function ProjectProgressPage() {
                     }
                 />
             )}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <StatCard label={t("stats.studyTime")} value={totals.study_minutes} suffix={t("stats.minSuffix")} icon={Clock} hint={t("stats.last60")} />
                 <StatCard label={t("stats.questions")} value={totals.questions_answered} icon={BookOpenCheck} hint={t("stats.completedQuizzes", { count: totals.attempts })} />
                 <StatCard label={t("stats.accuracy")} value={pct(totals.accuracy)} suffix={pctSuffix(totals.accuracy)} icon={Percent} />

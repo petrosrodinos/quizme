@@ -111,7 +111,7 @@ export default function ProjectRecallPage() {
 
             <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
                 <div className="space-y-4">
-                    <section aria-label={t("page.modeGroup")} className="grid gap-2 sm:grid-cols-2" role="radiogroup">
+                    <section aria-label={t("page.modeGroup")} className="grid grid-cols-1 gap-2 sm:grid-cols-2" role="radiogroup">
                         {RecallModeFormOptions.map((o) => (
                             <button
                                 key={o.id}
@@ -281,7 +281,7 @@ export default function ProjectRecallPage() {
             </div>
 
             <Dialog open={!!viewing} onOpenChange={(o) => !o && setViewing(null)}>
-                <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+                <DialogContent className="sm:max-w-2xl">
                     <DialogHeader>
                         <DialogTitle className="font-display text-xl font-normal">{viewing?.prompt}</DialogTitle>
                     </DialogHeader>

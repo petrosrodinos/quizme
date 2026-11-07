@@ -50,7 +50,7 @@ export const SharedContent = ({ view }: { view: SharedView }) => {
                     <p className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Layers className="h-4 w-4" aria-hidden /> {tCount("card", view.content.cards.length)}
                     </p>
-                    <ul className="grid gap-3 sm:grid-cols-2">
+                    <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         {view.content.cards.map((card, i) => (
                             <li key={i} className="rounded-xl border border-border bg-card p-4">
                                 <p className="font-medium">{card.front}</p>

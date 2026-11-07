@@ -103,7 +103,7 @@ export const CreateQuizDialog = ({ projectId, open, onOpenChange, defaults, canS
 
     return (
         <Dialog open={open} onOpenChange={(o) => !create.isPending && onOpenChange(o)}>
-            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
+            <DialogContent className="sm:max-w-xl">
                 <DialogHeader>
                     <DialogTitle className="font-display text-2xl font-normal">{t("create.title")}</DialogTitle>
                     <DialogDescription>{getQuizModeDescription(mode)}</DialogDescription>
@@ -125,7 +125,7 @@ export const CreateQuizDialog = ({ projectId, open, onOpenChange, defaults, canS
 
                     <LessonSelect projectId={projectId} value={lessonId} onChange={setLessonId} />
 
-                    <div className="grid gap-4 sm:grid-cols-[1fr_120px]">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_120px]">
                         <div className="space-y-1.5">
                             <Label htmlFor="quiz-title">{t("create.titleLabel")}</Label>
                             <Input id="quiz-title" value={title} maxLength={160} onChange={(e) => setTitle(e.target.value)} placeholder={t("create.titlePlaceholder")} />

@@ -109,7 +109,7 @@ export default function AchievementsPage() {
                             <h3 id={`cat-${category}`} className="mb-3 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
                                 {getAchievementCategoryLabel(category)}
                             </h3>
-                            <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                            <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
                                 {list.map((a) => (
                                     <AchievementCard key={a.key} achievement={a} />
                                 ))}

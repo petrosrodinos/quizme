@@ -54,7 +54,7 @@ export const UiModePicker = ({ className }: { className?: string }) => {
     const mode = useUiMode();
     const setMode = useSetUiMode();
     return (
-        <div role="radiogroup" aria-label={t("profile.uiMode")} className={cn("grid gap-3 sm:grid-cols-2", className)}>
+        <div role="radiogroup" aria-label={t("profile.uiMode")} className={cn("grid grid-cols-1 gap-3 sm:grid-cols-2", className)}>
             {MODES.map(({ id, preview: Preview }) => {
                 const active = mode === id;
                 return (

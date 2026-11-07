@@ -56,7 +56,7 @@ export const NoteEditorDialog = ({ open, onOpenChange, note, topics, canShare, i
 
     return (
         <Dialog open={open} onOpenChange={(o) => !isPending && onOpenChange(o)}>
-            <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl">
+            <DialogContent className="sm:max-w-2xl">
                 <DialogHeader>
                     <DialogTitle className="font-display text-2xl font-normal">{note ? t("editor.editTitle") : t("editor.newTitle")}</DialogTitle>
                     <DialogDescription>{t("editor.description")}</DialogDescription>
@@ -66,7 +66,7 @@ export const NoteEditorDialog = ({ open, onOpenChange, note, topics, canShare, i
                 )}
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" noValidate>
-                        <div className="grid gap-4 sm:grid-cols-[1fr_180px]">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_180px]">
                             <FormField
                                 control={form.control}
                                 name="title"
@@ -129,7 +129,7 @@ export const NoteEditorDialog = ({ open, onOpenChange, note, topics, canShare, i
                                 )}
                             />
                         )}
-                        <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <FormField
                                 control={form.control}
                                 name="topic_id"

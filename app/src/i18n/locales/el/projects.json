@@ -112,7 +112,13 @@
     "plan": "Πλάνο μελέτης",
     "exam": "Εξέταση",
     "members": "Μέλη",
-    "settings": "Ρυθμίσεις"
+    "settings": "Ρυθμίσεις",
+    "groups": {
+      "learn": "Μάθηση",
+      "practice": "Εξάσκηση",
+      "track": "Πρόοδος",
+      "manage": "Διαχείριση"
+    }
   },
   "layout": {
     "unavailable": {

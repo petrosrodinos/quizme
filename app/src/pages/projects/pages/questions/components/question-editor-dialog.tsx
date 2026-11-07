@@ -104,14 +104,14 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
 
     return (
         <Dialog open={open} onOpenChange={(o) => !pending && onOpenChange(o)}>
-            <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl">
+            <DialogContent className="sm:max-w-2xl">
                 <DialogHeader>
                     <DialogTitle className="font-display text-2xl font-normal">{question ? t("editor.editTitle", { version: question.version }) : t("page.add")}</DialogTitle>
                     <DialogDescription>{question ? t("editor.editDescription") : getQuestionTypeDescription(type)}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <FormField
                                 control={form.control}
                                 name="type"
@@ -330,7 +330,7 @@ export const QuestionEditorDialog = ({ projectId, open, onOpenChange, question, 
                             )}
                         />
 
-                        <div className="grid gap-4 sm:grid-cols-3">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                             <FormField
                                 control={form.control}
                                 name="topic_id"

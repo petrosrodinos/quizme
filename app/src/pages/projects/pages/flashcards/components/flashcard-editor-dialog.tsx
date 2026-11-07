@@ -70,7 +70,7 @@ export const FlashcardEditorDialog = ({ open, onOpenChange, card, decks, topics,
 
     return (
         <Dialog open={open} onOpenChange={(o) => !isPending && onOpenChange(o)}>
-            <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl">
+            <DialogContent className="sm:max-w-2xl">
                 <DialogHeader>
                     <DialogTitle className="font-display text-2xl font-normal">{card ? t("editor.editTitle") : t("editor.newTitle")}</DialogTitle>
                     <DialogDescription>{t("editor.description")}</DialogDescription>
@@ -82,7 +82,7 @@ export const FlashcardEditorDialog = ({ open, onOpenChange, card, decks, topics,
                     </TabsList>
                 </Tabs>
                 {preview === "preview" ? (
-                    <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                         <div className="rounded-xl border border-border bg-card p-4">
                             <p className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">{t("card.front")}</p>
                             <Markdown content={front || `*${t("editor.empty")}*`} />
@@ -123,7 +123,7 @@ export const FlashcardEditorDialog = ({ open, onOpenChange, card, decks, topics,
                                 )}
                             />
                         </div>
-                        <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <FormField
                                 control={form.control}
                                 name="deck_id"

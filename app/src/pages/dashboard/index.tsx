@@ -82,7 +82,7 @@ function ClassicDashboard() {
                         <ProgressSideCards profile={data.gamification} />
                     </div>
 
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                         <StatCard label={t("stats.flashcardsDue")} value={data.flashcards_due} icon={Layers} tone={data.flashcards_due ? "primary" : "default"} />
                         <StatCard label={t("stats.quizAccuracy")} value={data.quiz_accuracy ?? "—"} suffix={data.quiz_accuracy !== null ? "%" : undefined} icon={BookOpenCheck} hint={t("stats.last30Days")} />
                         <StatCard

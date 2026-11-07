@@ -45,7 +45,7 @@ export const EvaluationResult = ({ evaluation, sources = [], projectId }: { eval
 
         {evaluation.explanation && <p className="text-sm">{evaluation.explanation}</p>}
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
                 <h4 className="mb-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">{t("evaluation.covered")}</h4>
                 <div className="flex flex-wrap gap-1.5">

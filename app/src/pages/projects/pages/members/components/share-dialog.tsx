@@ -90,7 +90,7 @@ export const ShareDialog = ({ projectId, open, onOpenChange }: ShareDialogProps)
 
     return (
         <Dialog open={open} onOpenChange={(o) => !create.isPending && onOpenChange(o)}>
-            <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-lg">
+            <DialogContent className="sm:max-w-lg">
                 <DialogHeader>
                     <DialogTitle className="font-display text-2xl font-normal">{t("share.dialog.title")}</DialogTitle>
                     <DialogDescription>{t("share.dialog.description")}</DialogDescription>
@@ -111,7 +111,7 @@ export const ShareDialog = ({ projectId, open, onOpenChange }: ShareDialogProps)
                 ) : (
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(submit)} className="space-y-4" noValidate>
-                            <div className="grid gap-4 sm:grid-cols-2">
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <FormField
                                     control={form.control}
                                     name="resource_type"
@@ -228,7 +228,7 @@ export const ShareDialog = ({ projectId, open, onOpenChange }: ShareDialogProps)
                                     )}
                                 />
                             ) : null}
-                            <div className="grid gap-4 sm:grid-cols-2">
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                 <FormField
                                     control={form.control}
                                     name="permission"

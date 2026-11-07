@@ -43,7 +43,7 @@ export const ExamConfigForm = ({ topics, defaultTarget, pending, onSubmit }: Exa
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 rounded-2xl border border-border bg-card p-5 sm:p-6">
-                <div className="grid gap-4 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <FormField
                         control={form.control}
                         name="count"
@@ -84,7 +84,7 @@ export const ExamConfigForm = ({ topics, defaultTarget, pending, onSubmit }: Exa
                         )}
                     />
                 </div>
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <FormField
                         control={form.control}
                         name="difficulty"
@@ -149,7 +149,7 @@ export const ExamConfigForm = ({ topics, defaultTarget, pending, onSubmit }: Exa
                         </FormItem>
                     )}
                 />
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <FormField
                         control={form.control}
                         name="randomize"

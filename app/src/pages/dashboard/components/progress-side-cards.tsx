@@ -14,7 +14,7 @@ import type { GamificationProfile } from "@/features/gamification/interfaces/gam
 export const ProgressSideCards: FC<{ profile: GamificationProfile }> = ({ profile }) => {
     const { t } = useTranslation("dashboard");
     return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-1">
         <Link to={Routes.achievements} className="group rounded-2xl border border-border bg-card p-5 transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             <div className="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">{t("side.streak")}</div>
             <div className="mt-2 flex items-center gap-3">

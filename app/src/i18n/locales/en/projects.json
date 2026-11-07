@@ -112,7 +112,13 @@
     "plan": "Study Plan",
     "exam": "Exam",
     "members": "Members",
-    "settings": "Settings"
+    "settings": "Settings",
+    "groups": {
+      "learn": "Learn",
+      "practice": "Practice",
+      "track": "Track",
+      "manage": "Manage"
+    }
   },
   "layout": {
     "unavailable": {

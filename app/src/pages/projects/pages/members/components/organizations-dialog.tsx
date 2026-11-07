@@ -41,7 +41,7 @@ export const OrganizationsDialog = ({ open, onOpenChange }: OrganizationsDialogP
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl">
+            <DialogContent className="sm:max-w-2xl">
                 <DialogHeader>
                     <DialogTitle className="font-display text-2xl font-normal">{t("orgs.title")}</DialogTitle>
                     <DialogDescription>{t("orgs.description")}</DialogDescription>
@@ -69,7 +69,7 @@ export const OrganizationsDialog = ({ open, onOpenChange }: OrganizationsDialogP
                         </Button>
                     </form>
                 </Form>
-                <div className="grid gap-4 sm:grid-cols-[220px_1fr]">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-[220px_1fr]">
                     <nav aria-label={t("orgs.yourOrganizations")} className="space-y-1">
                         {orgs.isPending ? (
                             <ListSkeleton rows={2} />

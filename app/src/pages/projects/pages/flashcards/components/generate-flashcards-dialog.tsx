@@ -53,14 +53,14 @@ export const GenerateFlashcardsDialog = ({ open, onOpenChange, decks, topics, do
 
     return (
         <Dialog open={open} onOpenChange={(o) => !isPending && onOpenChange(o)}>
-            <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-xl">
+            <DialogContent className="sm:max-w-xl">
                 <DialogHeader>
                     <DialogTitle className="font-display text-2xl font-normal">{t("generate.title")}</DialogTitle>
                     <DialogDescription>{t("generate.description")}</DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(submit)} className="space-y-4" noValidate>
-                        <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <FormField
                                 control={form.control}
                                 name="count"

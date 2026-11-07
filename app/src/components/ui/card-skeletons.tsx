@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { tr } from "@/lib/i18n-options";
 
 export const GridSkeleton = ({ count = 6, className }: { count?: number; className?: string }) => (
-    <div className={cn("grid gap-4 sm:grid-cols-2 xl:grid-cols-3", className)} aria-busy="true" aria-label={tr("common:status.loading")}>
+    <div className={cn("grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3", className)} aria-busy="true" aria-label={tr("common:status.loading")}>
         {Array.from({ length: count }).map((_, i) => (
             <div key={i} className="space-y-3 rounded-xl border border-border bg-card p-5">
                 <Skeleton className="h-5 w-2/3" />
@@ -40,7 +40,7 @@ export const DetailSkeleton = ({ className }: { className?: string }) => (
             <Skeleton className="h-9 w-1/2" />
             <Skeleton className="h-4 w-2/3" />
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {Array.from({ length: 4 }).map((_, i) => (
                 <Skeleton key={i} className="h-28 rounded-xl" />
             ))}
